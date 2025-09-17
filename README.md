@@ -1,16 +1,17 @@
 # Teleport
 
-**Integer-Only Compression and Processing Library**
+**CLF Mathematical Causality Analysis System**
 
-Teleport is a strict integer-only library for compression, encoding, and data processing that enforces no-float constraints through guards and linting. It provides mathematically precise operations without floating-point contamination.
+Teleport is a mathematical causality analysis system that determines whether byte sequences can be reproduced by deterministic generators. It uses pure integer arithmetic to either prove causality with exact parameters or provide formal refutation with quantified witnesses. No compression, no heuristics - only mathematical deduction.
 
 ## Features
 
-- **🚫 No-Float Membrane**: Runtime guards and decorators to prevent floating-point contamination
-- **🔢 Integer-Only Operations**: LEB128 encoding, bit manipulation, and compression algorithms
-- **📊 Exact Cost Formulas**: Precise integer-only cost calculations for compression schemes
-- **🔍 Static Analysis**: AST linter to detect and reject floating-point operations
-- **⚡ Minimal Dependencies**: Pure Python with no external dependencies for core functionality
+- **� Mathematical Generators**: Complete family G = {CONST, STEP, LCG8, LFSR8, ANCHOR} with deterministic deduction
+- **🎯 Causality Proofs**: Either proves causality with exact parameters or provides formal refutation
+- **🔢 Integer-Only Math**: Pure integer arithmetic with no floating-point contamination
+- **📊 Exact Cost Model**: C_CAUS = 3 + 8×leb(op) + 8×Σleb(param_i) + 8×leb(N) 
+- **⚡ CLF Compliance**: CAUS-or-FAIL enforcement with quantified mathematical witnesses
+- **🚫 No Heuristics**: Only deterministic deduction and formal verification
 
 ## Quick Start
 
@@ -23,91 +24,99 @@ pip install teleport
 ### Basic Usage
 
 ```python
-from teleport import no_float_guard, leb128_encode, huffman_cost_bits
+from teleport.caus_deduction_complete import formal_caus_test
+from teleport.generators import deduce_CONST, verify_generator, OP_CONST
 
-# Protect functions from float contamination
-@no_float_guard
-def process_data(values):
-    return sum(values)
+# Test causality of byte sequence
+with open('data.bin', 'rb') as f:
+    data = f.read()
 
-# Integer-only LEB128 encoding
-data = leb128_encode(12345)
-print(f"Encoded: {data.hex()}")  # Encoded: b9606
+# Complete mathematical analysis
+result = formal_caus_test(data)
+if result['causality_proven']:
+    print(f"✅ Causality proven: {result['generator_name']}")
+    print(f"Parameters: {result['params']}")
+    print(f"Cost: {result['C_CAUS']} bits < {result['C_LIT']} bits")
+else:
+    print(f"❌ Formal refutation: {result['refutation_witnesses']}")
 
-# Exact compression cost calculation
-frequencies = [10, 5, 3, 2]
-code_lengths = [1, 2, 3, 4]
-cost = huffman_cost_bits(frequencies, code_lengths)
-print(f"Huffman cost: {cost} bits")  # Huffman cost: 37 bits
+# Manual generator deduction
+ok, params, reason = deduce_CONST(data)
+if ok:
+    verified = verify_generator(OP_CONST, params, data)
+    print(f"CONST generator: verified={verified}")
+else:
+    print(f"CONST failed: {reason}")
 ```
 
 ## Core Modules
 
-### `teleport.guards` - No-Float Membrane
+### `teleport.generators` - Mathematical Generator Family
 
-Runtime protection against floating-point contamination:
-
-```python
-from teleport.guards import no_float_guard, assert_integer_only
-
-@no_float_guard
-def safe_calculation(a, b):
-    return a * b + 1
-
-# This will raise ValueError due to float contamination
-try:
-    safe_calculation(5, 3.14)  # ❌ Float detected!
-except ValueError as e:
-    print(f"Caught: {e}")
-
-# This works fine
-result = safe_calculation(5, 3)  # ✅ Integer-only
-```
-
-### `teleport.clf_int` - Integer Helpers
-
-Core integer-only utilities:
+Complete deterministic generator deduction:
 
 ```python
-from teleport.clf_int import (
-    leb128_encode, leb128_decode, 
-    pack_bits, extract_bits,
-    next_power_of_2, integer_log2
+from teleport.generators import (
+    deduce_CONST, deduce_STEP, deduce_LCG8, deduce_LFSR8, deduce_ANCHOR,
+    verify_generator, compute_caus_cost
 )
 
-# LEB128 encoding/decoding
-encoded = leb128_encode(300)
-decoded, consumed = leb128_decode(encoded)
-
-# Bit manipulation
-packed = pack_bits([5, 3, 1], [3, 2, 1])  # Pack values with bit widths
-bits = extract_bits(packed, 0, 3)         # Extract 3 bits from position 0
-
-# Integer math
-next_pow = next_power_of_2(100)  # 128
-log_val = integer_log2(256)      # 8
+# Test if sequence follows CONST pattern
+S = bytes([0x42] * 100)  # 100 repeated bytes
+ok, params, reason = deduce_CONST(S)
+if ok:
+    byte_value, = params
+    print(f"CONST generator: byte={byte_value}")
+    
+    # Verify mathematical correctness
+    verified = verify_generator(OP_CONST, params, S)
+    cost = compute_caus_cost(OP_CONST, params, len(S))
+    print(f"Verified: {verified}, Cost: {cost} bits")
+else:
+    print(f"Not constant: {reason}")
 ```
 
-### `teleport.costs` - Exact Cost Formulas
+### `teleport.caus_deduction_complete` - Formal Causality Analysis
 
-Precise integer-only cost calculations:
+Complete mathematical proof system:
 
 ```python
-from teleport.costs import (
-    huffman_cost_bits, entropy_cost_estimate,
-    lz77_cost, compression_ratio_scaled
+from teleport.caus_deduction_complete import (
+    try_deduce_caus, formal_caus_test, generate_bytes
 )
 
-# Huffman coding cost
-frequencies = [50, 30, 15, 5]
-code_lengths = [1, 2, 3, 4]
-cost = huffman_cost_bits(frequencies, code_lengths)
+# Exhaustive generator evaluation
+best, receipts = try_deduce_caus(data)
+if best:
+    gen_name, op_id, params, cost = best
+    print(f"Causality proven: {gen_name} with cost {cost} bits")
+else:
+    print("Formal refutation: No generator in family can reproduce sequence")
 
-# Entropy estimation (integer approximation)
-estimated = entropy_cost_estimate(frequencies)
+# Complete analysis with exit codes
+result = formal_caus_test(data)
+# Returns: causality_proven, generator_name, params, costs, receipts
 
-# Compression ratio (scaled integer)
-ratio = compression_ratio_scaled(1000, 600, scale=1000)  # 1666 = 1.666x
+# Generate bytes from proven parameters
+if result['causality_proven']:
+    reconstructed = generate_bytes(result['op_id'], result['params'], len(data))
+    assert reconstructed == data  # Mathematical verification
+```
+
+### `teleport.predicates` - Specialized Pattern Analysis
+
+Mathematical pattern detection for complex structures:
+
+```python
+from teleport.predicates import check_anchor_window, check_repeat1
+
+# Test dual-anchor structure (format-blind)
+S = b'\\xff\\xd8' + bytes([0x42] * 1000) + b'\\xff\\xd9'
+ok, op_id, params = check_anchor_window(S)
+if ok:
+    print(f"Anchor structure found with interior generator")
+else:
+    print("No mathematical anchor structure")
 ```
 
 ### `teleport.leb_io` - LEB128 I/O
@@ -168,11 +177,15 @@ The linter detects:
 
 ```bash
 # Clone the repository
-git clone https://github.com/teleport-project/teleport.git
-cd teleport
+git clone https://github.com/mautorresp/Teleport.git
+cd Teleport
 
-# Install in development mode with all dependencies
-pip install -e ".[dev]"
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install in development mode
+pip install -e .
 
 # Install pre-commit hooks
 pre-commit install
@@ -215,94 +228,111 @@ pre-commit run --all-files
 
 ```
 Teleport/
-├── teleport/              # Main package
-│   ├── __init__.py       # Package exports
-│   ├── guards.py         # No-float membrane
-│   ├── clf_int.py        # Integer helpers
-│   ├── costs.py          # Cost formulas
-│   └── leb_io.py         # LEB128 I/O
-├── tests/                # Test suite
-│   ├── test_guards.py    # Guard tests
-│   ├── test_clf_int.py   # Integer helper tests
-│   └── test_costs.py     # Cost formula tests
-├── tools/                # Development tools
-│   └── no_float_lint.py  # Float contamination linter
-├── pyproject.toml        # Project configuration
-├── .pre-commit-config.yaml  # Pre-commit hooks
-└── README.md             # This file
+├── teleport/                    # Main package
+│   ├── __init__.py             # Package exports
+│   ├── generators.py           # Mathematical generator family
+│   ├── caus_deduction_complete.py  # Formal causality system
+│   ├── predicates.py           # Specialized pattern analysis
+│   ├── guards.py               # No-float membrane
+│   ├── costs.py                # Exact cost computation
+│   ├── leb_io.py               # LEB128 encoding
+│   └── seed_vm.py              # VM for reconstructions
+├── scripts/                    # Analysis tools
+│   ├── caus_proof_complete.py  # Complete mathematical analysis
+│   └── seed_verify.py          # Verification utilities
+├── tests/                      # Test suite
+│   ├── test_generators.py      # Generator tests
+│   └── test_no_float.py        # Float contamination tests
+├── test_artifacts/             # Evidence files
+│   └── evidence*.txt           # Mathematical analysis results
+├── pyproject.toml              # Project configuration
+└── README.md                   # This file
 ```
 
 ## Design Principles
 
-### Integer-Only Operations
+### Mathematical Causality Analysis
 
-Teleport maintains strict integer semantics throughout:
+Teleport determines causality through pure mathematical deduction:
 
-- All operations use integer arithmetic
-- No implicit float conversion
-- Explicit overflow/underflow handling
-- Deterministic results across platforms
+- Either proves causality with exact generator parameters
+- Or provides formal refutation with quantified witnesses  
+- No heuristics, no approximations, no guessing
+- Complete deterministic evaluation of generator family
 
-### No-Float Membrane
+### CLF Compliance (CAUS-or-FAIL)
 
-The no-float membrane provides multiple layers of protection:
+Every analysis provides either:
 
-1. **Runtime Guards**: Decorators check function arguments and return values
-2. **Static Analysis**: AST linter catches float operations at development time
-3. **Type Annotations**: Clear integer-only type hints
-4. **Testing**: Comprehensive test suite validates all operations
+1. **Positive Proof**: Generator with exact parameters and costs (C_CAUS < 10×N)
+2. **Formal Refutation**: Mathematical witnesses proving no causality exists
+3. **Deterministic Results**: Same input always produces same mathematical outcome
+4. **Exact Costs**: Integer-only cost model with minimal LEB128 encoding
 
-### Mathematical Precision
+### Generator Completeness
 
-Cost formulas and calculations maintain mathematical exactness:
+Complete mathematical evaluation over finite generator family:
 
-- Integer-only entropy approximations
-- Exact bit counting for compression schemes
-- Scaled arithmetic for ratios and percentages
-- No floating-point rounding errors
+- **CONST**: Repeated byte patterns
+- **STEP**: Arithmetic progressions modulo 256
+- **LCG8**: Linear congruential generators  
+- **LFSR8**: Linear feedback shift registers
+- **ANCHOR**: Dual-anchor with inner generator structure
 
 ## Use Cases
 
-### Compression Libraries
+### Forensic Analysis
 
-Build compression algorithms with guaranteed integer semantics:
+Determine if byte sequences contain mathematical structure:
 
 ```python
-from teleport import huffman_cost_bits, leb128_encode
+from teleport.caus_deduction_complete import formal_caus_test
 
-# Calculate exact compression costs
-def analyze_compression(data):
-    frequencies = count_symbols(data)
-    code_lengths = calculate_huffman_lengths(frequencies)
-    cost = huffman_cost_bits(frequencies, code_lengths)
-    return cost
+# Analyze unknown binary data
+with open('suspicious.bin', 'rb') as f:
+    data = f.read()
+
+result = formal_caus_test(data)
+if result['causality_proven']:
+    print(f"Mathematical structure detected: {result['generator_name']}")
+    print(f"Compression ratio: {result['compression_ratio']:.1f}:1")
+else:
+    print("No mathematical causality found - likely natural/encrypted data")
 ```
 
-### Embedded Systems
+### Reverse Engineering
 
-Integer-only operations for resource-constrained environments:
+Extract generator parameters from observed sequences:
 
 ```python
-from teleport.clf_int import pack_bits, extract_bits
+from teleport.generators import deduce_LCG8, verify_generator
 
-# Pack sensor data into minimal bit representation
-def pack_sensor_data(temperature, humidity, pressure):
-    # Temperature: 0-127 (7 bits), Humidity: 0-100 (7 bits), Pressure: 0-1023 (10 bits)
-    return pack_bits([temperature, humidity, pressure], [7, 7, 10])
+# Analyze potential LCG sequence
+ok, params, reason = deduce_LCG8(observed_bytes)
+if ok:
+    x0, a, c = params
+    print(f"LCG parameters: seed={x0}, multiplier={a}, increment={c}")
+    
+    # Predict future values
+    next_values = generate_lcg_sequence(x0, a, c, start_offset=len(observed_bytes))
+    print(f"Predicted next bytes: {next_values[:10]}")
 ```
 
-### Financial Systems
+### Cryptographic Analysis
 
-Exact arithmetic for financial calculations:
+Mathematical evaluation of pseudo-random sequences:
 
 ```python
-from teleport.guards import no_float_guard
+from teleport.generators import deduce_LFSR8
 
-@no_float_guard
-def calculate_interest(principal_cents, rate_basis_points, periods):
-    # All monetary values in cents, rates in basis points
-    # No floating-point rounding errors
-    return (principal_cents * rate_basis_points * periods) // 10000
+# Test if sequence follows LFSR pattern
+key_stream = bytes([...])  # Observed keystream
+ok, params, reason = deduce_LFSR8(key_stream)
+if ok:
+    taps, seed = params
+    print(f"⚠️  LFSR weakness detected: taps=0x{taps:02x}, seed=0x{seed:02x}")
+else:
+    print(f"✅ No LFSR structure found: {reason}")
 ```
 
 ## Contributing
@@ -311,11 +341,11 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ### Guidelines
 
-- All code must pass the no-float linter
-- Maintain 100% integer-only operations
-- Add comprehensive tests for new features
-- Follow existing code style and patterns
-- Update documentation for user-facing changes
+- All mathematical deduction must be deterministic and reproducible
+- Maintain CLF compliance: CAUS-or-FAIL with no middle ground
+- Add mathematical receipts for new generator types
+- Provide formal refutation witnesses for failure cases
+- Update generator family completeness proofs
 
 ### Testing Float Rejection
 
@@ -337,4 +367,4 @@ See [CHANGELOG.md](CHANGELOG.md) for version history and changes.
 
 ---
 
-**Teleport** - Pure integer operations for a floating-point-free future! 🚀
+**Teleport** - Mathematical causality analysis with zero compromise! �
