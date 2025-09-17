@@ -109,70 +109,80 @@ def _lfsr_step(word: int, taps: int) -> int:
 
 def deduce_ANCHOR(S: bytes):
     """
-    Deterministic ANCHOR deduction using X/Y delimiter rule.
-    No loops, no search - purely computed from S structure.
+    CLF-Pure ANCHOR deduction with canonical window rule.
+    Format-blind, deterministic byte equality analysis only.
     Returns: (ok, params, reason)
     """
     N = len(S)
-    if N < 4:  # Need at least 4 bytes for meaningful anchor structure
+    if N < 8:  # Need minimum bytes for header + interior + footer
         return (0, (), f"too_short N={N}")
     
-    # Find lexicographically smallest 2-byte token X
-    tokens_2byte = set()
-    for i in range(N-1):
-        tokens_2byte.add((S[i], S[i+1]))
+    # Simplified canonical window rule - check only a few deterministic positions
+    # to avoid combinatorial explosion
+    max_candidates = 10  # Limit to prevent infinite loops
+    candidate_windows = []
     
-    if not tokens_2byte:
-        return (0, (), "no_2byte_tokens")
-    
-    X = min(tokens_2byte)  # Lexicographically smallest
-    off_X = -1
-    for i in range(N-1):
-        if (S[i], S[i+1]) == X:
-            off_X = i
+    for i in range(min(5, N-7)):  # Check only first 5 positions for efficiency
+        if i + 3 >= N:
+            continue
+            
+        # Extract 2-byte length field: L = (S[i+2] << 8) | S[i+3]  
+        L = (S[i + 2] << 8) | S[i + 3]
+        # Cap L to reasonable value to prevent overflow
+        L = min(L, 1000, N - (i + 4))
+        hdr_end = i + 4 + L
+        
+        if hdr_end >= N - 2:  # Need space for at least 2-byte footer
+            continue
+            
+        # Check a few reasonable j positions  
+        for offset in [2, 4, 8, 16]:  # Try small offsets from hdr_end
+            j = hdr_end + offset
+            if j > N:
+                continue
+                
+            interior_len = j - hdr_end  
+            if interior_len <= 0:
+                continue
+                
+            candidate_windows.append((interior_len, i, j, hdr_end))
+            if len(candidate_windows) >= max_candidates:
+                break
+        
+        if len(candidate_windows) >= max_candidates:
             break
     
-    if off_X == -1 or off_X + 3 >= N:
-        return (0, (), f"X_position_invalid off_X={off_X}")
+    if not candidate_windows:
+        return (0, (), "no_admissible_windows")
     
-    # Extract length field L_X
-    L_X = min(((S[off_X + 2] << 8) | S[off_X + 3]), N - (off_X + 4))
-    hdr_end = off_X + 4 + L_X
+    # Select window with maximum interior length
+    candidate_windows.sort(key=lambda x: x[0], reverse=True)
+    interior_len, i, j, hdr_end = candidate_windows[0]
     
-    if hdr_end >= N:
-        return (0, (), f"header_overflow hdr_end={hdr_end} N={N}")
+    # Extract anchor components
+    # Extract components from canonical window
+    A = S[i:i+2]  # 2-byte start anchor  
+    B = S[j-2:j]  # 2-byte end anchor
+    interior = S[hdr_end:j]  # Interior bytes for inner generator
     
-    # Find lexicographically largest 2-byte token Y
-    Y = max(tokens_2byte)
-    off_Y = -1
-    for i in range(N-2, 0, -1):  # Search backwards for last occurrence
-        if i < N-1 and (S[i], S[i+1]) == Y:
-            off_Y = i
-            break
+    # Try inner generators on interior in deterministic order
+    inner_generators = [
+        (OP_CONST, deduce_CONST),
+        (OP_STEP, deduce_STEP),
+        (OP_LCG8, deduce_LCG8),
+        (OP_LFSR8, deduce_LFSR8),
+        (OP_REPEAT1, deduce_REPEAT1)
+    ]
     
-    if off_Y <= hdr_end:
-        return (0, (), f"Y_position_invalid off_X={off_X} len_field={L_X} hdr_end={hdr_end} off_Y={off_Y}")
-    
-    # Extract A, M, B deterministically
-    A = S[:off_X]
-    M = S[hdr_end:off_Y]
-    B = S[off_Y:]
-    
-    interior_len = off_Y - hdr_end
-    if interior_len <= 0:
-        return (0, (), f"empty_interior interior_len={interior_len}")
-    
-    # Try inner generators deterministically
-    for op_id, deduce in ((OP_CONST, deduce_CONST),
-                          (OP_STEP, deduce_STEP),
-                          (OP_LCG8, deduce_LCG8),
-                          (OP_LFSR8, deduce_LFSR8)):
-        ok, inner_params, _reason = deduce(M)
+    for inner_op, inner_deduce in inner_generators:
+        ok, inner_params, _reason = inner_deduce(interior)
         if ok:
-            params = (len(A), *A, len(B), *B, op_id, *inner_params)
-            return (1, params, f"off_X={off_X} len_field={L_X} hdr_end={hdr_end} off_Y={off_Y} interior_len={interior_len}")
+            # Construct ANCHOR parameters: len_A, A_bytes, len_B, B_bytes, inner_op, inner_params
+            params = (len(A), *A, len(B), *B, inner_op, *inner_params)
+            return (1, params, f"canonical_window i={i} j={j} hdr_end={hdr_end} interior_len={interior_len}")
     
-    return (0, (), f"no_inner_generator off_X={off_X} len_field={L_X} hdr_end={hdr_end} off_Y={off_Y} interior_len={interior_len}")
+    # No inner generator proved the interior
+    return (0, (), f"interior_len={interior_len} no_inner_generator")
 
 def deduce_REPEAT1(S: bytes):
     """
@@ -250,7 +260,24 @@ def deduce_XOR_MASK8(S: bytes):
         else:
             return (0, (), f"base=STEP({a},{d}) lfsr={reason_lfsr}")
     
-    return (0, (), f"base_negated const={reason_const} step={reason_step}")
+    # Try LCG8 base
+    ok_lcg, params_lcg, reason_lcg = deduce_LCG8(S)
+    if ok_lcg:
+        # Generate LCG8 sequence and compute mask
+        x0, a, c = params_lcg[0], params_lcg[1], params_lcg[2]
+        lcg_seq = []
+        x = x0
+        for _ in range(len(S)):
+            lcg_seq.append(x)
+            x = (a * x + c) & 0xFF
+        M = bytes([x ^ y for x, y in zip(S, lcg_seq)])
+        ok_lfsr, params_lfsr, reason_lfsr = deduce_LFSR8(M)
+        if ok_lfsr:
+            return (1, ('LCG8', x0, a, c, *params_lfsr), "")
+        else:
+            return (0, (), f"base=LCG8({x0},{a},{c}) lfsr={reason_lfsr}")
+    
+    return (0, (), f"base_negated const={reason_const} step={reason_step} lcg={reason_lcg}")
 
 def deduce_CBD(S: bytes):
     """
@@ -281,61 +308,23 @@ def _cbd_depth(cbd_params):
 
 def deduce_all(S: bytes):
     """
-    CLF Universal Causality - Generator Obligation Mode
-    Returns CAUS certificate ONLY if a specialized generator mathematically proves S.
-    If all generators negate, raises GENERATOR_MISSING with actionable implementation receipts.
-    OP_CBD (literal storage) is NOT causality - removed from success path.
+    CLF Universal Causality - Dynamic Generator Synthesis
+    Uses DGG (Dynamic-Generator Generator) for pure mathematical derivation.
+    Returns CAUS certificate ONLY if mathematical proof established.
+    If no generator proves S, raises GENERATOR_MISSING with actionable receipts.
     Returns: (op_id, params, reason) OR exits with GENERATOR_MISSING fault
     """
-    N = len(S)
+    from teleport.dgg import deduce_dynamic
     
-    # Try specialized generators in deterministic order
-    generators = [
-        (OP_CONST, deduce_CONST),
-        (OP_STEP, deduce_STEP), 
-        (OP_REPEAT1, deduce_REPEAT1),
-        (OP_XOR_MASK8, deduce_XOR_MASK8),
-        (OP_LCG8, deduce_LCG8),
-        (OP_LFSR8, deduce_LFSR8),
-        (OP_ANCHOR, deduce_ANCHOR)
-    ]
+    # Try dynamic synthesis first - pure mathematical derivation from S
+    op_id, params, reason = deduce_dynamic(S)
     
-    receipt_log = []
-    positive_invariants = []
+    if op_id != 0:
+        # Mathematical proof established
+        return (op_id, params, reason)
     
-    for op_id, deduce_func in generators:
-        ok, params, reason = deduce_func(S)
-        generator_name = deduce_func.__name__[7:]  # Remove "deduce_" prefix
-        receipt_log.append(f"P_{generator_name}: {'TRUE' if ok else 'FALSE'} ({reason})")
-        if ok:
-            return (op_id, params, f"CAUS_DEDUCED generator={generator_name} {reason}")
-        
-        # Collect positive invariants for missing generator analysis
-        if "interior_len=" in reason and "header_overflow" not in reason:
-            positive_invariants.append(f"INTERIOR_WINDOW: {reason}")
-    
-    # All generators negated - this is a code-incompleteness fault, not "no causality"
-    generator_missing_report = f"""GENERATOR_MISSING
-• File size: {N} bytes
-• Mathematical invariants examined: {len(receipt_log)} predicates
-• Invariant signatures:
-{chr(10).join("  " + r for r in receipt_log)}"""
-    
-    if positive_invariants:
-        generator_missing_report += f"""
-• Positive mathematical structures detected:
-{chr(10).join("  " + p for p in positive_invariants)}"""
-    
-    generator_missing_report += f"""
-• Candidate schema required:
-  OP=? (specialized mathematical generator)
-  params: (to be determined from invariant analysis)
-  cost_skeleton: 3 + 8·leb(OP) + 8·Σ leb(params) + 8·leb({N})
-• Constructive requirement:
-  verifier(OP, params) must reproduce all {N} bytes exactly
-• This indicates missing implementation, not absence of mathematical causality"""
-    
-    raise SystemExit(generator_missing_report)
+    # DGG returned GENERATOR_MISSING - code family incomplete
+    raise SystemExit(reason + "\n• This indicates missing implementation, not absence of mathematical causality")
 
 def deduce_LFSR8(S: bytes):
     """
