@@ -1,0 +1,44 @@
+# Ignore common development files for Copilot context
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.tox/
+build/
+dist/
+
+# Ignore version control
+.git/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files
+.env
+.venv/
+venv/
+
+# Ignore backup files
+*.bak
+*.tmp
+*~
+
+# Ignore log files
+*.log
+
+# Ignore large data files
+*.bin
+*.dat
+*.dump
+
+# Project-specific ignores
+/old_teleport/
