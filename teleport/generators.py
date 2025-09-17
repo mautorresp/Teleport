@@ -514,11 +514,41 @@ def compute_caus_cost(op_id: int, params: tuple, N: int) -> int:
             cost += 8  # Each literal byte
         return cost
     elif op_id == OP_ANCHOR:
-        # Simplified encoding for anchor generators  
-        # params: (len_A, *A_bytes, len_B, *B_bytes, inner_op, *inner_params)
+        # Handle both anchor and composite encodings
+        # Composite: (len_left, left_op, *left_params, len_right, right_op, *right_params)
+        # Anchor: (len_A, *A_bytes, len_B, *B_bytes, inner_op, *inner_params)
         if len(params) < 2:
             return cost + 8 * leb(N)  # Fallback
             
+        # Try composite interpretation first (simpler structure)
+        len_left = params[0]
+        if len_left > 0 and len_left < N and len(params) >= 4:
+            # Composite encoding - compute exact cost
+            i = 0
+            cost += 8 * leb(params[i]); i += 1  # len_left
+            cost += 8 * leb(params[i]); i += 1  # left_op
+            
+            # Find split point for left vs right params (heuristic)
+            for split_point in range(i, len(params) - 2):
+                try:
+                    len_right = params[split_point]
+                    if len_right > 0 and len_left + len_right == N:
+                        # Left params
+                        for j in range(i, split_point):
+                            cost += 8 * leb(params[j])
+                        # len_right
+                        cost += 8 * leb(len_right)
+                        # right_op  
+                        cost += 8 * leb(params[split_point + 1])
+                        # Right params
+                        for j in range(split_point + 2, len(params)):
+                            cost += 8 * leb(params[j])
+                        cost += 8 * leb(N)
+                        return cost
+                except:
+                    continue
+        
+        # Fall back to anchor encoding
         i = 0
         len_A = params[i]; i += 1
         cost += 8 * leb(len_A)
@@ -587,9 +617,65 @@ def verify_generator(op_id: int, params: tuple, S: bytes) -> bool:
     
     elif op_id == OP_ANCHOR:
         # Verify anchor generator: A + G_inner(θ) + B = S
+        # OR composite generator: concatenation of left and right parts
         if len(params) < 2:
             return False
             
+        # Check if this is a composite encoding: (len_left, left_op, *left_params, len_right, right_op, *right_params)
+        len_left = params[0]
+        if len_left > 0 and len_left < len(S) and len(params) >= 4:
+            # Try composite interpretation
+            i = 1
+            left_op = params[i]; i += 1
+            
+            # Determine left_params length based on left_op
+            left_params_end = i
+            if left_op == OP_CBD:
+                # CBD params: (N, *N_bytes)
+                if i < len(params):
+                    cbd_N = params[i]
+                    left_params_end = i + 1 + cbd_N  # +1 for N, +cbd_N for bytes
+            elif left_op == OP_CONST:
+                # CONST params: (b,)
+                left_params_end = i + 1
+            elif left_op == OP_STEP:
+                # STEP params: (a, d)
+                left_params_end = i + 2
+            elif left_op == OP_LCG8:
+                # LCG8 params: (x0, a, c)
+                left_params_end = i + 3
+            elif left_op == OP_LFSR8:
+                # LFSR8 params: (taps, seed)
+                left_params_end = i + 2
+            elif left_op == OP_REPEAT1:
+                # REPEAT1 params: (D, *motif_bytes)
+                if i < len(params):
+                    repeat_D = params[i]
+                    left_params_end = i + 1 + repeat_D
+            elif left_op == OP_ANCHOR:
+                # Nested composite - use heuristic for now
+                left_params_end = len(params) // 2  # Rough estimate
+            else:
+                # Unknown op - try heuristic
+                left_params_end = i + 2
+                
+            # Check if we can parse the structure
+            if left_params_end + 2 < len(params):
+                left_params = params[i:left_params_end]
+                len_right = params[left_params_end]
+                
+                if len_right > 0 and len_left + len_right == len(S):
+                    right_op = params[left_params_end + 1]
+                    right_params = params[left_params_end + 2:]
+                    
+                    # Verify composite reconstruction
+                    S_left = S[:len_left]
+                    S_right = S[len_left:]
+                    
+                    return (verify_generator(left_op, left_params, S_left) and 
+                           verify_generator(right_op, right_params, S_right))
+        
+        # Fall back to traditional anchor interpretation
         i = 0
         len_A = params[i]; i += 1
         
@@ -625,5 +711,16 @@ def verify_generator(op_id: int, params: tuple, S: bytes) -> bool:
         inner_params = params[i:] if i < len(params) else ()
         
         return verify_generator(inner_op, inner_params, interior)
+    
+    elif op_id == OP_CBD:
+        # CBD stores bytes literally: params = (N, *all_bytes)
+        if len(params) < 1:
+            return False
+        stored_N = params[0]
+        if stored_N != len(S):
+            return False
+        # Verify all bytes match exactly
+        expected_bytes = params[1:stored_N+1]
+        return len(expected_bytes) == len(S) and all(S[i] == expected_bytes[i] for i in range(len(S)))
     
     return False
