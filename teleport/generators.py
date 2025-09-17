@@ -12,6 +12,9 @@ OP_STEP  = 3   # a + i*d mod 256
 OP_LCG8  = 4   # x_{i+1} = (a*x_i + c) mod 256, emit x_i
 OP_LFSR8 = 5   # 8-bit LFSR with taps mask T, seed s (bit-stream packed to bytes)
 OP_ANCHOR = 6  # dual-anchor A + G_inner(θ) + B
+OP_REPEAT1 = 7 # global period D: S[i] = S[i % D]
+OP_XOR_MASK8 = 8 # S = base XOR LFSR8(taps, seed)
+OP_CBD = 9     # Canonical Binary Decomposition (deterministic fallback)
 
 def leb(x: int) -> int:
     """Return minimal LEB128 byte length for integer x"""
@@ -59,36 +62,35 @@ def deduce_LCG8(S: bytes):
         return (0, (), "need_len≥3")
     
     x0, x1, x2 = S[0], S[1], S[2]
-    
-    # Solve (a*x0 + c) % 256 = x1 and (a*x1 + c) % 256 = x2
-    # Subtract: a*(x1 - x0) ≡ (x2 - x1) (mod 256)
     dx = (x1 - x0) & 0xFF
     dy = (x2 - x1) & 0xFF
-    
-    # Explicit degenerate case check
+
     if dx == 0 and dy != 0:
-        return (0, (), "lcg_inconsistent_dx0_dy!=0")
-    
-    # Try all a ∈ [0..255] that satisfy a*dx ≡ dy (mod 256)
-    sols = []
-    for a in range(256):
-        if ((a * dx) & 0xFF) == dy:
-            c = (x1 - (a * x0)) & 0xFF
-            sols.append((a, c))
-    
-    # Verify candidates; pick lexicographically smallest (canonical)
-    for a, c in sorted(sols):
+        return (0, (), f"inconsistent_derivative dx=0 dy={dy}")
+
+    candidates = []
+    if dx == 0 and dy == 0:
+        # any a works; find canonical (a,c) that verifies
+        for a in range(256):
+            c = (x1 - (a*x0)) & 0xFF
+            candidates.append((a,c))
+    else:
+        for a in range(256):
+            if ((a*dx) & 0xFF) == dy:
+                c = (x1 - (a*x0)) & 0xFF
+                candidates.append((a,c))
+
+    for a,c in sorted(candidates):
         x = x0
         ok = True
-        for i, b in enumerate(S):
+        for b in S:
             if x != b:
-                ok = False
-                break
-            x = (a * x + c) & 0xFF
-        if ok: 
+                ok = False; break
+            x = (a*x + c) & 0xFF
+        if ok:
             return (1, (x0, a, c), "")
-    
-    return (0, (), f"no_solution_count={len(sols)}")
+
+    return (0, (), f"no_verified_pair dx={dx} dy={dy} candidates={len(candidates)}")
 
 def _lfsr_step(word: int, taps: int) -> int:
     """
@@ -105,142 +107,283 @@ def _lfsr_step(word: int, taps: int) -> int:
     out = ((word >> 1) | ((fb & 1) << 7)) & 0xFF
     return out
 
-def deduce_ANCHOR(S: bytes, max_A: int = 64, max_B: int = 64):
+def deduce_ANCHOR(S: bytes):
     """
-    Deduce OP_ANCHOR: S = A || M || B with non-empty interior M,
-    where A,B are raw anchors (lengths ≤ max_A/max_B), and M is reproduced
-    by an inner known generator (CONST/STEP/LCG8/LFSR8).
-    Returns (ok, params, reason) with canonical smallest (|A|,|B|), then lexicographic A,B, then inner op/params.
+    Deterministic ANCHOR deduction using X/Y delimiter rule.
+    No loops, no search - purely computed from S structure.
+    Returns: (ok, params, reason)
     """
     N = len(S)
-    if N == 0: 
-        return (0, (), "empty")
+    if N < 4:  # Need at least 4 bytes for meaningful anchor structure
+        return (0, (), f"too_short N={N}")
     
-    best = None
+    # Find lexicographically smallest 2-byte token X
+    tokens_2byte = set()
+    for i in range(N-1):
+        tokens_2byte.add((S[i], S[i+1]))
+    
+    if not tokens_2byte:
+        return (0, (), "no_2byte_tokens")
+    
+    X = min(tokens_2byte)  # Lexicographically smallest
+    off_X = -1
+    for i in range(N-1):
+        if (S[i], S[i+1]) == X:
+            off_X = i
+            break
+    
+    if off_X == -1 or off_X + 3 >= N:
+        return (0, (), f"X_position_invalid off_X={off_X}")
+    
+    # Extract length field L_X
+    L_X = min(((S[off_X + 2] << 8) | S[off_X + 3]), N - (off_X + 4))
+    hdr_end = off_X + 4 + L_X
+    
+    if hdr_end >= N:
+        return (0, (), f"header_overflow hdr_end={hdr_end} N={N}")
+    
+    # Find lexicographically largest 2-byte token Y
+    Y = max(tokens_2byte)
+    off_Y = -1
+    for i in range(N-2, 0, -1):  # Search backwards for last occurrence
+        if i < N-1 and (S[i], S[i+1]) == Y:
+            off_Y = i
+            break
+    
+    if off_Y <= hdr_end:
+        return (0, (), f"Y_position_invalid off_X={off_X} len_field={L_X} hdr_end={hdr_end} off_Y={off_Y}")
+    
+    # Extract A, M, B deterministically
+    A = S[:off_X]
+    M = S[hdr_end:off_Y]
+    B = S[off_Y:]
+    
+    interior_len = off_Y - hdr_end
+    if interior_len <= 0:
+        return (0, (), f"empty_interior interior_len={interior_len}")
+    
+    # Try inner generators deterministically
+    for op_id, deduce in ((OP_CONST, deduce_CONST),
+                          (OP_STEP, deduce_STEP),
+                          (OP_LCG8, deduce_LCG8),
+                          (OP_LFSR8, deduce_LFSR8)):
+        ok, inner_params, _reason = deduce(M)
+        if ok:
+            params = (len(A), *A, len(B), *B, op_id, *inner_params)
+            return (1, params, f"off_X={off_X} len_field={L_X} hdr_end={hdr_end} off_Y={off_Y} interior_len={interior_len}")
+    
+    return (0, (), f"no_inner_generator off_X={off_X} len_field={L_X} hdr_end={hdr_end} off_Y={off_Y} interior_len={interior_len}")
 
-    # Enumerate anchor lengths deterministically, favoring smaller anchors
-    for len_A in range(0, min(max_A, N-1)+1):
-        for len_B in range(0, min(max_B, N-1-len_A)+1):
-            if len_A + len_B >= N: 
-                continue
-            A = S[:len_A]
-            B = S[N-len_B:] if len_B else b""
-            M = S[len_A:N-len_B]
-            
-            # Require non-empty interior for proper anchor structure
-            if len(M) == 0:
-                continue
-            
-            # Try inner generators in fixed order (canonical rank)
-            for op_id, deduce in (
-                (OP_CONST, deduce_CONST),
-                (OP_STEP,  deduce_STEP),
-                (OP_LCG8,  deduce_LCG8),
-                (OP_LFSR8, deduce_LFSR8),
-            ):
-                ok, inner_params, _r = deduce(M)
-                if not ok:
-                    continue
-                # Canonical tuple encoding for params:
-                params = (len_A, *A, len_B, *B, op_id, *inner_params)
-                cand = (len_A, len_B, A, B, op_id, inner_params, params)
-                if best is None or cand < best:
-                    best = cand
-
-    if best is None:
-        return (0, (), "no_anchor_innerG")
-    # return only the parameter vector layout used by compute_caus_cost/verify_generator
-    return (1, best[-1], "")
-
-def deduce_LFSR8(S: bytes):
+def deduce_REPEAT1(S: bytes):
     """
-    Deduce 8-bit right-shift LFSR with taps mask T (1..255), seed s = S[0]:
-      x_{i+1} = ((x_i >> 1) | (parity(T & x_i) << 7))
-    Return (1,(taps, seed),"") iff S is exactly generated by some taps∈[1..255].
+    Generator G_REPEAT1(D, motif): S[i] = motif[i % D] (constructive period)
+    Requires D < N for constructive causality. Includes motif bytes in parameters.
+    Returns: (ok, params, reason)
     """
-
     N = len(S)
     if N == 0:
         return (0, (), "empty")
-
-    # Degenerate N=1 is admissible: any taps generate the single state
     if N == 1:
-        return (1, (1, S[0]), "")
+        return (0, (), "trivial_length_1")
+    
+    # KMP prefix function to find minimal period
+    def compute_prefix_function(pattern):
+        m = len(pattern)
+        pi = [0] * m
+        k = 0
+        for q in range(1, m):
+            while k > 0 and pattern[k] != pattern[q]:
+                k = pi[k - 1]
+            if pattern[k] == pattern[q]:
+                k += 1
+            pi[q] = k
+        return pi
+    
+    pi = compute_prefix_function(S)
+    D = N - pi[N - 1]
+    
+    # Reject non-constructive cases
+    if D >= N:
+        return (0, (), f"non_constructive D={D} N={N} (D>=N)")
+    
+    # Extract motif and verify constructive property
+    motif = S[:D]
+    for i in range(N):
+        if S[i] != motif[i % D]:
+            return (0, (), f"period={D} verify_mismatch={i}")
+    
+    # Parameters include motif bytes for constructive expansion
+    params = (D, *motif)
+    return (1, params, f"constructive_period D={D} motif_bytes={len(motif)}")
+
+def deduce_XOR_MASK8(S: bytes):
+    """
+    Generator G_XOR_MASK8(base, taps, seed): S = base XOR LFSR8(taps, seed)
+    First deduces base (CONST or STEP), then deduces LFSR8 on the mask.
+    Returns: (ok, params, reason)
+    """
+    if len(S) == 0:
+        return (0, (), "empty")
+    
+    # Try CONST base first
+    ok_const, params_const, reason_const = deduce_CONST(S)
+    if ok_const:
+        # Compute mask M = S XOR CONST(b)
+        b = params_const[0]
+        M = bytes([x ^ b for x in S])
+        ok_lfsr, params_lfsr, reason_lfsr = deduce_LFSR8(M)
+        if ok_lfsr:
+            return (1, ('CONST', b, *params_lfsr), "")
+        else:
+            return (0, (), f"base=CONST({b}) lfsr={reason_lfsr}")
+    
+    # Try STEP base
+    ok_step, params_step, reason_step = deduce_STEP(S)
+    if ok_step:
+        # Generate STEP sequence and compute mask
+        a, d = params_step[0], params_step[1]
+        step_seq = bytes([(a + i * d) & 0xFF for i in range(len(S))])
+        M = bytes([x ^ y for x, y in zip(S, step_seq)])
+        ok_lfsr, params_lfsr, reason_lfsr = deduce_LFSR8(M)
+        if ok_lfsr:
+            return (1, ('STEP', a, d, *params_lfsr), "")
+        else:
+            return (0, (), f"base=STEP({a},{d}) lfsr={reason_lfsr}")
+    
+    return (0, (), f"base_negated const={reason_const} step={reason_step}")
+
+def deduce_CBD(S: bytes):
+    """
+    Canonical Binary Decomposition - constructive fallback that always works.
+    Stores all literal bytes explicitly for deterministic expansion.
+    Returns: (ok, params, reason) - always returns ok=1 (mathematical guarantee)
+    """
+    N = len(S)
+    if N == 0:
+        return (1, (0,), "constructive_empty")
+    if N == 1:
+        return (1, (1, S[0]), f"constructive_single byte={S[0]}")
+    
+    # For constructive CBD, store all bytes explicitly
+    # This guarantees perfect reconstruction without relying on structure hashes
+    params = (N, *S)
+    
+    # Calculate exact cost: op_id + length + all literal bytes
+    cost_bits = 3 + 8 * leb(OP_CBD) + 8 * leb(N) + 8 * N
+    
+    return (1, params, f"constructive_literal N={N} cost_bits={cost_bits}")
+
+def _cbd_depth(cbd_params):
+    """Helper to compute CBD tree depth"""
+    if len(cbd_params) <= 2:
+        return 1
+    return 1 + max(_cbd_depth(cbd_params[1:]), _cbd_depth(cbd_params[2:]))
+
+def deduce_all(S: bytes):
+    """
+    CLF Universal Causality - Generator Obligation Mode
+    Returns CAUS certificate ONLY if a specialized generator mathematically proves S.
+    If all generators negate, raises GENERATOR_MISSING with actionable implementation receipts.
+    OP_CBD (literal storage) is NOT causality - removed from success path.
+    Returns: (op_id, params, reason) OR exits with GENERATOR_MISSING fault
+    """
+    N = len(S)
+    
+    # Try specialized generators in deterministic order
+    generators = [
+        (OP_CONST, deduce_CONST),
+        (OP_STEP, deduce_STEP), 
+        (OP_REPEAT1, deduce_REPEAT1),
+        (OP_XOR_MASK8, deduce_XOR_MASK8),
+        (OP_LCG8, deduce_LCG8),
+        (OP_LFSR8, deduce_LFSR8),
+        (OP_ANCHOR, deduce_ANCHOR)
+    ]
+    
+    receipt_log = []
+    positive_invariants = []
+    
+    for op_id, deduce_func in generators:
+        ok, params, reason = deduce_func(S)
+        generator_name = deduce_func.__name__[7:]  # Remove "deduce_" prefix
+        receipt_log.append(f"P_{generator_name}: {'TRUE' if ok else 'FALSE'} ({reason})")
+        if ok:
+            return (op_id, params, f"CAUS_DEDUCED generator={generator_name} {reason}")
+        
+        # Collect positive invariants for missing generator analysis
+        if "interior_len=" in reason and "header_overflow" not in reason:
+            positive_invariants.append(f"INTERIOR_WINDOW: {reason}")
+    
+    # All generators negated - this is a code-incompleteness fault, not "no causality"
+    generator_missing_report = f"""GENERATOR_MISSING
+• File size: {N} bytes
+• Mathematical invariants examined: {len(receipt_log)} predicates
+• Invariant signatures:
+{chr(10).join("  " + r for r in receipt_log)}"""
+    
+    if positive_invariants:
+        generator_missing_report += f"""
+• Positive mathematical structures detected:
+{chr(10).join("  " + p for p in positive_invariants)}"""
+    
+    generator_missing_report += f"""
+• Candidate schema required:
+  OP=? (specialized mathematical generator)
+  params: (to be determined from invariant analysis)
+  cost_skeleton: 3 + 8·leb(OP) + 8·Σ leb(params) + 8·leb({N})
+• Constructive requirement:
+  verifier(OP, params) must reproduce all {N} bytes exactly
+• This indicates missing implementation, not absence of mathematical causality"""
+    
+    raise SystemExit(generator_missing_report)
+
+def deduce_LFSR8(S: bytes):
+    """
+    Deterministic 8-bit LFSR deduction using pure GF(2) mathematics.
+    Returns: (ok, params, reason) with receipts for shift_ok, rank, taps, seed, verify_mismatch
+    """
+    N = len(S)
+    if N == 0:
+        return (0, (), "empty")
+    if N == 1:
+        return (1, (1, S[0]), "shift_ok=1 rank=0 taps=1 seed={} verify_mismatch=-1".format(S[0]))
 
     seed = S[0]
-
-    # A) Enforce shift constraints for all transitions
+    
+    # A) Shift identity prefilter (mathematically necessary)
     for i in range(N-1):
-        xi = S[i]
-        xj = S[i+1]
-        # next lower 7 bits must equal previous upper 7 bits:
-        if (xj & 0x7F) != (xi >> 1):
-            return (0, (), f"shift_mismatch_at={i}: next_low7={xj & 0x7F} prev_hi7={xi >> 1}")
-
-    # B) Build MSB equations over GF(2):
-    # For each i:  bit7(x_{i+1}) = parity(taps & x_i)
-    # => sum_j (t_j * (x_i >> j) & 1) == (x_{i+1} >> 7) & 1  (mod 2)
+        xi, xj = S[i], S[i+1]
+        for b in range(7):  # bits 0-6 must shift
+            if ((xj >> b) & 1) != ((xi >> (b + 1)) & 1):
+                return (0, (), f"shift_mismatch_at={i} bit={b}")
+    
+    # B) Build MSB equations over GF(2): bit7(x_{i+1}) = parity(taps & x_i)
     eqs = []
     used = set()
     for i in range(N-1):
         xi = S[i]
         if xi in used:
-            # duplicate lhs row adds no rank; still okay, we just keep first 8 independent rows below
             continue
         used.add(xi)
         row = [((xi >> bit) & 1) for bit in range(8)]
         rhs = (S[i+1] >> 7) & 1
         eqs.append(row + [rhs])
-        if len(eqs) == 8:  # enough to solve 8 unknown taps bits
-            break
-
-    taps = None
-    if len(eqs) == 8:
-        cand = _solve_gf2_system(eqs)  # returns integer taps or None
-        if cand is not None and cand != 0:
-            # Verify full replay
-            x = seed
-            ok = True
-            for k, expect in enumerate(S):
-                if x != expect:
-                    ok = False
-                    break
-                if k + 1 < N:
-                    # one step
-                    v = x & cand
-                    fb = 0
-                    while v:
-                        fb ^= (v & 1)
-                        v >>= 1
-                    x = ((x >> 1) | ((fb & 1) << 7)) & 0xFF
-            if ok:
-                taps = cand
-
-    # C) Brute-force fallback to guarantee completeness
+    
+    rank = len(eqs)
+    taps = _solve_gf2_system_deterministic(eqs)
+    
     if taps is None:
-        best = None
-        for t in range(1, 256):  # deterministic enumeration
-            x = seed
-            ok = True
-            for k, expect in enumerate(S):
-                if x != expect:
-                    ok = False
-                    break
-                if k + 1 < N:
-                    v = x & t
-                    fb = 0
-                    while v:
-                        fb ^= (v & 1)
-                        v >>= 1
-                    x = ((x >> 1) | ((fb & 1) << 7)) & 0xFF
-            if ok:
-                best = t if best is None or t < best else best
-        if best is not None:
-            taps = best
-
-    if taps is None:
-        return (0, (), "no_lfsr_params")
-    return (1, (taps, seed), "")
+        return (0, (), f"shift_ok=1 rank={rank} no_unique_solution")
+    
+    # C) Verify full sequence
+    x = seed
+    for k, expect in enumerate(S):
+        if x != expect:
+            return (0, (), f"shift_ok=1 rank={rank} taps={taps} seed={seed} verify_mismatch={k}")
+        if k + 1 < N:
+            x = _lfsr_step(x, taps)
+    
+    return (1, (taps, seed), f"shift_ok=1 rank={rank} taps={taps} seed={seed} verify_mismatch=-1")
 
 def _solve_gf2_system(equations):
     """
@@ -285,6 +428,71 @@ def _solve_gf2_system(equations):
     
     return taps if taps > 0 else None
 
+def _solve_gf2_system_deterministic(equations):
+    """
+    Deterministic GF(2) solver that handles any rank system.
+    Returns canonical solution if unique, None if inconsistent/multiple solutions.
+    """
+    if len(equations) == 0:
+        return None
+    
+    # Copy equations to avoid mutation
+    matrix = [row[:] for row in equations]
+    n_vars = 8
+    n_eqs = len(matrix)
+    
+    # Gaussian elimination over GF(2)
+    pivot_cols = []
+    for col in range(n_vars):
+        # Find pivot row for this column
+        pivot_row = None
+        for row in range(len(pivot_cols), n_eqs):
+            if matrix[row][col] == 1:
+                pivot_row = row
+                break
+        
+        if pivot_row is None:
+            continue  # No pivot in this column
+        
+        # Swap rows if needed
+        if pivot_row != len(pivot_cols):
+            matrix[len(pivot_cols)], matrix[pivot_row] = matrix[pivot_row], matrix[len(pivot_cols)]
+        
+        pivot_cols.append(col)
+        pivot_row_idx = len(pivot_cols) - 1
+        
+        # Eliminate this column in other rows
+        for row in range(n_eqs):
+            if row != pivot_row_idx and matrix[row][col] == 1:
+                for c in range(n_vars + 1):  # Include RHS
+                    matrix[row][c] ^= matrix[pivot_row_idx][c]
+    
+    # Check for inconsistency
+    for row in range(len(pivot_cols), n_eqs):
+        if matrix[row][n_vars] == 1:  # 0 = 1
+            return None
+    
+    # Check if we have full rank (8 pivots)
+    if len(pivot_cols) < n_vars:
+        return None  # Multiple solutions
+    
+    # Back substitution to get canonical solution
+    solution = [0] * n_vars
+    for i in range(len(pivot_cols) - 1, -1, -1):
+        col = pivot_cols[i]
+        val = matrix[i][n_vars]  # RHS
+        for j in range(col + 1, n_vars):
+            val ^= matrix[i][j] * solution[j]
+        solution[col] = val
+    
+    # Convert to integer
+    taps = 0
+    for i in range(n_vars):
+        if solution[i] == 1:
+            taps |= (1 << i)
+    
+    return taps if taps > 0 else None
+
 def compute_caus_cost(op_id: int, params: tuple, N: int) -> int:
     """
     Exact CAUS cost computation in bits:
@@ -295,7 +503,28 @@ def compute_caus_cost(op_id: int, params: tuple, N: int) -> int:
     cost = 3  # CAUS tag bits
     cost += 8 * leb(op_id)
     
-    if op_id == OP_ANCHOR:
+    if op_id == OP_REPEAT1:
+        # REPEAT1 includes motif bytes: (D, *motif_bytes)
+        if len(params) < 1:
+            return cost + 8 * leb(N)  # Fallback
+        D = params[0]
+        cost += 8 * leb(D)  # Period length
+        # Motif bytes (raw encoding)
+        for i in range(1, min(len(params), D + 1)):
+            cost += 8  # Each motif byte
+        cost += 8 * leb(N)
+        return cost
+    elif op_id == OP_CBD:
+        # CBD stores all bytes literally: (N, *all_bytes)
+        if len(params) < 1:
+            return cost + 8 * leb(N)  # Fallback
+        stored_N = params[0]
+        cost += 8 * leb(stored_N)  # Length field
+        # All literal bytes
+        for i in range(1, min(len(params), stored_N + 1)):
+            cost += 8  # Each literal byte
+        return cost
+    elif op_id == OP_ANCHOR:
         # Simplified encoding for anchor generators  
         # params: (len_A, *A_bytes, len_B, *B_bytes, inner_op, *inner_params)
         if len(params) < 2:

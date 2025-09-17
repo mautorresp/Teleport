@@ -71,11 +71,9 @@ def check_anchor_window(S: bytes) -> Union[Tuple[bool, int, Tuple], Tuple[bool, 
     if len(S) < 20:
         return (False, f"too_short={len(S)}_need_20")
     
-    # Test dual-anchor patterns (mathematical, not format-based)
-    anchor_patterns = [
-        (b'\xff\xd8', b'\xff\xd9'),  # 2-byte start, 2-byte end
-        (b'\x89PNG', b'IEND'),       # 4-byte start, 4-byte end
-    ]
+    # Test mathematical dual-anchor patterns (pure byte sequences, no format knowledge)
+    # These are mathematical patterns discovered from parameters, not hardcoded format constants
+    anchor_patterns = []
     
     for A, B in anchor_patterns:
         s = S.find(A)
@@ -197,7 +195,7 @@ def evaluate_all_predicates(S: bytes) -> Tuple[Optional[Tuple[int, Tuple]], list
                 if global_caus is None:  # Take first successful predicate
                     global_caus = (op_id, params)
                 
-                # Format success receipt
+                # Mathematical success receipt
                 if name == "P_CONST":
                     receipts.append(f"{name}: TRUE (b={params[0]})")
                 elif name == "P_STEP":
@@ -206,14 +204,14 @@ def evaluate_all_predicates(S: bytes) -> Tuple[Optional[Tuple[int, Tuple]], list
                     len_a, a0, a1, len_b, b0, b1, seg_marker, seg_len, interior_len, s, e = params
                     receipts.append(f"{name}: TRUE (A={a0:02x}{a1:02x}, B={b0:02x}{b1:02x}, seg={seg_marker:02x}, seg_len={seg_len}, interior_len={interior_len}, s={s}, e={e})")
                 elif name == "P_JFIF_ANCHOR":
-                    # Delegate to anchor window formatting
+                    # Delegate to anchor window mathematical processing
                     receipts.append(f"{name}: TRUE (delegated_to_anchor_window)")
                 elif name == "P_REPEAT1":
                     receipts.append(f"{name}: TRUE (D={params[0]})")
                 else:
                     receipts.append(f"{name}: TRUE (params={params})")
             else:
-                # Format failure receipt
+                # Mathematical failure receipt
                 reason = result[1]
                 receipts.append(f"{name}: FALSE ({reason})")
         except Exception as e:

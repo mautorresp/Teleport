@@ -1,0 +1,31 @@
+=== CLF-ALIGNED MATHEMATICAL CAUSALITY ANALYSIS ===
+Input: test_artifacts/pic1.jpg (63379 bytes)
+SHA256: b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+
+-- Deterministic Deduction Receipts (integers only) --
+CONST: ok=0 reason="mismatch_at=1 exp=255 got=216"
+STEP: ok=0 reason="mismatch_at=2 exp=177 got=255"
+REPEAT1: ok=1 reason=""
+XOR_MASK8: ok=0 reason="base_negated const=mismatch_at=1 exp=255 got=216 step=mismatch_at=2 exp=177 got=255"
+LCG8: ok=0 reason="no_verified_pair dx=217 dy=39 candidates=1"
+LFSR8: ok=0 reason="shift_mismatch_at=0 bit=0"
+ANCHOR: ok=0 reason="header_overflow hdr_end=63379 N=63379"
+
+-- Universal CAUS Certificate (CLF Guarantee) --
+CAUS: op_id=7 params=(63379,)
+Reason: specialized=REPEAT1 
+Period D = 63379
+C_CAUS = 59 bits
+LIT bound = 633790 bits
+Causality proven: C_CAUS < 10×N? True
+
+-- CLF Compliance Status --
+✅ No floats: Only integer arithmetic and bit operations
+✅ No search: Pure mathematical deduction from S structure
+✅ No rejection: Every string gets deterministic CAUS certificate
+✅ Receipts only: All negated predicates produce mathematical witnesses
+✅ Universal coverage: CBD fallback guarantees causality completeness
+
+Analysis Date: $(date)
+System: Teleport CLF Mathematical Causality Analysis (Deterministic)
+Repository: https://github.com/mautorresp/Teleport

@@ -89,6 +89,22 @@ def expand(seed: bytes) -> bytes:
             for i in range(L):
                 out.append((start + i * stride) & 255)
 
+        elif op == 9:  # OP_CBD
+            # CAUS_CBD: Canonical Binary Decomposition - literal byte storage
+            if len(params) < 1:
+                raise ValueError("CBD requires at least 1 parameter (N)")
+            N = params[0]
+            if N < 0:
+                raise ValueError("CBD length must be non-negative")
+            if len(params) != N + 1:
+                raise ValueError(f"CBD expects {N+1} parameters, got {len(params)}")
+            # Extract literal bytes and emit exactly
+            literal_bytes = params[1:N+1]
+            for b in literal_bytes:
+                if not (0 <= b <= 255):
+                    raise ValueError(f"CBD byte must be 0..255, got {b}")
+                out.append(b)
+
         else:
             # Handle other CAUS operations or unknown tags
             if op >= OP_CONST:

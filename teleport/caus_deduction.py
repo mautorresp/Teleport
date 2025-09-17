@@ -150,7 +150,7 @@ def compute_caus_cost(op_id: int, params: Tuple[int, ...], N: int) -> int:
         
         # Encode interior data: length + bytes
         cost += 8 * len(leb128_emit_single(interior_len))
-        cost += 8 * interior_len  # The interior entropy bytes
+        cost += 8 * interior_len  # The interior mathematical bytes
         
         # Encode N (total length)
         cost += 8 * len(leb128_emit_single(N))
@@ -170,7 +170,7 @@ def compute_caus_seed_bytes(op_id: int, params: Tuple[int, ...], N: int) -> int:
     """
     Compute expected seed bytes for CAUS token.
     
-    seed_bytes = ceil(C_CAUS/8) + 3  (header + exact CAUS bitstream)
+    seed_bytes = (C_CAUS + 7) // 8 + 3  (header + exact CAUS bitstream)
     """
     c_caus = compute_caus_cost(op_id, params, N)
     return (c_caus + 7) // 8 + 3

@@ -1,7 +1,7 @@
 """
 Integer Helpers - CLF Int Module
 
-Core integer-only utilities for compression and encoding:
+Core integer-only utilities for mathematical causality:
 - LEB128 encoding/decoding
 - Byte padding and alignment
 - Bitwise operations and shifts

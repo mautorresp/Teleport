@@ -60,18 +60,33 @@ def serialize_tokens_bit_exact(tokens, total_bits):
                 for i in range(7, -1, -1):
                     bits.append((byte_val >> i) & 1)
             
-            # ULEB(param_i) for each parameter after op_id
-            for param in params[1:]:
-                param_bytes = leb128_emit_single(param)
-                for byte_val in param_bytes:
+            # Handle parameters based on operation type
+            if op_id == 9:  # OP_CBD
+                # CBD: N followed by N literal bytes
+                N = params[1]
+                n_bytes = leb128_emit_single(N)
+                for byte_val in n_bytes:
                     for i in range(7, -1, -1):
                         bits.append((byte_val >> i) & 1)
-                        
-            # ULEB(L) - length of data covered
-            l_bytes = leb128_emit_single(L)
-            for byte_val in l_bytes:
-                for i in range(7, -1, -1):
-                    bits.append((byte_val >> i) & 1)
+                
+                # Literal bytes (raw, not LEB128)
+                for param in params[2:]:
+                    for i in range(7, -1, -1):
+                        bits.append((param >> i) & 1)
+            else:
+                # Standard CAUS: parameters + length
+                # ULEB(param_i) for each parameter after op_id
+                for param in params[1:]:
+                    param_bytes = leb128_emit_single(param)
+                    for byte_val in param_bytes:
+                        for i in range(7, -1, -1):
+                            bits.append((byte_val >> i) & 1)
+                            
+                # ULEB(L) - length of data covered
+                l_bytes = leb128_emit_single(L)
+                for byte_val in l_bytes:
+                    for i in range(7, -1, -1):
+                        bits.append((byte_val >> i) & 1)
                     
         else:
             raise AssertionError(f"Unsupported token: {kind}")
@@ -323,3 +338,40 @@ if __name__ == "__main__":
         print(f"SUCCESS: {expanded == data}")
     except Exception as e:
         print(f"Expand error: {e}")
+
+def serialize_caus(op_id: int, params: tuple, N: int) -> bytes:
+    """
+    Serialize a pure CAUS certificate to bit-exact seed.
+    
+    Format: TAG_CAUS (2 bits) + ULEB(op_id) + ULEB(params) + ULEB(N) + TAG_END (3 bits) + padding
+    """
+    from teleport.leb_io import leb128_emit_single
+    
+    # Special handling for OP_CBD which stores literal bytes differently
+    if op_id == 9:  # OP_CBD
+        # For CBD: CAUS tag + op_id + N + literal bytes (no separate length field)
+        tokens = [("CAUS", (op_id, *params), 0)]  # L=0 since N is encoded in params
+    else:
+        # Standard CAUS: op_id + params + N
+        tokens = [("CAUS", (op_id, *params), N)]
+    
+    # Calculate total bits for this CAUS token
+    total_bits = 2  # TAG_CAUS
+    total_bits += 8 * len(leb128_emit_single(op_id))  # op_id
+    
+    for param in params:
+        if op_id == 9 and param == params[0]:  # CBD N parameter
+            total_bits += 8 * len(leb128_emit_single(param))
+        elif op_id == 9:  # CBD literal bytes
+            total_bits += 8  # Each literal byte is stored raw
+        else:  # Standard parameters
+            total_bits += 8 * len(leb128_emit_single(param))
+    
+    if op_id != 9:  # Non-CBD needs length field
+        total_bits += 8 * len(leb128_emit_single(N))
+    
+    total_bits += 3  # TAG_END
+    # Pad to byte boundary
+    total_bits += (8 - (total_bits % 8)) % 8
+    
+    return serialize_tokens_bit_exact(tokens, total_bits)

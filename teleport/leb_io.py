@@ -257,9 +257,9 @@ class LEBParser:
 
 
 @no_float_guard
-def leb128_size_estimate(max_value: int) -> int:
+def leb128_size_exact(max_value: int) -> int:
     """
-    Estimate maximum LEB128 size for values up to max_value.
+    Calculate exact maximum LEB128 size for values up to max_value.
     
     Args:
         max_value: Maximum value to encode

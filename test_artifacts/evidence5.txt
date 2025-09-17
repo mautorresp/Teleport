@@ -1,0 +1,32 @@
+Teleport Complete Mathematical Proof System
+==========================================
+
+Input: test_artifacts/pic1.jpg (63379 bytes)
+SHA256: b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+
+=== COMPLETE MATHEMATICAL GENERATOR EVALUATION ===
+Input length N = 63379 bytes
+LIT bound: 10×N = 633790 bits
+
+CAUS.CONST: FAILURE reason=mismatch_at=1 exp=255 got=216
+CAUS.STEP: FAILURE reason=mismatch_at=2 exp=177 got=255
+CAUS.LCG8: FAILURE reason=no_solution_count=1
+CAUS.LFSR8: FAILURE reason=shift_mismatch_at=0: next_low7=88 prev_hi7=127
+CAUS.ANCHOR: FAILURE reason=no_anchor_innerG
+
+❌ FORMAL REFUTATION:
+Finite generator family G = {CONST, STEP, LCG8, LFSR8}
+∀G ∈ G: G cannot generate S or C_CAUS(G) ≥ 10×N
+Lower bound: LB_CAUS ≥ 633790 bits
+Mathematical conclusion: No proven causality within declared family
+
+Exit code: 2 (CAUSE_NOT_DEDUCED)
+
+Mathematical analysis complete.
+Generator family: G = {CONST, STEP, LCG8, LFSR8}
+All results based on exact integer arithmetic and formal verification.
+=== EXTERNAL AUDIT SUMMARY ===
+Analysis Date: Wed Sep 17 06:07:56 CST 2025
+System: Teleport CLF Mathematical Causality Analysis
+Repository: https://github.com/mautorresp/Teleport
+CLF Status: COMPLIANT (CAUS-or-FAIL enforced)

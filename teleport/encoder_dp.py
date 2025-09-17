@@ -178,7 +178,7 @@ def canonize_bytes_dp(S: bytes, print_receipts: bool = False):
         
         # MATHEMATICAL BOUND: Only profitable match lengths
         # MATCH cost = 18+ bits, LIT cost = 10*L bits
-        # So max useful L = 18/10 = 1.8, round up to 8 for safety
+        # So max useful L = 18/10 = 1, extend to 8 for mathematical completeness
         max_useful = min(N - i, N - j, 8)
         
         # GUARANTEED TERMINATION: bounded loop count

@@ -23,6 +23,13 @@ OP_LIT: int = 0
 OP_MATCH: int = 1
 OP_CONST: int = 2
 OP_STEP: int = 3
+# Additional CAUS operators
+OP_LCG8: int = 4
+OP_LFSR8: int = 5
+OP_ANCHOR: int = 6
+OP_REPEAT1: int = 7
+OP_XOR_MASK8: int = 8
+OP_CBD: int = 9
 
 def emit_LIT(b: bytes) -> bytes:
     """
@@ -116,7 +123,24 @@ def parse_next(seed: bytes, off: int):
         # CAUS operations: tag encodes the actual operation
         params = []
         
-        # Number of params depends on operation (excluding L)
+        if tag == OP_CBD:
+            # CBD has different structure: N followed by N literal bytes
+            N, consumed_n = leb128_parse_single_minimal(seed, pos)
+            pos += consumed_n
+            if N < 0:
+                raise ValueError("CBD length must be non-negative")
+            
+            params = [N]
+            # Read N literal bytes
+            for _ in range(N):
+                if pos >= len(seed):
+                    raise ValueError("CBD: unexpected end of seed")
+                params.append(seed[pos])
+                pos += 1
+            
+            return (tag, tuple(params), pos)
+        
+        # Standard CAUS operations with param_count + L structure
         if tag == OP_CONST:
             param_count = 1  # [b]
         elif tag == OP_STEP:  

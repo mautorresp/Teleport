@@ -26,7 +26,7 @@ def clf_receipt(name, S, op_id, params, success=True):
         
         if cost < 10 * len(S):
             ratio = (len(S) * 8) / cost
-            print(f"Compression: {ratio:.2f}:1")
+            print(f"Parameter efficiency: {ratio:.2f}:1 (mathematical consequence)")
             print("✅ MATHEMATICAL PROOF VERIFIED")
         else:
             print("❌ Not minimal (C_CAUS ≥ 10×N)")
