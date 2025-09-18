@@ -813,7 +813,7 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
     # We prefer whole-range CBD (1 token) to avoid any content scanning.
     cost_info = compute_cbd_cost_logical_bound(L)
     seg_view = memoryview(S)[P:Q]      # PIN-NOCOPY-SLICE: zero-copy
-    tokens_fast = [('CBD_LOGICAL', seg_view, L, cost_info, P)]
+    tokens_fast = [('CBD_BOUND', seg_view, L, cost_info, P)]
     # Operation counter: constant time (one deduction)
     return (tokens_fast, 1)
     
@@ -1232,6 +1232,45 @@ def _fmt_min_row(label: str, value) -> str:
     if isinstance(value, str):
         return f"{label}: {value}"
     return f"{label}: {int(value)}"
+
+
+def finalize_min_causal(tokens):
+    """
+    OFF-PATH: Replace CBD_BOUND/LOGICAL tokens with OP_CBD256 using
+    exact minimal LEB7 computed directly from the bytes (no big-int K).
+    Integer-only; O(L) in the token's covered length; never called by encode_CLF.
+    
+    PIN-MIN-CAUSAL-OFFPATH: Minimal causal seed derivation is only in finalize_min_causal.
+    """
+    finalized = []
+    for t in tokens:
+        op, payload, L, cost, pos = t
+        if (isinstance(op, str) and op in ('CBD_BOUND', 'CBD_LOGICAL')):
+            mv = payload if isinstance(payload, memoryview) else memoryview(payload)
+            leb7 = emit_cbd_param_leb7_from_bytes(mv)   # exact minimal LEB7
+            finalized.append((OP_CBD256, leb7, L, cost, pos))
+        else:
+            finalized.append(t)
+    return finalized
+
+
+def verify_min_causal(tokens_before, tokens_after):
+    """
+    Confirms every CBD_BOUND/LOGICAL became OP_CBD256 with truly minimal LEB7.
+    Uses arithmetic identities only.
+    
+    PIN-MIN-CAUSAL-OFFPATH: Verification ensures exact minimal causality achieved.
+    """
+    for (tb, ta) in zip(tokens_before, tokens_after):
+        if isinstance(tb[0], str) and tb[0] in ('CBD_BOUND', 'CBD_LOGICAL'):
+            _, payload, L, _cost, _pos = tb
+            assert ta[0] == OP_CBD256 and isinstance(ta[1], (bytes, bytearray))
+            leb7 = ta[1]
+            # Extract effective leb_bytes(K) and compare with exact bitlen from view
+            mv = payload if isinstance(payload, memoryview) else memoryview(payload)
+            bitlen = _bitlen_base256_mv(mv) or 1
+            needed = (bitlen + 6) // 7
+            assert len(leb7) == needed, f"Non-minimal LEB7: {len(leb7)} vs {needed}"
 
 
 def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]]) -> List[str]:
