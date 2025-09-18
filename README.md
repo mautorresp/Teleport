@@ -1,6 +1,12 @@
-# Teleport
+# Tele## Features
 
-**CLF Mathematical Causality Analysis System**
+- **🧮 Mathematical Generators**: Complete family G = {CONST, STEP, LCG8, LFSR8, ANCHOR} with deterministic deduction
+- **🎯 Causality Proofs**: Either proves causality with exact parameters or provides formal refutation
+- **🔢 Integer-Only Math**: Pure integer arithmetic with no floating-point contamination
+- **📊 Exact Cost Model**: C_CAUS = 3 + 8×leb(op) + 8×Σleb(param_i) + 8×leb(N) 
+- **⚡ CLF Compliance**: CAUS-or-FAIL enforcement with quantified mathematical witnesses
+- **🚫 No Heuristics**: Only deterministic deduction and formal verification
+- **✨ OpSet_v2**: Zero-ambiguity deterministic procedures with normative operator registryCLF Mathematical Causality Analysis System**
 
 Teleport is a mathematical causality analysis system that determines whether byte sequences can be reproduced by deterministic generators. It uses pure integer arithmetic to either prove causality with exact parameters or provide formal refutation with quantified witnesses. No compression, no heuristics - only mathematical deduction.
 
@@ -14,6 +20,19 @@ Teleport is a mathematical causality analysis system that determines whether byt
 - **🚫 No Heuristics**: Only deterministic deduction and formal verification
 
 ## Quick Start
+
+### OpSet_v2 CLI Tools (Real-File Testing)
+
+```bash
+# Complete analysis of any file
+./teleport_cli test-all photo.jpg
+
+# Individual operations
+./teleport_cli scan video.mp4          # Pattern detection  
+./teleport_cli price document.pdf      # Cost calculation (integer bits)
+./teleport_cli expand-verify data.bin  # Round-trip verification
+./teleport_cli canonical file.txt      # Cost formula verification
+```
 
 ### Installation
 

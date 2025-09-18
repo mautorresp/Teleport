@@ -281,24 +281,190 @@ def deduce_XOR_MASK8(S: bytes):
 
 def deduce_CBD(S: bytes):
     """
-    Canonical Binary Decomposition - constructive fallback that always works.
-    Stores all literal bytes explicitly for deterministic expansion.
-    Returns: (ok, params, reason) - always returns ok=1 (mathematical guarantee)
+    CBD256 - Bijective base-256 encoding of byte strings as single integer.
+    Mathematical definition: K = Σ(i=0 to L-1) S[i] * 256^(L-1-i)
+    CLF bijection: E(D(S)) = S and D(E(CBD256,(K),L)) = (CBD256,(K),L)
+    Always admissible: perfect reconstruction via base-256 arithmetic.
     """
-    N = len(S)
-    if N == 0:
-        return (1, (0,), "constructive_empty")
-    if N == 1:
-        return (1, (1, S[0]), f"constructive_single byte={S[0]}")
+    L = len(S)
     
-    # For constructive CBD, store all bytes explicitly
-    # This guarantees perfect reconstruction without relying on structure hashes
-    params = (N, *S)
+    if L == 0:
+        # Empty file: K = 0
+        K = 0
+    else:
+        # Efficient base-256 computation using Horner's method
+        # K = S[0]*256^(L-1) + S[1]*256^(L-2) + ... + S[L-1]*256^0
+        # = ((...((S[0]*256 + S[1])*256 + S[2])*256 + ... + S[L-1])
+        K = 0
+        for byte in S:
+            K = K * 256 + byte
     
-    # Calculate exact cost: op_id + length + all literal bytes
-    cost_bits = 3 + 8 * leb(OP_CBD) + 8 * leb(N) + 8 * N
+    params = (K,)
+    return (1, params, "CBD256")
+
+# ---- Prefix/Suffix Deduction for Composition ----
+
+def deduce_prefix_CONST(S: bytes):
+    """Find longest CONST prefix: S[0:L] where all bytes equal S[0]"""
+    if len(S) == 0:
+        return (0, (), 0)  # not applicable
     
-    return (1, params, f"constructive_literal N={N} cost_bits={cost_bits}")
+    b = S[0]
+    L = 0
+    for byte in S:
+        if byte == b:
+            L += 1
+        else:
+            break
+    
+    return (1, (b,), L) if L > 0 else (0, (), 0)
+
+def deduce_suffix_CONST(S: bytes):
+    """Find longest CONST suffix: S[L-n:L] where all bytes equal S[-1]"""
+    if len(S) == 0:
+        return (0, (), 0)
+    
+    b = S[-1]
+    L = 0
+    for i in range(len(S) - 1, -1, -1):
+        if S[i] == b:
+            L += 1
+        else:
+            break
+    
+    return (1, (b,), L) if L > 0 else (0, (), 0)
+
+def deduce_prefix_STEP(S: bytes):
+    """Find longest STEP prefix: S[0:L] = (a, a+d, a+2d, ...) mod 256"""
+    if len(S) < 2:
+        return (0, (), 0)
+    
+    a = S[0]
+    d = (S[1] - S[0]) % 256
+    L = 1
+    
+    expected = a
+    for i in range(1, len(S)):
+        expected = (expected + d) % 256
+        if S[i] == expected:
+            L += 1
+        else:
+            break
+    
+    return (1, (a, d), L) if L >= 2 else (0, (), 0)
+
+def deduce_suffix_STEP(S: bytes):
+    """Find longest STEP suffix using reverse arithmetic"""
+    if len(S) < 2:
+        return (0, (), 0)
+    
+    # Work backwards: if S[-2:] is (x, y), then d = (y-x) mod 256
+    y = S[-1]
+    x = S[-2] 
+    d = (y - x) % 256
+    L = 2
+    
+    # Check backwards: S[i] should be S[i+1] - d (mod 256)
+    expected = x
+    for i in range(len(S) - 3, -1, -1):
+        expected = (expected - d) % 256
+        if S[i] == expected:
+            L += 1
+        else:
+            break
+    
+    # Convert to forward STEP parameters
+    if L >= 2:
+        start_idx = len(S) - L
+        a = S[start_idx]
+        return (1, (a, d), L)
+    else:
+        return (0, (), 0)
+
+def deduce_prefix_REPEAT1(S: bytes):
+    """Find longest REPEAT1 prefix: S[0:L] = S[0] repeated"""
+    # REPEAT1 is same as CONST for prefix
+    return deduce_prefix_CONST(S)
+
+def deduce_suffix_REPEAT1(S: bytes):
+    """Find longest REPEAT1 suffix: S[L-n:L] = S[-1] repeated"""
+    # REPEAT1 is same as CONST for suffix  
+    return deduce_suffix_CONST(S)
+
+def deduce_prefix_LCG8(S: bytes):
+    """Find longest LCG8 prefix: x_{i+1} = (a*x_i + c) mod 256"""
+    if len(S) < 3:  # Need at least 3 points to determine a, c
+        return (0, (), 0)
+    
+    x0, x1, x2 = S[0], S[1], S[2]
+    
+    # Solve: x1 = (a*x0 + c) mod 256, x2 = (a*x1 + c) mod 256
+    # => x2 - x1 = a*(x1 - x0) mod 256
+    # => a = (x2 - x1) * modinv(x1 - x0, 256) mod 256 (if x1 != x0)
+    
+    if x1 == x0:
+        # Degenerate case: need x1 = x2 for constant sequence
+        if x1 == x2:
+            # Constant sequence: a can be anything, c = x1*(1-a)
+            # Choose a=0, c=x1 for simplicity
+            a, c = 0, x1
+        else:
+            return (0, (), 0)
+    else:
+        # Compute modular inverse of (x1 - x0) mod 256
+        diff = (x1 - x0) % 256
+        try:
+            # Extended GCD to find modular inverse
+            def modinv(a, m):
+                def extended_gcd(a, b):
+                    if a == 0:
+                        return b, 0, 1
+                    gcd, x1, y1 = extended_gcd(b % a, a)
+                    x = y1 - (b // a) * x1
+                    y = x1
+                    return gcd, x, y
+                
+                gcd, x, _ = extended_gcd(a, m)
+                if gcd != 1:
+                    return None  # No inverse exists
+                return (x % m + m) % m
+            
+            inv = modinv(diff, 256)
+            if inv is None:
+                return (0, (), 0)
+                
+            a = ((x2 - x1) * inv) % 256
+            c = (x1 - (a * x0)) % 256
+        except:
+            return (0, (), 0)
+    
+    # Verify and find longest sequence
+    L = 1
+    x = x0
+    for i in range(1, len(S)):
+        x = (a * x + c) % 256
+        if S[i] == x:
+            L += 1
+        else:
+            break
+    
+    return (1, (x0, a, c), L) if L >= 3 else (0, (), 0)
+
+def deduce_suffix_LCG8(S: bytes):
+    """Find longest LCG8 suffix - complex reverse computation"""
+    # For suffix, we'd need to solve the LCG in reverse, which is complex
+    # For now, return not applicable - can be implemented if needed
+    return (0, (), 0)
+
+def deduce_prefix_LFSR8(S: bytes):
+    """Find longest LFSR8 prefix - simplified implementation"""
+    # LFSR8 requires tap polynomial - complex to deduce from prefix
+    # For now, return not applicable - can be implemented if needed  
+    return (0, (), 0)
+
+def deduce_suffix_LFSR8(S: bytes):
+    """Find longest LFSR8 suffix - simplified implementation"""
+    return (0, (), 0)
 
 def _cbd_depth(cbd_params):
     """Helper to compute CBD tree depth"""
@@ -504,14 +670,11 @@ def compute_caus_cost(op_id: int, params: tuple, N: int) -> int:
         cost += 8 * leb(N)
         return cost
     elif op_id == OP_CBD:
-        # CBD stores all bytes literally: (N, *all_bytes)
-        if len(params) < 1:
+        # CBD simple form: params = (N,)
+        if len(params) != 1:
             return cost + 8 * leb(N)  # Fallback
         stored_N = params[0]
-        cost += 8 * leb(stored_N)  # Length field
-        # All literal bytes
-        for i in range(1, min(len(params), stored_N + 1)):
-            cost += 8  # Each literal byte
+        cost += 8 * leb(stored_N)  # Length field only
         return cost
     elif op_id == OP_ANCHOR:
         # Handle both anchor and composite encodings
@@ -713,14 +876,22 @@ def verify_generator(op_id: int, params: tuple, S: bytes) -> bool:
         return verify_generator(inner_op, inner_params, interior)
     
     elif op_id == OP_CBD:
-        # CBD stores bytes literally: params = (N, *all_bytes)
-        if len(params) < 1:
+        # CBD256 verification: bijective base-256 encoding
+        if len(params) != 1:
             return False
-        stored_N = params[0]
-        if stored_N != len(S):
+        
+        K = params[0]
+        L = len(S)
+        
+        # Verify K is in valid range
+        if L > 0 and K >= (256 ** L):
             return False
-        # Verify all bytes match exactly
-        expected_bytes = params[1:stored_N+1]
-        return len(expected_bytes) == len(S) and all(S[i] == expected_bytes[i] for i in range(len(S)))
+        
+        # Compute expected K from byte string S
+        expected_K = 0
+        for i in range(L):
+            expected_K += S[i] * (256 ** (L - 1 - i))
+        
+        return K == expected_K
     
     return False

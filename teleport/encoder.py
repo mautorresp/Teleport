@@ -2,7 +2,7 @@
 Teleport Canonical Encoder
 
 Mathematical canonicalization: S -> T* (unique minimal seed)
-Pure integer/byte logic. No heuristics, no floats, no randomness.
+Pure integer/byte logic. Mathematical deduction only, no floats, no randomness.
 """
 
 import hashlib

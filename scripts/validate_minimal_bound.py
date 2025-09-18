@@ -117,7 +117,7 @@ def validate_minimal_bound(S: bytes, test_name: str) -> dict:
     
     # Validation
     bound_satisfied = minimal_bound <= actual_cost <= upper_bound
-    compression_ratio = len(seed_data) / N if N > 0 else float('inf')
+    encoding_ratio = len(seed_data) / N if N > 0 else float('inf')
     
     return {
         'test_name': test_name,
@@ -131,7 +131,7 @@ def validate_minimal_bound(S: bytes, test_name: str) -> dict:
         'seed_file': seed_filename,
         'payload_file': payload_filename,
         'seed_bytes': len(seed_data),
-        'compression_ratio': compression_ratio,
+        'encoding_ratio': encoding_ratio,
         'receipts': receipts
     }
 
@@ -194,8 +194,8 @@ def run_comprehensive_validation():
     all_satisfied = all(r['bound_satisfied'] for r in test_results)
     print(f"All bounds satisfied: {all_satisfied}")
     
-    avg_compression = sum(r['compression_ratio'] for r in test_results) / len(test_results)
-    print(f"Average compression ratio: {avg_compression:.3f}")
+    avg_encoding = sum(r['encoding_ratio'] for r in test_results) / len(test_results)
+    print(f"Average encoding ratio: {avg_encoding:.3f}")
     
     total_files_created = len(test_results) * 2  # seed + payload each
     print(f"Files created: {total_files_created}")

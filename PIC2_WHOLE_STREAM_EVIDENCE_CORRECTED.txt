@@ -1,0 +1,55 @@
+CLF WHOLE-STREAM EVIDENCE: PIC2.JPG (CORRECTED)
+==============================================
+
+## MATHEMATICAL FRAMEWORK
+CLF enforces strict binary mathematics:
+- H = 16 + 8*leb_len(8*L) (header cost)
+- Per-token: C_stream_i < 10*L_i (strict bound)
+- Global: H + sum(C_stream_i) < 10*L (minimality)
+- Coverage: tokens must tile [0,L) exactly (no gaps)
+- Expansion: seed-only reconstruction (no file access)
+
+## FILE ANALYSIS
+L = 456 bytes
+SHA256 = 54868e56bc94daf9ceb20277eca2b2079198fed0b68d65d95aaed1c787993c18
+H = 16 + 8*leb_len(8*456) = 16 + 8*2 = 32 bits
+10*L = 4560 bits (decisive baseline)
+
+## CLF DEDUCTION RESULT: OPEN
+Complete causal coverage cannot be achieved.
+compose_cover(S, 0, 456) raises OpenError at boundary analysis:
+
+### Boundary Analysis
+Segments that defeat causal encoding:
+- Prefix [0:4]: JPEG header [255, 216, 255, 224]
+  No operator beats 10*4 = 40 bit baseline
+- Suffix [454:456]: JPEG footer [255, 217]
+  Minimum token cost ≥ 32 bits > 10*2 = 20 bits
+
+### Coverage Enforcement
+CLF requires complete tiling [0,L) by admissible tokens.
+Since boundary segments cannot be causally encoded,
+complete coverage is impossible → OpenError → OPEN state.
+
+### Interior Analysis (For Reference)
+Interior segments have causal potential:
+- [4:205]: 201 zeros → CONST(0) saves ~1970 bits
+- [205:304]: 99-byte step → STEP saves ~950 bits
+- [304:454]: 150 bytes of 0x42 → CONST(66) saves ~1460 bits
+Total interior savings: ~4380 bits >> H = 32 bits
+
+However, boundary constraints prevent complete coverage,
+so CLF correctly classifies as OPEN (no seed emitted).
+
+## CLF CLASSIFICATION
+STATE: OPEN
+SEED_EMITTED: None
+REASON: Complete causal coverage impossible
+
+## CLF COMPLIANCE VERIFICATION
+✓ Coverage requirement enforced (no partial solutions)
+✓ Header calculation: H = 32 bits (corrected)
+✓ No mixed LIT mode (CLF specification compliant)
+✓ Integer-exact mathematics (no floating point)
+✓ Deterministic classification (no heuristics)
+✓ Bijection requirement enforced (seed must reconstruct all bytes)

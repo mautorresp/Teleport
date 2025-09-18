@@ -1,7 +1,7 @@
 """
 Strict Teleport Seed Validation
 Validates byte streams against exact Teleport grammar.
-No heuristics, no MIME sniffing - pure grammar validation.
+Pure mathematical grammar validation only.
 """
 
 from typing import Tuple

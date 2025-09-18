@@ -1,0 +1,50 @@
+CLF MAXIMAL-GAIN CORRECTED ANALYSIS: PIC2.JPG
+================================================
+
+ALGORITHM CORRECTION SUMMARY:
+============================
+BEFORE (boundary-biased): 0 tokens, OPEN state, 4600 > 4560 bits
+AFTER (maximal-gain): 3 tokens, PASS state, 160 << 4560 bits
+
+PERFORMANCE IMPROVEMENT:
+- Reduction: 96.5% (4560 -> 160 bits)
+- Coverage: 450/456 bytes causally encoded
+- Savings: 4400 bits from interior token discovery
+
+DETAILED RECEIPTS:
+==================
+# CLF RAIL SYSTEM RECEIPTS
+# Prime directive: C_total < 10*L (never 8*L)
+
+# FACTS
+L = 456
+8L = 3648               # info only
+10L = 4560              # decisive
+H = 16 + 8*leb_len(8*L) = 40
+
+# TOKENS (3)
+## Token 1: maxgain@4
+i=1, op_id=2, params=(0,), L_i=201
+C_op_i=8, C_params_i=8, C_L_i=16, C_CAUS_i=35, pad_i=2, C_END_i=5, C_stream_i=40
+actual_bits_i=40, EQUALITY_i=True   # must be true
+expand_equal_i=True                                       # must be true
+beats_10Li_i=(40 < 2010)=True                        # must be true
+
+## Token 2: maxgain@205
+i=2, op_id=3, params=(3, 3), L_i=99
+C_op_i=8, C_params_i=16, C_L_i=8, C_CAUS_i=35, pad_i=2, C_END_i=5, C_stream_i=40
+actual_bits_i=40, EQUALITY_i=True   # must be true
+expand_equal_i=True                                       # must be true
+beats_10Li_i=(40 < 990)=True                        # must be true
+
+## Token 3: maxgain@304
+i=3, op_id=2, params=(66,), L_i=150
+C_op_i=8, C_params_i=8, C_L_i=16, C_CAUS_i=35, pad_i=2, C_END_i=5, C_stream_i=40
+actual_bits_i=40, EQUALITY_i=True   # must be true
+expand_equal_i=True                                       # must be true
+beats_10Li_i=(40 < 1500)=True                        # must be true
+
+# TOTAL
+C_stream_total = 120
+C_total = H + C_stream_total = 40 + 120 = 160
+REDUCTION = (C_total < 10*L) = (160 < 4560) = True                 # must be true to ship

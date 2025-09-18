@@ -1,226 +1,142 @@
 #!/usr/bin/env python3
 """
-Teleport Canonicalization Tool with Strict Autodetection
-Self-selects between 'this is a Teleport seed' and 'this is just raw bytes'.
-No heuristics - pure grammar validation per mathematical specification.
+Seed Canonicalization CLI
 
-Usage: python3 seed_canonicalize.py <input_file> <output_seed>
+Usage: python3 seed_canonicalize.py --in <seed_file> --out <canonical_seed> [--print-receipts]
+
+Takes any seed, expands it, then produces the unique canonical minimal seed T*
+that reproduces the same bytes with mathematical determinism.
 """
 
 import sys
+import argparse
 import hashlib
-from pathlib import Path
 from pathlib import Path
 
 # Add teleport to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from teleport.encoder_dp import canonize_bytes_dp, serialize_tokens_to_seed
+from teleport.encoder_dp import canonize_dp, canonize_bytes_dp
 from teleport.seed_vm import expand
-from teleport.seed_validate import validate_teleport_stream
-from teleport.spec_constants import TELEPORT_MAGIC_VERSION_BE
-from teleport.clf_int import leb
+from teleport.clf_int import leb, pad_to_byte
+
+def run_self_tests():
+    """Run mandatory self-tests and print integer receipts"""
+    print("=== SELF-TESTS (Integer Math Only) ===")
+    
+    # Test 1: MATCH beats LIT
+    N = 50
+    C_MATCH = 2 + 8*leb(3) + 8*leb(N)
+    C_LIT = 10*N
+    print(f"proof_MATCH_lt_LIT= {int(C_MATCH < C_LIT)}")
+    
+    # Test 2: CAUS.CONST frontier
+    L = 40
+    C_CONST = 3 + 8*1 + 8*1 + 8*leb(L)  # op=1, b=any, L=40
+    C_LIT = 10*L
+    print(f"proof_CONST_lt_LIT= {int(C_CONST < C_LIT)}")
+    
+    # Test 3: END pad exactness
+    pos = 127
+    C_END = 3 + pad_to_byte(pos + 3)
+    print(f"C_END= {C_END}")
+    
+    print()
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python seed_canonicalize.py --in <file> --out <output> [--print-receipts] [--no-require-caus]")
+    parser = argparse.ArgumentParser(description="Canonical seed minimization")
+    parser.add_argument("--in", dest="input_file", required=True,
+                       help="Input seed file")
+    parser.add_argument("--out", dest="output_file", required=True, 
+                       help="Output canonical seed file")
+    parser.add_argument("--print-receipts", action="store_true",
+                       help="Print detailed console receipts")
+    
+    args = parser.parse_args()
+    
+    # Run self-tests first
+    if args.print_receipts:
+        run_self_tests()
+    
+    # Load input seed
+    try:
+        with open(args.input_file, 'rb') as f:
+            seed_in = f.read()
+    except FileNotFoundError:
+        print(f"Error: Input file {args.input_file} not found")
         sys.exit(1)
     
-    input_file = None
-    output_file = None
-    print_receipts = False
+    print("=== CANONICALIZATION PROCESS ===")
     
-    # CLF REALIGNMENT: REQUIRE_CAUS = True by default (deduction-first)
-    require_caus = "--no-require-caus" not in sys.argv
-    
-    i = 1
-    while i < len(sys.argv):
-        if sys.argv[i] == "--in" and i + 1 < len(sys.argv):
-            input_file = sys.argv[i + 1]
-            i += 2
-        elif sys.argv[i] == "--out" and i + 1 < len(sys.argv):
-            output_file = sys.argv[i + 1]
-            i += 2
-        elif sys.argv[i] == "--print-receipts":
-            print_receipts = True
-            i += 1
-        elif sys.argv[i] == "--no-require-caus":
-            i += 1  # Already handled above
-        else:
-            print(f"Unknown argument: {sys.argv[i]}")
-            sys.exit(1)
-    
-    # Read input
-    if not Path(input_file).exists():
-        print(f"ERROR: Input file not found: {input_file}")
-        return 1
-    
-    with open(input_file, "rb") as f:
-        input_data = f.read()
-    
-    print(f"Input size: {len(input_data)} bytes")
-    
-    # STRICT AUTODETECTION: Grammar validation only
-    print("\n=== MODE DECISION (strict) ===")
-    is_teleport_seed, validation_note = validate_teleport_stream(input_data, TELEPORT_MAGIC_VERSION_BE)
-    print(f"is_seed= {int(is_teleport_seed)} reason= {validation_note}")
-    
-    if is_teleport_seed:
-        print("✓ Input validates as TELEPORT SEED")
-        print(f"Validation note: {validation_note}")
-        print("Action: Validate and re-canonicalize existing seed")
-        
-        # Process as existing seed
-        try:
-            recovered_data = expand(input_data)
-            print(f"Seed decodes to: {len(recovered_data)} bytes")
-            
-            # Re-canonicalize the decoded data
-            print("\n--- Re-Canonicalizing Decoded Data ---")
-            tokens, total_bits, C_end, _ = canonize_bytes_dp(recovered_data)
-            
-            if not tokens:
-                print("ERROR: Re-canonicalization failed")
-                return 1
-            
-            # Generate new canonical seed using bit-exact format
-            from clf_bitexact import serialize_tokens_bit_exact
-            canonical_seed = serialize_tokens_bit_exact(tokens, total_bits)
-            
-            print(f"Re-canonicalized token sequence (cost = {C_end}):")
-            for i, (kind, params, L) in enumerate(tokens):
-                print(f"  {i+1}. {kind}{params} → {L} bytes")
-            
-            # Compare seeds
-            if canonical_seed == input_data:
-                print("✓ Input seed is already canonical")
-            else:
-                print("→ Generating optimized canonical seed")
-            
-            # Write output
-            with open(output_file, "wb") as f:
-                f.write(canonical_seed)
-            
-            print(f"Canonical seed written: {output_file} ({len(canonical_seed)} bytes)")
-            
-        except Exception as e:
-            print(f"ERROR processing seed: {e}")
-            return 1
-            
-    else:
-        print("✓ Input detected as RAW BYTES")  
-        print(f"Validation note: {validation_note}")
-        print("Action: Generate canonical Teleport seed")
-        
-        # Process as raw bytes
-        print("\n--- DP Canonicalization ---")
-        tokens, total_bits, C_end, predicate_receipts = canonize_bytes_dp(input_data, print_receipts=print_receipts)
-        
-        # CLF CAUS-or-FAIL gate (no silent fallback)
-        first_kind, first_params, first_L = tokens[0]
-        if require_caus and not (first_kind == "CAUS" and first_L == len(input_data)):
-            print("CAUSE_NOT_DEDUCED")
-            print("evaluated_predicates=", predicate_receipts)
-            sys.exit(2)
-        
-        if not tokens:
-            print("CANONICALIZATION FAILED: No valid tokenization found")
-            return 1
-        
-        # Generate mathematical receipt
-        print(f"\n# DP Canonicalization")
-        pos = 0
-        for i, (kind, params, L) in enumerate(tokens):
-            if kind == "LIT":
-                # LIT params: (byte_value, run_length)
-                b, run_len = params
-                c_bits = 10 * L
-                print(f"p={pos} chosen=LIT(b={b},L={L}) C_token={c_bits} C_LIT({L})={10*L} strict_ineq=0")
-            elif kind == "MATCH":
-                D = params[0]
-                c_match = 2 + 8 * leb(D) + 8 * leb(L)
-                c_lit = 10 * L if L <= 10 else "inadmissible"
-                strict_ineq = 1 if L > 10 else (1 if c_match < 10 * L else 0)
-                print(f"p={pos} chosen=MATCH(D={D},L={L}) C_token={c_match} C_LIT({L})={c_lit} strict_ineq={strict_ineq}")
-            pos += L
-        
-        print(f"\n# Global receipts")
-        token_bits = total_bits - C_end
-        print(f"C_tokens= {token_bits}")
-        print(f"C_END= {C_end}")
-        print(f"C_stream= {total_bits}")
-        print(f"C_LIT({len(input_data)})= {10 * len(input_data)}")
-        print(f"delta_vs_LIT= {10 * len(input_data) - total_bits}")
-        
-        # Create canonical seed using bit-exact serialization
-        from clf_bitexact import serialize_tokens_bit_exact
-        canonical_seed = serialize_tokens_bit_exact(tokens, total_bits)
-        
-        # Write seed file
-        with open(output_file, "wb") as f:
-            f.write(canonical_seed)
-        
-        print(f"Seed written: {output_file} ({len(canonical_seed)} bytes)")
-        
-        # Check for CAUS-specific receipts (drastic minimality)
-        if tokens and len(tokens) > 0:
-            first_token = tokens[0]
-            kind, params, L = first_token
-            if kind == "CAUS" and L == len(input_data):
-                # CAUS covers entire input - drastic minimality achieved!
-                op_id = params[0] 
-                op_params = params[1:]
-                
-                from teleport.caus_deduction import compute_caus_cost, compute_caus_seed_bytes
-                c_caus = compute_caus_cost(op_id, op_params, len(input_data))
-                expected_seed_bytes = compute_caus_seed_bytes(op_id, op_params, len(input_data))
-                
-                print(f"\n🎯 CLF DRASTIC MINIMALITY ACHIEVED:")
-                print(f"CAUS op={op_id}, params={op_params}, N={len(input_data)}")
-                print(f"C_CAUS = {c_caus} bits")
-                print(f"Expected seed_bytes = {expected_seed_bytes}")
-                print(f"Actual seed_bytes = {len(canonical_seed)}")
-                print(f"Compression ratio N/seed = {len(input_data)}/{len(canonical_seed)} = {len(input_data)/len(canonical_seed):.2f}")
-                print(f"Drastic gap: {len(input_data) - len(canonical_seed)} bytes saved")
-        
-        # Verify fundamental CLF invariant
-        bits_on_disk = len(canonical_seed) * 8
-        print(f"\n🔑 FUNDAMENTAL CLF INVARIANT:")
-        print(f"8 × len(seed) = {bits_on_disk}")  
-        print(f"C_stream      = {total_bits}")
-        print(f"MATCHES:      {bits_on_disk == total_bits}")
-    
-    # Final validation
-    print("\n--- Round-Trip Validation ---")
+    # Step 1: Expand input seed to bytes S
     try:
-        with open(output_file, "rb") as f:
-            final_seed = f.read()
-        
-        from clf_bitexact import expand_bit_exact
-        recovered_data = expand_bit_exact(final_seed)
-        
-        if is_teleport_seed:
-            # Compare with decoded original
-            original_decoded = expand(input_data)
-            if recovered_data == original_decoded:
-                print("✓ Round-trip PASSED (seed→data→seed)")
-            else:
-                print("✗ Round-trip FAILED")
-                return 1
-        else:
-            # Compare with original raw bytes
-            if recovered_data == input_data:
-                print("✓ Round-trip PASSED (bytes→seed→bytes)")
-            else:
-                print("✗ Round-trip FAILED")
-                return 1
-                
+        S = expand(seed_in)
+        print(f"# Expand input")
+        print(f"bytes= {len(S)}")
+        print(f"sha256= {hashlib.sha256(S).hexdigest().upper()}")
+        print()
     except Exception as e:
-        print(f"✗ Round-trip ERROR: {e}")
-        return 1
+        print(f"Error expanding input seed: {e}")
+        sys.exit(1)
     
-    print("\n=== CANONICALIZATION COMPLETE ===")
-    return 0
+    # Step 2: Canonical re-encoding
+    print("# Canonicalization")
+    try:
+        # DP canonicalization with global optimality
+        seed_min = canonize_dp(S, print_receipts=args.print_receipts)
+        
+        # Get detailed analysis
+        choices, total_bits = canonize_bytes_dp(S, print_receipts=False)
+        
+        # Step 3: Verify identity
+        S_prime = expand(seed_min)
+        
+        eq_bytes = int(len(S) == len(S_prime))
+        eq_sha = int(hashlib.sha256(S).digest() == hashlib.sha256(S_prime).digest())
+        
+        print(f"bytes'= {len(S_prime)}")
+        print(f"sha256'= {hashlib.sha256(S_prime).hexdigest().upper()}")
+        print(f"eq_bytes= {eq_bytes}")
+        print(f"eq_sha= {eq_sha}")
+        print()
+        
+        # Global cost receipts
+        if args.print_receipts:
+            C_stream = total_bits
+            C_LIT_N = 10 * len(S)
+            delta_vs_LIT = C_LIT_N - C_stream
+            avg_bits_per_byte = C_stream / len(S) if len(S) > 0 else 0
+            
+            print(f"# Global receipts")
+            print(f"C_stream= {C_stream}")
+            print(f"C_LIT({len(S)})= {C_LIT_N}")
+            print(f"delta_vs_LIT= {delta_vs_LIT}")
+            print(f"avg_bits_per_byte= {avg_bits_per_byte:.2f}")
+            print()
+        
+        # Verify identity
+        if eq_bytes != 1 or eq_sha != 1:
+            print("ERROR: Canonicalization failed identity check!")
+            sys.exit(1)
+        
+        # Step 4: Write canonical seed
+        with open(args.output_file, 'wb') as f:
+            f.write(seed_min)
+        
+        print(f"# Canonical seed written to {args.output_file}")
+        print(f"# Input size: {len(seed_in)} bytes")
+        print(f"# Output size: {len(seed_min)} bytes") 
+        print(f"# Payload size: {len(S)} bytes")
+        
+        if args.print_receipts:
+            print()
+            print("=== DETAILED RECEIPTS ===")
+            # Additional receipt printing would go here
+            # (requires tracking tokens during canonization)
+        
+    except Exception as e:
+        print(f"Error during canonicalization: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

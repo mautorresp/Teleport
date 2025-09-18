@@ -1,8 +1,8 @@
 """
-Teleport - Mathematical Causality Calculator  
+Teleport - Integer-Only Mathematical Causality Detection Library
 
-A strict integer-only library for mathematical causality deduction and CAUS
-certificate generation that enforces no-float constraints through guards and linting.
+A strict integer-only library for mathematical causality detection, encoding, and data processing
+that enforces no-float constraints through guards and linting.
 """
 
 __version__ = "0.1.0"

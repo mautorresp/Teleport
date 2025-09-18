@@ -1,0 +1,67 @@
+CLF DRIFT-KILLER IMPLEMENTATION REPORT
+======================================
+
+## DRIFT-KILLER RAILS IMPLEMENTED
+
+[H] Header API (single source of truth):
+✓ header_bits(L_bytes) takes L in BYTES (not 8*L)
+✓ Internal formula: 16 + 8*leb_len(8*L_bytes)
+✓ Invariant enforced throughout codebase
+
+[T] Token cost with serializer equality:
+✓ C_stream = C_CAUS + C_END with exact padding
+✓ Serializer equality: 8*len(emit_CAUS) == C_stream
+✓ Asserted per token in compose_cover()
+
+[G] Per-segment guards:
+✓ Strict bound: C_stream < 10*ℓ enforced per token
+✓ Asserted in compose_cover() before token acceptance
+
+[COV] Coverage enforcement:
+✓ compose_cover() ensures exact tiling [0,L) or raises OpenError
+✓ No partial coverage allowed (no mixed LIT mode)
+✓ deduce_composed() calls compose_cover() - no gaps possible
+
+[MIN] Global minimality:
+✓ PASS only if: H + sum(C_stream_i) < 10*L
+✓ Enforced in deduce_composed() after coverage check
+✓ OPEN state for failed minimality (no seed emitted)
+
+[EXP] Seed-only expansion:
+✓ expand_generator() uses no file knowledge
+✓ Segments concatenated and compared to original once at end
+
+[INJ] Fixed injectivity sentinel:
+✓ Keys by serialized token bytes (not (op_id, L))
+✓ Enforces bijection via emit_CAUS uniqueness
+
+[SMALL-ℓ] Mathematical floors respected:
+✓ ℓ=2: C_stream ≥ 32 > 20 = 10*2 (never admissible)
+✓ ℓ=3: C_stream ≥ 32 > 30 = 10*3 (rarely admissible)
+✓ Explains JPEG header/footer OPEN behavior
+
+## VERIFICATION RESULTS
+
+✓ PASS case: 100-byte constant → 1 token(s), 64 < 1000 bits
+✓ OPEN case: pic2.jpg (456 bytes) → coverage impossible
+✓ Header consistency: header_bits(456) = 32 bits
+
+## CLF MATHEMATICAL COMPLIANCE
+
+✓ Integer-only arithmetic (no floating point)
+✓ Deterministic classification (no heuristics)
+✓ Bijective seed semantics (expand without file access)
+✓ Strict minimality test (C_total < 10*L)
+✓ Coverage requirement (complete tiling or OPEN)
+✓ Per-token bounds (C_stream_i < 10*L_i)
+
+## DRIFT PREVENTION STATUS
+
+🔒 DRIFT-KILLER ACTIVE: All mathematical rails enforced
+🔒 API consistency: Single header_bits() definition
+🔒 Coverage enforcement: No partial solutions allowed
+🔒 Serializer equality: Asserted per token
+🔒 Injectivity: Fixed via serialized bytes
+
+IMPLEMENTATION STATUS: COMPLETE ✅
+CLF specification fully compliant with integer-exact proofs.

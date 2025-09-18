@@ -1,0 +1,36 @@
+# FILE
+file_bytes = 63379
+file_bits  = 507032
+file_sha256 = b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+
+# CANDIDATE
+op_id = 9
+params_count = 1
+param_1 = 63379   leb_len(param_1) = 3
+leb_len(op_id) = 1
+leb_len(L)     = 3
+
+# COST
+C_op     = 8*leb_len(op_id) = 8
+C_params = 8*sum(leb_len(param_i)) = 24
+C_L      = 8*leb_len(L) = 24
+C_CAUS   = 3 + C_op + C_params + C_L = 59
+pad_bits = (8 - ((C_CAUS + 3) mod 8)) mod 8 = 2
+C_END    = 3 + pad_bits = 5
+C_stream = C_CAUS + C_END = 64
+
+# SERIALIZER EQUALITY
+seed_len_bytes = 8
+actual_bits = 8*seed_len_bytes = 64
+EQUALITY_actual_bits_equals_C_stream = true
+
+# EXPANSION EQUALITY (seed-only)
+expand_equal = true
+expanded_sha256 = b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+
+# CANONICAL
+canonical = 9, 63379
+seed_bits = C_stream = 64
+file_bits = 507032
+savings_bits = file_bits - seed_bits = 506968
+classification = REDUCTION

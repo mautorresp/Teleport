@@ -1,7 +1,7 @@
 """
 Integer Helpers - CLF Int Module
 
-Core integer-only utilities for mathematical causality:
+Core integer-only utilities for mathematical causality detection and encoding:
 - LEB128 encoding/decoding
 - Byte padding and alignment
 - Bitwise operations and shifts

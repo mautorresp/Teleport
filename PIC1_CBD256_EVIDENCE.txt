@@ -1,0 +1,27 @@
+# FILE
+L = 63379
+file_bits = 8*L = 507032
+sha256 = b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+
+# DEDUCTION (content-deduced)
+op_id = 9
+K_bitlen = 507032
+leb_len(op_id) = 1
+leb_len(L) = 3
+leb_len(K) = 72434
+
+# COST & SERIALIZER (equality must hold)
+CLF COST VERIFICATION
+C_op=8 C_params=579472 C_L=24
+C_CAUS=3+8+579472+24=579507
+pad_bits=2  C_END=3+2=5
+C_stream=579512
+actual_bits=8*len(seed)=579512
+EQUALITY: actual_bits==C_stream ✓
+
+# EXPANSION (seed-only)
+expand_equal = true
+expanded_sha256 = b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+
+# INJECTIVITY / RANGE
+0 <= K < 256^L  ->  K_bitlen <= 8*L  ->  507032 <= 507032

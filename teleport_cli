@@ -1,0 +1,78 @@
+#!/bin/bash
+# 
+# Teleport OpSet_v2 CLI Wrapper
+# Provides convenient access to all four CLI tools
+#
+
+TELEPORT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CLI_SCRIPT="$TELEPORT_DIR/teleport/cli_tools_v2.py"
+
+case "$1" in
+    "scan")
+        if [ $# -ne 2 ]; then
+            echo "Usage: $0 scan <filename>"
+            exit 1
+        fi
+        python3 "$CLI_SCRIPT" scan "$2"
+        ;;
+    "price")
+        if [ $# -ne 2 ]; then
+            echo "Usage: $0 price <filename>"
+            exit 1
+        fi
+        python3 "$CLI_SCRIPT" price "$2"
+        ;;
+    "expand-verify")
+        if [ $# -ne 2 ]; then
+            echo "Usage: $0 expand-verify <filename>"
+            exit 1
+        fi
+        python3 "$CLI_SCRIPT" expand-verify "$2"
+        ;;
+    "canonical")
+        if [ $# -ne 2 ]; then
+            echo "Usage: $0 canonical <filename>"
+            exit 1
+        fi
+        python3 "$CLI_SCRIPT" canonical "$2"
+        ;;
+    "test-all")
+        if [ $# -ne 2 ]; then
+            echo "Usage: $0 test-all <filename>"
+            echo "Runs all four CLI tools on the specified file"
+            exit 1
+        fi
+        echo "=== TELEPORT OPSET_V2 ANALYSIS ==="
+        echo "File: $2"
+        echo ""
+        echo "1. Pattern Recognition:"
+        python3 "$CLI_SCRIPT" scan "$2"
+        echo ""
+        echo "2. Cost Calculation:"
+        python3 "$CLI_SCRIPT" price "$2"
+        echo ""
+        echo "3. Round-trip Verification:"
+        python3 "$CLI_SCRIPT" expand-verify "$2"
+        echo ""
+        echo "4. Cost Formula Verification:"
+        python3 "$CLI_SCRIPT" canonical "$2"
+        ;;
+    *)
+        echo "Teleport OpSet_v2 CLI Tools"
+        echo ""
+        echo "Usage: $0 <command> <filename>"
+        echo ""
+        echo "Commands:"
+        echo "  scan           - Detect mathematical pattern in file"
+        echo "  price          - Calculate causality cost (integer bits)"  
+        echo "  expand-verify  - Verify round-trip generator integrity"
+        echo "  canonical      - Verify cost formula compliance"
+        echo "  test-all       - Run all four tools on file"
+        echo ""
+        echo "Examples:"
+        echo "  $0 scan photo.jpg"
+        echo "  $0 price video.mp4"
+        echo "  $0 test-all document.pdf"
+        exit 1
+        ;;
+esac

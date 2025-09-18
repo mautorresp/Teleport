@@ -41,7 +41,7 @@ class TestDomainLIT:
     def test_causal_encoder_produces_valid_seed(self):
         """encode_causal.py on 1KB payload -> valid seed with eq_sha=1"""
         # Create test payload
-        payload = b'ABCDEFGHIJ' * 100  # 1KB with patterns for MATCH opportunities
+        payload = b'ABCDEFGHIJ' * 100  # 1KB with structures for MATCH operators
         payload_path = pathlib.Path("test_artifacts/test_payload_1kb.bin")
         payload_path.parent.mkdir(exist_ok=True)
         payload_path.write_bytes(payload)

@@ -1,0 +1,12 @@
+FACTS
+L = 456
+file_bits = 8*L = 3648
+SHA256 = 54868e56bc94daf9ceb20277eca2b2079198fed0b68d65d95aaed1c787993c18
+
+HEADER
+H = 16 + 8*leb_len(8*L) = 32
+
+TOKENS
+STATE = OPEN
+SEED = NONE
+NOTE = No reduction claim allowed in OPEN state.

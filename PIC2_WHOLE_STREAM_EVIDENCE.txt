@@ -1,0 +1,19 @@
+# CLF WHOLE-STREAM EVIDENCE (SEED-ONLY EXPANSION)
+L = 456
+H = 40
+## Token 1: maxgain@4
+op=2 params=(0,) L=201 C_stream=40 actual_bits=40 EQ=True
+per_segment_bound = (40 < 2010) = True
+## Token 2: maxgain@205
+op=3 params=(3, 3) L=99 C_stream=40 actual_bits=40 EQ=True
+per_segment_bound = (40 < 990) = True
+## Token 3: maxgain@304
+op=2 params=(66,) L=150 C_stream=40 actual_bits=40 EQ=True
+per_segment_bound = (40 < 1500) = True
+C_stream_total = 120
+C_total = H + C_stream_total = 40 + 120 = 160
+10L = 4560  REDUCTION = True
+expanded_len = 450  expected_len = 456  LEN_EQ = False
+expanded_sha256 = 07e0b3ee3c75a88de58054f3b6a7f044588d208c111501d3d334e09cbe2af754
+original_sha256 = 54868e56bc94daf9ceb20277eca2b2079198fed0b68d65d95aaed1c787993c18
+SHA_EQ = False

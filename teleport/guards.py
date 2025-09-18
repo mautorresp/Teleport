@@ -105,6 +105,9 @@ def assert_boundary_types(*values: Any) -> None:
             return all(_ok(x) for x in v)
         if isinstance(v, dict):
             return all(_ok(k) and _ok(x) for k, x in v.items())
+        # Allow ContextView for logical calculator-speed regime
+        if hasattr(v, '__len__') and hasattr(v, '__getitem__') and hasattr(v, 'append_bytes'):
+            return True
         return False
 
     for i, v in enumerate(values):

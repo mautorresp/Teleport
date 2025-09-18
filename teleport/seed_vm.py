@@ -18,6 +18,72 @@ class SeedDomainError(Exception):
     """Raised when seed violates domain constraints (integer-only behavior)."""
     pass
 
+def expand_generator(op_id: int, params: tuple, L: int) -> bytes:
+    """
+    Expand a single generator (op_id, params) to produce L bytes.
+    Used by deductive composition for verification.
+    """
+    out = bytearray()
+    
+    if op_id == 1:  # OP_MATCH
+        # MATCH cannot be expanded without context - should not be called directly
+        raise ValueError("MATCH expansion requires full context (use expand() on full seed)")
+    
+    elif op_id == OP_CONST:
+        # CONST: repeat byte b exactly L times
+        if len(params) != 1:
+            raise ValueError("CONST requires exactly 1 parameter")
+        b = params[0]
+        if not (0 <= b <= 255):
+            raise ValueError("CONST byte must be 0..255")
+        out += bytes([b] * L)
+    
+    elif op_id == OP_STEP:
+        # STEP: arithmetic sequence start + i*stride mod 256  
+        if len(params) != 2:
+            raise ValueError("STEP requires exactly 2 parameters")
+        start, stride = params
+        if not (0 <= start <= 255):
+            raise ValueError("STEP start must be 0..255")
+        if not (0 <= stride <= 255):
+            raise ValueError("STEP stride must be 0..255")
+        for i in range(L):
+            out.append((start + i * stride) & 255)
+    
+    elif op_id == 9:  # OP_CBD
+        # CBD256: Bijective base-256 decoding
+        if len(params) != 1:
+            raise ValueError("CBD256 requires exactly 1 parameter")
+        K = params[0]
+        if K < 0:
+            raise ValueError("CBD256 K must be non-negative")
+        
+        # Domain check
+        if L > 0 and K >= (256 ** L):
+            raise ValueError(f"CBD256: K={K} must be < 256^{L}")
+        
+        # Base-256 decoding
+        if L == 0:
+            pass  # Empty
+        else:
+            temp_K = K
+            bytes_to_emit = []
+            
+            for i in range(L):
+                byte_val = temp_K % 256
+                bytes_to_emit.append(byte_val)
+                temp_K //= 256
+            
+            # Emit in reverse order (most significant first)
+            for i in range(L - 1, -1, -1):
+                out.append(bytes_to_emit[i])
+    
+    else:
+        # Add support for other generators as needed
+        raise ValueError(f"Unsupported generator operation: {op_id}")
+    
+    return bytes(out)
+
 def expand(seed: bytes) -> bytes:
     """
     Replay operators into bytes.
@@ -90,20 +156,36 @@ def expand(seed: bytes) -> bytes:
                 out.append((start + i * stride) & 255)
 
         elif op == 9:  # OP_CBD
-            # CAUS_CBD: Canonical Binary Decomposition - literal byte storage
-            if len(params) < 1:
-                raise ValueError("CBD requires at least 1 parameter (N)")
-            N = params[0]
-            if N < 0:
-                raise ValueError("CBD length must be non-negative")
-            if len(params) != N + 1:
-                raise ValueError(f"CBD expects {N+1} parameters, got {len(params)}")
-            # Extract literal bytes and emit exactly
-            literal_bytes = params[1:N+1]
-            for b in literal_bytes:
-                if not (0 <= b <= 255):
-                    raise ValueError(f"CBD byte must be 0..255, got {b}")
-                out.append(b)
+            # CBD256: Bijective base-256 decoding from single integer K
+            # The L parameter is parsed by parse_next for CAUS operations
+            if len(params) < 2:
+                raise ValueError("CBD256 requires K and L parameters")
+            
+            K, L = params[0], params[1]
+            if K < 0 or L < 0:
+                raise ValueError("CBD256 parameters K and L must be non-negative")
+                
+            # Domain check: K must be < 256^L
+            if L > 0 and K >= (256 ** L):
+                raise ValueError(f"CBD256: K={K} must be < 256^{L}")
+            
+            # Base-256 decoding: extract bytes from K
+            if L == 0:
+                # Empty file - nothing to emit
+                pass
+            else:
+                # Extract L bytes using repeated divmod
+                temp_K = K
+                bytes_to_emit = []
+                
+                for i in range(L):
+                    byte_val = temp_K % 256
+                    bytes_to_emit.append(byte_val)
+                    temp_K //= 256
+                
+                # Emit bytes in reverse order (most significant first)
+                for i in range(L - 1, -1, -1):
+                    out.append(bytes_to_emit[i])
 
         else:
             # Handle other CAUS operations or unknown tags

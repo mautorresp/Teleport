@@ -1,0 +1,15 @@
+{
+  "phase": "scan", 
+  "file": "test_artifacts/pic1.jpg",
+  "file_size": 63379,
+  "success": true,
+  "status": "SCAN_COMPLETE",
+  "facts": {
+    "raw_bytes": "Successfully loaded and processed 63379 bytes",
+    "file_format": "JPEG image file", 
+    "scan_timestamp": "2024-12-28",
+    "performance": "Scan completed without timeout - performance bounds effective"
+  },
+  "next_phase": "price_analysis",
+  "message": "File facts established. Ready for admissible candidate pricing."
+}

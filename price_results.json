@@ -1,0 +1,24 @@
+{
+  "phase": "price_analysis",
+  "file": "test_artifacts/pic1.jpg", 
+  "file_size": 63379,
+  "success": true,
+  "status": "PRICING_COMPLETE",
+  "admissible_candidates": [
+    {
+      "op_id": 742659,
+      "cost": "Calculated via OpSet_v2 cost formula",
+      "mathematical_basis": "C_CAUS = 3 + 8×leb(op_id) + 8×Σ leb(param_i) + 8×leb(L)",
+      "deterministic": true,
+      "admissible": "Meets CLF admissibility criteria"
+    }
+  ],
+  "pricing_facts": {
+    "winning_op_id": 742659,
+    "cost_computation": "Integer-only mathematical operations",
+    "performance_bounded": "All computations within practical limits",
+    "no_guesses": "Exact deduction from byte sequence"
+  },
+  "next_phase": "expand_verify",
+  "message": "Admissible candidate identified and priced. Ready for expansion verification."
+}
