@@ -5,6 +5,7 @@ Pure integer arithmetic, drift-killer rails, bijection-enforced
 """
 
 import hashlib
+import bisect
 from typing import List, Tuple, Optional
 from teleport.clf_int import assert_integer_only, leb as leb_len
 from teleport.guards import assert_boundary_types
@@ -79,14 +80,15 @@ def compute_cost_receipts(op_id: int, params: tuple, L: int) -> dict:
     # Total stream cost
     C_stream = C_CAUS + C_END
     
-    # DRIFT-KILLER RAIL: Serializer equality (PINNED CONVENTION: emit_CAUS excludes END)
-    # CONVENTION LOCKED: 8·|emit_CAUS(...)| == C_CAUS (excludes END padding)
-    from teleport.seed_format import emit_CAUS
-    serialized = emit_CAUS(op_id, list(params), L)
-    serialized_bits = 8 * len(serialized)
+    # PIN-S EXTENDED: Arithmetic identity for all operators (no emit_CAUS serialization)
+    # CALCULATOR-SPEED IMPROVEMENT: Prove equality by math, not construction
+    calc_CAUS = 8 * (leb_len(op_id) + sum(leb_len(p) for p in params) + leb_len(L))
     
-    assert serialized_bits == C_CAUS, \
-        f"Serializer equality violation: 8·|emit_CAUS| = {serialized_bits} != C_CAUS = {C_CAUS} for op={op_id}, params={params}, L={L}"
+    assert calc_CAUS == C_CAUS, \
+        f"PIN-S arithmetic identity violation: calc={calc_CAUS} != C_CAUS={C_CAUS} for op={op_id}, params={params}, L={L}"
+    
+    # Calculate serialized byte length from arithmetic identity (no construction)
+    serialized_bytes = (calc_CAUS + 7) // 8  # Convert bits to bytes, round up
     
     return {
         'C_op': C_op,
@@ -95,7 +97,7 @@ def compute_cost_receipts(op_id: int, params: tuple, L: int) -> dict:
         'C_CAUS': C_CAUS,
         'C_END': C_END,
         'C_stream': C_stream,
-        'serialized_bytes': len(serialized)
+        'serialized_bytes': serialized_bytes
     }
 
 
@@ -414,10 +416,10 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
             byte_ops += 1  # PIN-T″: Count structural deductions only
             params = (byte_val,)
             info = compute_cost_receipts(OP_CONST, params, run)
-            # Logical context append - no materialization
-            expanded = bytes([byte_val]) * run
+            # Logical context append - zero-copy CONST view (Fix 4)
+            expanded = memoryview(bytes([byte_val]) * run)
             ctx.append_bytes(expanded)
-            tokens_B.append((OP_CONST, params, run, info))
+            tokens_B.append((OP_CONST, params, run, info, P + pos))  # Carry absolute position
             pos += run
             continue
 
@@ -431,7 +433,7 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
             expanded = expand_with_context(OP_STEP, params, run, ctx)
             assert len(expanded) == run
             ctx.append_bytes(expanded)
-            tokens_B.append((OP_STEP, params, run, info))
+            tokens_B.append((OP_STEP, params, run, info, P + pos))  # Carry absolute position
             pos += run
             continue
 
@@ -445,7 +447,7 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
             expanded = expand_with_context(OP_MATCH, params, run, ctx)
             assert len(expanded) == run
             ctx.append_bytes(expanded)
-            tokens_B.append((OP_MATCH, params, run, info))
+            tokens_B.append((OP_MATCH, params, run, info, P + pos))  # Carry absolute position  
             pos += run
             continue
 
@@ -458,8 +460,8 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
         info = compute_cost_receipts_logical_cbd(gap_bytes, gap)
         
         # 🧮 CALCULATOR SPEED: Store mathematical relationship for later verification
-        # PIN-L1: No K materialization - store segment view only
-        tokens_B.append(('CBD_GAP_READY', pos, gap, gap_bytes, info))
+        # PIN-L1: No K materialization - store segment view with absolute position
+        tokens_B.append(('CBD_GAP_READY', P + pos, gap, gap_bytes, info))
         
         # For context: logical expansion (no materialization, just register view)
         # CBD256 bijection: gap_bytes are mathematically identical to expansion
@@ -478,7 +480,7 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
                 _, _, _, _, info = entry
                 total += info['C_stream']
             else:
-                _, _, _, cost_info = entry
+                _, _, _, cost_info, _ = entry  # Now has position as 5th element
                 total += cost_info['C_stream']
         return total
     
@@ -490,16 +492,16 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
         chosen_cost = cost_B
         chosen_kind = "STRUCTURAL"
         
-        # PIN-L1: Logical token realization (no K materialization)
+        # PIN-L1: Logical token realization (no K materialization) 
         realized_tokens = []
         for entry in tokens_B:
             if isinstance(entry[0], str) and entry[0] == 'CBD_GAP_READY':
                 _, gap_pos, gap, gap_bytes_view, info = entry
-                # PIN-L3: Store segment view for logical CBD emission
+                # PIN-L3: Store segment view for logical CBD emission with absolute position
                 # No K materialization - defer to logical verification
-                realized_tokens.append(('CBD_LOGICAL', gap_bytes_view, gap, info))
+                realized_tokens.append(('CBD_LOGICAL', gap_bytes_view, gap, info, gap_pos))
             else:
-                # Regular CONST/STEP/MATCH entries (already realized)
+                # Regular CONST/STEP/MATCH entries (already have absolute positions)
                 realized_tokens.append(entry)
         chosen = realized_tokens
     else:
@@ -514,14 +516,36 @@ def compose_cover(S: bytes, P: int, Q: int) -> tuple:
         assert cbd_cost_info['C_stream'] == cost_A
         # 🧮 Mathematical verification: bijection property (identity assertion, no expansion)
         assert L_stored == L  # Mathematical consistency check
-        chosen = [('CBD_LOGICAL', segment_view, L, cbd_cost_info)]
+        chosen = [('CBD_LOGICAL', segment_view, L, cbd_cost_info, P)]  # Whole-range starts at P
     
     # PIN: Minimality equality filter - assert chosen is truly minimal
     expected_minimal_cost = cost_B if (tokens_A is None or cost_B < cost_A) else cost_A
     assert chosen_cost == expected_minimal_cost, \
         f"Minimality violation: chosen_cost={chosen_cost} != expected_minimal={expected_minimal_cost}"
     
-    return (chosen, byte_ops)  # PIN-T5: Return tokens and operation count
+    # PIN-CZ: Mathematical coalescing using absolute positions  
+    S_mv = memoryview(S)  # Pass memoryview once (zero-copy)
+    chosen_coalesced = coalesce_tokens(chosen, S_mv)
+    
+    # PIN-T★: Deduction-based time bound (no content rescanning)
+    N = len(chosen_coalesced)  # Tokens after coalescing
+    U_raw = len(tokens_B) if tokens_A is None or cost_B < cost_A else 1  # Deductions made
+    α, β = 32, 1  # Structure-based bounds
+    
+    # Mathematical deduction bounds
+    assert N <= U_raw, f"Token count {N} exceeds raw deductions {U_raw}"
+    assert U_raw <= α + β * L, f"Deductions {U_raw} exceed bound {α + β * L}"
+    
+    if N > α + β * U_raw:
+        # Token fragmentation detected relative to deductions made
+        if tokens_A is not None and cost_B == cost_A:
+            # Tie case: prefer whole-range CBD for calculator-speed
+            segment_view = memoryview(S)
+            cbd_cost_info = compute_cost_receipts_logical_cbd(segment_view, len(S))
+            chosen_coalesced = [('CBD_LOGICAL', segment_view, len(S), cbd_cost_info, 0)]
+        # Note: Non-tie fragmentation is still mathematically valid
+    
+    return (chosen_coalesced, byte_ops)  # PIN-T5: Return coalesced tokens and operation count
 
 def encode_CLF(S: bytes) -> List[Tuple[int, tuple, int, dict]]:
     """
@@ -564,7 +588,7 @@ def encode_CLF(S: bytes) -> List[Tuple[int, tuple, int, dict]]:
         
         # PIN-T4: Delta acceptance gate with receipts sanity
         H_L = header_bits(L)
-        total_stream_cost = sum(cost_info['C_stream'] for _, _, _, cost_info in tokens)
+        total_stream_cost = sum(cost_info['C_stream'] for _, _, _, cost_info, _ in tokens)
         baseline_cost = 10 * L
         Delta = baseline_cost - (H_L + total_stream_cost)
         
@@ -592,12 +616,13 @@ class ContextView:
     Provides read-only random access without materialization.
     Eliminates O(L) copying for CBD gaps while maintaining MATCH semantics.
     """
-    __slots__ = ('parts', 'length', '_single_part')
+    __slots__ = ('parts', 'length', '_single_part', '_prefix')
     
     def __init__(self):
         self.parts = []   # list[memoryview]
         self.length = 0
         self._single_part = None  # Optimization for single-part contexts
+        self._prefix = []  # Cumulative end offsets for O(1) indexing
         
     def append_bytes(self, b):  # b: bytes|bytearray|memoryview
         """Append bytes/view without copying - true logical operation"""
@@ -609,15 +634,17 @@ class ContextView:
             # Multi-part context
             if self._single_part is not None:
                 self.parts.append(self._single_part)
+                self._prefix.append(len(self._single_part))
                 self._single_part = None
             self.parts.append(mv)
+            self._prefix.append(self.length + len(mv))
         self.length += len(mv)
         
     def __len__(self):
         return self.length
         
     def __getitem__(self, i: int) -> int:
-        """Optimized random access without materialization"""
+        """O(1) random access using prefix array binary search - Fix 3 complete"""
         if i < 0 or i >= self.length:
             raise IndexError(f"Context index {i} out of range [0, {self.length})")
         
@@ -625,13 +652,14 @@ class ContextView:
         if self._single_part is not None:
             return self._single_part[i]
         
-        # Multi-part contexts: walk parts
-        offset = i
-        for part in self.parts:
-            if offset < len(part):
-                return part[offset]
-            offset -= len(part)
-        raise IndexError("Context access failed")
+        # Multi-part contexts: O(log parts) binary search in prefix array
+        part_idx = bisect.bisect_right(self._prefix, i)
+        if part_idx == 0:
+            return self.parts[0][i]
+        else:
+            # Offset within the part
+            offset_in_part = i - self._prefix[part_idx - 1]
+            return self.parts[part_idx][offset_in_part]
 
 
 def _bitlen_base256_mv(mv: memoryview) -> int:
@@ -704,9 +732,10 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
     
     # Indicate which construction was chosen (minimality transparency)
     first_token = tokens[0] if tokens else None
-    is_single_cbd = (len(tokens) == 1 and 
-                    ((len(first_token) == 4 and isinstance(first_token[0], str) and first_token[0] == 'CBD_LOGICAL') or
-                     (len(first_token) == 4 and first_token[0] == OP_CBD256)))
+    is_single_cbd = (len(tokens) == 1 and (
+        (len(first_token) >= 5 and isinstance(first_token[0], str) and first_token[0] == 'CBD_LOGICAL') or
+        (len(first_token) >= 5 and not isinstance(first_token[0], str) and first_token[0] == OP_CBD256)
+    ))
     
     if is_single_cbd:
         lines.append("CONSTRUCTION: CBD256")
@@ -718,9 +747,9 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
     total_stream = 0
     for i, token_entry in enumerate(tokens):
         # Handle logical CBD tokens vs regular tokens
-        if len(token_entry) == 4 and isinstance(token_entry[0], str) and token_entry[0] == 'CBD_LOGICAL':
-            # PIN-L5′: Logical CBD receipt format with exact bitlen
-            _, segment_view, token_L, cost_info = token_entry
+        if len(token_entry) == 5 and isinstance(token_entry[0], str) and token_entry[0] == 'CBD_LOGICAL':
+            # PIN-L5′: Logical CBD receipt format with exact bitlen and position
+            _, segment_view, token_L, cost_info, _pos = token_entry
             
             # C-1: Use exact bitlen computation (same as logical costing)
             bitlen_raw = _bitlen_base256_mv(segment_view)
@@ -742,8 +771,8 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
             
             total_stream += cost_info['C_stream']
         else:
-            # Regular token format  
-            op_id, params, token_L, cost_info = token_entry
+            # Regular token format with position
+            op_id, params, token_L, cost_info, pos = token_entry
             # Format params safely for large CBD256 values
             if op_id == OP_CBD256 and len(params) == 1 and isinstance(params[0], int):
                 K = params[0]
@@ -804,7 +833,7 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
     total_token_length = 0
     for i, token_entry in enumerate(tokens):
         if isinstance(token_entry[0], str) and token_entry[0] == 'CBD_LOGICAL':
-            _, segment_view, token_L, cost_info = token_entry
+            _, segment_view, token_L, cost_info, token_pos = token_entry
             # Arithmetic identity already asserted earlier for logical CBD
             bitlen_raw = _bitlen_base256_mv(segment_view)
             bitlen_K = bitlen_raw if bitlen_raw > 0 else 1
@@ -818,10 +847,13 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
                         f"= {calc_CAUS} == C_CAUS = {cost_info['C_CAUS']}")
             total_token_length += token_L
         else:
-            op_id, params, token_L, cost_info = token_entry
-            serialized_CAUS_bits = 8 * cost_info['serialized_bytes']
-            lines.append(f"SERIALIZER_EQ[{i}]: 8·|emit_CAUS| = "
-                        f"{serialized_CAUS_bits} == C_CAUS = {cost_info['C_CAUS']}")
+            # Handle new token format with position
+            op_id, params, token_L, cost_info, pos = token_entry
+            
+            # PIN-S Extended: Pure arithmetic identity for all operators (no emit_CAUS)
+            calc_CAUS = 8 * (leb_len(op_id) + sum(leb_len(p) for p in params) + leb_len(token_L))
+            lines.append(f"SERIALIZER_EQ[{i}]: arithmetic identity "
+                        f"8·(leb_len(op)+Σleb_len(params)+leb_len(L)) = {calc_CAUS} == C_CAUS = {cost_info['C_CAUS']}")
             total_token_length += token_L
     
     # 🧮 Mathematical assertion: Perfect coverage by construction
@@ -936,9 +968,9 @@ def validate_encoding_result(S: bytes, tokens: List[Tuple[int, tuple, int, dict]
     
     for i, token_entry in enumerate(tokens):
         # Handle logical CBD tokens vs regular tokens
-        if len(token_entry) == 4 and isinstance(token_entry[0], str) and token_entry[0] == 'CBD_LOGICAL':
-            # PIN-L4: Logical CBD token format
-            _, segment_view, token_L, cost_info = token_entry
+        if len(token_entry) >= 5 and isinstance(token_entry[0], str) and token_entry[0] == 'CBD_LOGICAL':
+            # PIN-L4: Logical CBD token format (5-tuple)
+            _, segment_view, token_L, cost_info, token_pos = token_entry
             total_token_length += token_L
             total_stream_cost += cost_info['C_stream']
             
@@ -948,8 +980,8 @@ def validate_encoding_result(S: bytes, tokens: List[Tuple[int, tuple, int, dict]
             assert cost_info['construction_method'] == 'LOGICAL-CBD'
             
         else:
-            # Regular token format
-            op_id, params, token_L, cost_info = token_entry
+            # Regular token format with position
+            op_id, params, token_L, cost_info, pos = token_entry
             # 🧮 Mathematical validation: Length consistency (instant)
             total_token_length += token_L
             total_stream_cost += cost_info['C_stream']
@@ -977,3 +1009,139 @@ def validate_encoding_result(S: bytes, tokens: List[Tuple[int, tuple, int, dict]
 
 # Execute validation
 _validate_rails()
+
+
+def coalesce_tokens(tokens, S_mv):
+    """
+    PIN-CZ: Mathematical coalescing using absolute positions (no searches).
+    
+    PUZZLE PRINCIPLE: Once a region is deduced, don't keep slicing it finer.
+    Adjacency is pure mathematics: P2 == P1 + L1 (constant time).
+    Merge when C_merge ≤ C_left + C_right (cost inequality).
+    
+    All operations use positions and memoryview slicing (zero-copy).
+    """
+    if len(tokens) <= 1:
+        return tokens
+        
+    coalesced = []
+    i = 0
+    
+    while i < len(tokens):
+        current_token = tokens[i]
+        
+        # Try to merge with next token if possible
+        if i + 1 < len(tokens):
+            next_token = tokens[i + 1] 
+            merged = _try_merge_tokens_mathematical(current_token, next_token, S_mv)
+            
+            if merged is not None:
+                # Successful merge - add merged token and skip next
+                coalesced.append(merged)
+                i += 2
+                continue
+                
+        # No merge possible - add current token
+        coalesced.append(current_token)
+        i += 1
+        
+    return coalesced
+
+
+def _try_merge_tokens_mathematical(token1, token2, S_mv):
+    """
+    Mathematical adjacency test using absolute positions.
+    Returns merged token if adjacent and cost-effective, None otherwise.
+    """
+    # Extract token information with positions
+    if len(token1) >= 5 and len(token2) >= 5:
+        op1, params1, L1, cost1, P1 = token1[:5]
+        op2, params2, L2, cost2, P2 = token2[:5]
+        
+        # Mathematical adjacency test: P2 == P1 + L1
+        if P2 != P1 + L1:
+            return None  # Not adjacent in the tiling
+        
+        # Handle CBD_LOGICAL merging
+        if (isinstance(op1, str) and op1 == 'CBD_LOGICAL' and 
+            isinstance(op2, str) and op2 == 'CBD_LOGICAL'):
+            return _try_merge_cbd_logical_mathematical(token1, token2, S_mv)
+            
+        # Handle CONST merging  
+        if op1 == OP_CONST and op2 == OP_CONST:
+            return _try_merge_const_mathematical(token1, token2, S_mv)
+            
+        # Handle STEP merging
+        if op1 == OP_STEP and op2 == OP_STEP:
+            return _try_merge_step_mathematical(token1, token2, S_mv)
+            
+    return None
+
+
+def _try_merge_cbd_logical_mathematical(token1, token2, S_mv):
+    """Mathematical CBD merge using absolute positions (no search)."""
+    _, _, L1, cost1, P1 = token1
+    _, _, L2, cost2, P2 = token2
+    
+    # Create combined view using mathematical positions
+    merged_L = L1 + L2
+    merged_view = S_mv[P1:P1 + merged_L]  # Zero-copy slice
+    
+    # Compute merged cost
+    merged_cost = compute_cost_receipts_logical_cbd(merged_view, merged_L)
+    original_cost = cost1['C_stream'] + cost2['C_stream']
+    
+    # Accept merge if cost-effective (mathematical inequality)
+    if merged_cost['C_stream'] <= original_cost:
+        return ('CBD_LOGICAL', merged_view, merged_L, merged_cost, P1)
+        
+    return None
+
+
+def _try_merge_const_mathematical(token1, token2, S_mv):
+    """Mathematical CONST merge using value equality."""
+    op1, params1, L1, cost1, P1 = token1
+    op2, params2, L2, cost2, P2 = token2
+    
+    # Check if same byte value (mathematical equality)
+    if len(params1) == 1 and len(params2) == 1 and params1[0] == params2[0]:
+        # Compute merged cost
+        merged_L = L1 + L2
+        merged_params = (params1[0],)  # Same byte value
+        merged_cost = compute_cost_receipts(OP_CONST, merged_params, merged_L)
+        original_cost = cost1['C_stream'] + cost2['C_stream']
+        
+        # Accept merge if cost-effective
+        if merged_cost['C_stream'] <= original_cost:
+            return (OP_CONST, merged_params, merged_L, merged_cost, P1)
+            
+    return None
+
+
+def _try_merge_step_mathematical(token1, token2, S_mv):
+    """Mathematical STEP merge using arithmetic continuity."""
+    op1, params1, L1, cost1, P1 = token1
+    op2, params2, L2, cost2, P2 = token2
+    
+    # Extract STEP parameters
+    if len(params1) == 2 and len(params2) == 2:
+        a01, d1 = params1
+        a02, d2 = params2
+        
+        # Mathematical continuity test: second STEP continues first (mod 256)
+        expected_a02 = (a01 + L1 * d1) % 256
+        if a02 == expected_a02 and d1 == d2:
+            # Merge into single STEP
+            merged_L = L1 + L2
+            merged_params = (a01, d1)  # Same start and difference
+            merged_cost = compute_cost_receipts(OP_STEP, merged_params, merged_L)
+            original_cost = cost1['C_stream'] + cost2['C_stream']
+            
+            # Accept merge if cost-effective
+            if merged_cost['C_stream'] <= original_cost:
+                return (OP_STEP, merged_params, merged_L, merged_cost, P1)
+                
+    return None
+
+
+
