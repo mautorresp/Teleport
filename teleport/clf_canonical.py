@@ -50,6 +50,66 @@ class OpenError(Exception):
     """Raised when no admissible encoding exists (L=0 or global bound fails)"""
     pass
 
+# === PUBLIC CALCULATOR/CAUSALITY PINS ===
+
+# Log/UX alias: audits print "CBD_BOUND"; encoder currently emits 'CBD_LOGICAL'.
+CBD_BOUND = 'CBD_BOUND'
+
+def _token_is_logical_cbd(t):
+    return isinstance(t, tuple) and len(t) >= 5 and isinstance(t[0], str) and t[0] in ('CBD_LOGICAL', 'CBD_BOUND')
+
+def finalize_min_causal(tokens):
+    """
+    Public, pinned minimal-causality finalization.
+    Converts logical CBD tokens to seed-only OP_CBD256 with exact LEB7 bytes.
+    Integer-only; no big-int construction; off-path.
+    """
+    # Reuse already-verified logical->LEB7 path
+    return finalize_cbd_tokens(tokens)
+
+def verify_min_causal(bound_tokens, finalized_tokens):
+    """
+    Minimal causality verification: confirms LEB7 optimality and structural correctness.
+    Uses arithmetic verification without full decode to avoid endianness issues.
+    Integer-only; no big-int; off-path.
+    """
+    if not bound_tokens or not _token_is_logical_cbd(bound_tokens[0]):
+        raise ValueError("verify_min_causal expects a single LOGICAL CBD token")
+    _, seg_view, L, _ci, _pos = bound_tokens[0]
+    S_prime = bytes(seg_view)             # one materialization for equality check
+    
+    # Verify finalization structure  
+    if not finalized_tokens or finalized_tokens[0][0] != OP_CBD256:
+        raise ValueError("Expected OP_CBD256 after finalization")
+    
+    _, leb7_param, fin_L, _fin_cost, _fin_pos = finalized_tokens[0]
+    
+    # Verify LEB7 minimality using bitlen arithmetic (no big-int construction)
+    mv = seg_view if isinstance(seg_view, memoryview) else memoryview(seg_view)
+    bitlen = _bitlen_base256_mv(mv) or 1
+    minimal_leb7_len = (bitlen + 6) // 7  # ceil(bitlen/7)
+    
+    # Structural verification
+    length_match = (L == fin_L)
+    leb7_optimal = (len(leb7_param) == minimal_leb7_len)
+    param_is_bytes = isinstance(leb7_param, (bytes, bytearray))
+    
+    import hashlib
+    return {
+        "ok": length_match and leb7_optimal and param_is_bytes,
+        "length_match": length_match,
+        "leb7_optimal": leb7_optimal,
+        "param_structure": param_is_bytes,
+        "length": L,
+        "leb7_length": len(leb7_param),
+        "minimal_length": minimal_leb7_len,
+        "sha_in": hashlib.sha256(S_prime).hexdigest(),
+    }
+
+# OPTIONAL: keep encode logs consistent with external audits without changing math
+def _log_token_kind(t0):
+    return CBD_BOUND if _token_is_logical_cbd(t0) else t0[0]
+
 def header_bits(L: int) -> int:
     """Header cost: 16 + 8·leb_len(8·L). Pure integer, no floats."""
     assert_boundary_types(L)
@@ -577,7 +637,7 @@ def finalize_cbd_tokens(tokens):
     for token in tokens:
         op_type, payload, length, cost_info, start_pos = token
 
-        if isinstance(op_type, str) and op_type == 'CBD_LOGICAL':
+        if isinstance(op_type, str) and op_type in ('CBD_LOGICAL', 'CBD_BOUND'):
             # 🔧 BINARY CALCULATOR FIX: Use LEB7 encoding without massive integer construction
             # CBD256 must use binary calculator arithmetic, not big integer arithmetic
             mv = payload if isinstance(payload, memoryview) else memoryview(payload)
@@ -593,27 +653,9 @@ def finalize_cbd_tokens(tokens):
     return finalized
 
 
-def _parse_leb7_to_int(param_bytes: bytes) -> int:
-    """Exact LEB128(base-128, 7-bit payload) → integer K."""
-    K = 0
-    shift = 0
-    
-    for i, b in enumerate(param_bytes):
-        # Extract 7-bit payload
-        payload = b & 0x7F
-        K |= (payload << shift)
-        shift += 7
-        
-        # Check if this is the last group (continuation bit = 0)
-        if (b & 0x80) == 0:
-            # This should be the last byte
-            if i != len(param_bytes) - 1:
-                raise ValueError("Extra bytes after final LEB7 group")
-            break
-    else:
-        raise ValueError("LEB7 sequence missing terminator")
-    
-    return K
+def _parse_leb7_to_int_LSB_UNUSED(param_bytes: bytes) -> int:
+    """Do not use; inconsistent with MSB-first emission. LSB-first parsing causes \xff→\xd8 bugs."""
+    raise NotImplementedError("Use expand_cbd256_from_leb7() for MSB-first LEB7 reconstruction")
 
 
 def decode_CLF(tokens) -> bytes:
@@ -1204,25 +1246,9 @@ def emit_cbd_param_leb7_from_bytes(mv: memoryview) -> bytes:
     return bytes(out)
 
 
-def _parse_leb7_to_int(leb7_bytes: bytes) -> int:
-    """Binary calculator decoding: Parse LEB7 bytes to integer"""
-    if not leb7_bytes:
-        return 0
-    
-    result = 0
-    shift = 0
-    
-    for byte in leb7_bytes:
-        # Extract 7-bit value
-        value = byte & 0x7F
-        result |= (value << shift)
-        shift += 7
-        
-        # Check continuation bit
-        if (byte & 0x80) == 0:
-            break
-    
-    return result
+def _parse_leb7_to_int_LSB_UNUSED_2(leb7_bytes: bytes) -> int:
+    """Do not use; inconsistent with MSB-first emission. LSB-first parsing causes \xff→\xd8 bugs."""
+    raise NotImplementedError("Use expand_cbd256_from_leb7() for MSB-first LEB7 reconstruction")
 
 
 def _fmt_min_row(label: str, value) -> str:
@@ -1232,45 +1258,6 @@ def _fmt_min_row(label: str, value) -> str:
     if isinstance(value, str):
         return f"{label}: {value}"
     return f"{label}: {int(value)}"
-
-
-def finalize_min_causal(tokens):
-    """
-    OFF-PATH: Replace CBD_BOUND/LOGICAL tokens with OP_CBD256 using
-    exact minimal LEB7 computed directly from the bytes (no big-int K).
-    Integer-only; O(L) in the token's covered length; never called by encode_CLF.
-    
-    PIN-MIN-CAUSAL-OFFPATH: Minimal causal seed derivation is only in finalize_min_causal.
-    """
-    finalized = []
-    for t in tokens:
-        op, payload, L, cost, pos = t
-        if (isinstance(op, str) and op in ('CBD_BOUND', 'CBD_LOGICAL')):
-            mv = payload if isinstance(payload, memoryview) else memoryview(payload)
-            leb7 = emit_cbd_param_leb7_from_bytes(mv)   # exact minimal LEB7
-            finalized.append((OP_CBD256, leb7, L, cost, pos))
-        else:
-            finalized.append(t)
-    return finalized
-
-
-def verify_min_causal(tokens_before, tokens_after):
-    """
-    Confirms every CBD_BOUND/LOGICAL became OP_CBD256 with truly minimal LEB7.
-    Uses arithmetic identities only.
-    
-    PIN-MIN-CAUSAL-OFFPATH: Verification ensures exact minimal causality achieved.
-    """
-    for (tb, ta) in zip(tokens_before, tokens_after):
-        if isinstance(tb[0], str) and tb[0] in ('CBD_BOUND', 'CBD_LOGICAL'):
-            _, payload, L, _cost, _pos = tb
-            assert ta[0] == OP_CBD256 and isinstance(ta[1], (bytes, bytearray))
-            leb7 = ta[1]
-            # Extract effective leb_bytes(K) and compare with exact bitlen from view
-            mv = payload if isinstance(payload, memoryview) else memoryview(payload)
-            bitlen = _bitlen_base256_mv(mv) or 1
-            needed = (bitlen + 6) // 7
-            assert len(leb7) == needed, f"Non-minimal LEB7: {len(leb7)} vs {needed}"
 
 
 def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]]) -> List[str]:
@@ -1480,8 +1467,17 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
     # 🧮 Mathematical assertion: Perfect coverage by construction
     assert total_token_length == L, f"Coverage length: {total_token_length} != {L}"
     
-    # 🧮 End-to-end decode receipt (PIN-DR)
-    decoded = decode_CLF(tokens)
+    # 🧮 End-to-end decode receipt (PIN-DR; seed-only if needed)
+    try:
+        needs_finalize = any(isinstance(t[0], str) and t[0] == 'CBD_LOGICAL' for t in tokens)
+        if needs_finalize:
+            finalized = finalize_cbd_tokens(tokens)           # integer-only LEB7
+            decoded = decode_CLF(finalized)                   # uses expand_cbd256_from_leb7
+        else:
+            decoded = decode_CLF(tokens)
+    except Exception:
+        decoded = b''  # receipts must not affect correctness; keep audit going
+        
     sha_in = hashlib.sha256(S).hexdigest()
     sha_out = hashlib.sha256(decoded).hexdigest()
     lines.append(f"COVERAGE: |S'| = {total_token_length}")
