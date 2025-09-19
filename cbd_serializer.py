@@ -1,45 +1,45 @@
-#!/usr/bin/env python3
 """
-CLF CBD serialization fix
+CBD256 Serialization - CLF Mathematical Minimality
+PIN-DR: Direct CBD256 serialization without K contamination
 """
 
+from teleport.seed_format import OP_CBD256
 from teleport.leb_io import leb128_emit_single
-from teleport.seed_format import OP_CBD
 
-def emit_CBD(N: int, literal_bytes: list[int]) -> bytes:
+def serialize_cbd_caus(data: bytes) -> bytes:
     """
-    Emit CBD with correct format: OP_CBD + LEB128(N) + N raw bytes
+    Emit CBD with correct format: OP_CBD256 + LEB128(N) + N raw bytes
     """
-    if len(literal_bytes) != N:
-        raise ValueError(f"CBD: expected {N} bytes, got {len(literal_bytes)}")
+    if not data:
+        return bytes([OP_CBD256]) + leb128_emit_single(0)
     
-    result = bytes([OP_CBD])  # Tag
-    result += leb128_emit_single(N)  # Length as LEB128
-    result += bytes(literal_bytes)  # Raw bytes (no LEB128)
-    
+    N_bytes = leb128_emit_single(len(data))
+    result = bytes([OP_CBD256])  # Tag
+    result += N_bytes            # Length parameter
+    result += data               # Raw bytes
     return result
 
-def serialize_cbd_caus(op_id: int, params: tuple, L: int) -> bytes:
-    """
-    Serialize CAUS certificate, handling CBD specially
-    """
-    if op_id == OP_CBD:
-        N = params[0]
-        literal_bytes = list(params[1:])
-        return emit_CBD(N, literal_bytes)
-    else:
-        # Use standard emit_CAUS for other operations
-        from teleport.seed_format import emit_CAUS
-        return emit_CAUS(op_id, list(params), L)
-
-# Test the fix
-if __name__ == "__main__":
-    # Test CBD serialization
-    test_params = (4, 171, 205, 239, 18)
-    cbd_seed = serialize_cbd_caus(9, test_params, 4)
-    print(f"Fixed CBD seed: {cbd_seed.hex().upper()}")
+def parse_cbd_caus(buffer: bytes, offset: int = 0):
+    """Parse CBD CAUS from buffer"""
+    if offset >= len(buffer):
+        return None, offset
+        
+    op_id = buffer[offset]
+    if op_id == OP_CBD256:
+        # Parse ULEB128 length
+        pos = offset + 1
+        length = 0
+        shift = 0
+        while pos < len(buffer):
+            byte = buffer[pos]
+            length |= (byte & 0x7F) << shift
+            pos += 1
+            if (byte & 0x80) == 0:
+                break
+            shift += 7
+        
+        # Extract data
+        data = buffer[pos:pos + length]
+        return (op_id, length, data), pos + length
     
-    # Should be: 09 04 AB CD EF 12
-    expected = bytes([0x09, 0x04, 0xAB, 0xCD, 0xEF, 0x12])
-    print(f"Expected:       {expected.hex().upper()}")
-    print(f"Match: {cbd_seed == expected}")
+    return None, offset

@@ -1,0 +1,219 @@
+{
+  "audit_metadata": {
+    "timestamp": "2025-09-18T18:08:36.208629",
+    "input_file": "pic1.jpg",
+    "clf_version": "canonical_mathematical_bijection",
+    "audit_type": "external_mathematical_witness"
+  },
+  "process_chain": {
+    "input": {
+      "file_path": "pic1.jpg",
+      "size_bytes": 968,
+      "sha256_hash": "529a3837def11ece073eaa07b79d7c91c8028f6a5bf4beb5e88bd66d4e21bb91",
+      "first_16_bytes": "ffd8ffe000104a464946000101010048",
+      "last_16_bytes": "bec3c8cdd2d7dce1e6ebf0f5faffffd9"
+    },
+    "encoding": {
+      "mode": "minimal",
+      "encoding_time_seconds": 0.0008718967437744141,
+      "token_count": 14,
+      "token_analysis": [
+        {
+          "index": 1,
+          "type": "CBD_LOGICAL",
+          "stream_cost_bits": 128,
+          "full_token": "('CBD_LOGICAL', <memory at 0x1046e19c0>, 11, {'C_op': 8, 'C_params': 104, 'C_L': 8, 'C_CAUS': 120, 'C_END': 8, 'C_stream': 128, 'serialized_bytes': 15, 'construction_method': 'LOGICAL-CBD'}, 0)"
+        },
+        {
+          "index": 2,
+          "type": "2",
+          "stream_cost_bits": 32,
+          "full_token": "(2, (1,), 3, {'C_op': 8, 'C_params': 8, 'C_L': 8, 'C_CAUS': 24, 'C_END': 8, 'C_stream': 32, 'serialized_bytes': 3}, 11)"
+        },
+        {
+          "index": 3,
+          "type": "CBD_LOGICAL",
+          "stream_cost_bits": 64,
+          "full_token": "('CBD_LOGICAL', <memory at 0x1046e1b40>, 4, {'C_op': 8, 'C_params': 40, 'C_L': 8, 'C_CAUS': 56, 'C_END': 8, 'C_stream': 64, 'serialized_bytes': 7, 'construction_method': 'LOGICAL-CBD'}, 14)"
+        },
+        {
+          "index": 4,
+          "type": "2",
+          "stream_cost_bits": 32,
+          "full_token": "(2, (0,), 2, {'C_op': 8, 'C_params': 8, 'C_L': 8, 'C_CAUS': 24, 'C_END': 8, 'C_stream': 32, 'serialized_bytes': 3}, 18)"
+        },
+        {
+          "index": 5,
+          "type": "CBD_LOGICAL",
+          "stream_cost_bits": 136,
+          "full_token": "('CBD_LOGICAL', <memory at 0x1046e1c00>, 12, {'C_op': 8, 'C_params': 112, 'C_L': 8, 'C_CAUS': 128, 'C_END': 8, 'C_stream': 136, 'serialized_bytes': 16, 'construction_method': 'LOGICAL-CBD'}, 20)"
+        },
+        {
+          "index": 6,
+          "type": "2",
+          "stream_cost_bits": 32,
+          "full_token": "(2, (12,), 2, {'C_op': 8, 'C_params': 8, 'C_L': 8, 'C_CAUS': 24, 'C_END': 8, 'C_stream': 32, 'serialized_bytes': 3}, 32)"
+        },
+        {
+          "index": 7,
+          "type": "CBD_LOGICAL",
+          "stream_cost_bits": 456,
+          "full_token": "('CBD_LOGICAL', <memory at 0x1046e1cc0>, 47, {'C_op': 8, 'C_params': 432, 'C_L': 8, 'C_CAUS': 448, 'C_END': 8, 'C_stream': 456, 'serialized_bytes': 56, 'construction_method': 'LOGICAL-CBD'}, 34)"
+        },
+        {
+          "index": 8,
+          "type": "3",
+          "stream_cost_bits": 40,
+          "full_token": "(3, (92, 3), 3, {'C_op': 8, 'C_params': 16, 'C_L': 8, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 81)"
+        },
+        {
+          "index": 9,
+          "type": "CBD_LOGICAL",
+          "stream_cost_bits": 64,
+          "full_token": "('CBD_LOGICAL', <memory at 0x1046e1d80>, 4, {'C_op': 8, 'C_params': 40, 'C_L': 8, 'C_CAUS': 56, 'C_END': 8, 'C_stream': 64, 'serialized_bytes': 7, 'construction_method': 'LOGICAL-CBD'}, 84)"
+        },
+        {
+          "index": 10,
+          "type": "2",
+          "stream_cost_bits": 40,
+          "full_token": "(2, (0,), 501, {'C_op': 8, 'C_params': 8, 'C_L': 16, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 88)"
+        },
+        {
+          "index": 11,
+          "type": "3",
+          "stream_cost_bits": 40,
+          "full_token": "(3, (2, 2), 127, {'C_op': 8, 'C_params': 16, 'C_L': 8, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 589)"
+        },
+        {
+          "index": 12,
+          "type": "2",
+          "stream_cost_bits": 48,
+          "full_token": "(2, (255,), 200, {'C_op': 8, 'C_params': 16, 'C_L': 16, 'C_CAUS': 40, 'C_END': 8, 'C_stream': 48, 'serialized_bytes': 5}, 716)"
+        },
+        {
+          "index": 13,
+          "type": "3",
+          "stream_cost_bits": 40,
+          "full_token": "(3, (10, 5), 50, {'C_op': 8, 'C_params': 16, 'C_L': 8, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 916)"
+        },
+        {
+          "index": 14,
+          "type": "CBD_LOGICAL",
+          "stream_cost_bits": 48,
+          "full_token": "('CBD_LOGICAL', <memory at 0x1046e1e40>, 2, {'C_op': 8, 'C_params': 24, 'C_L': 8, 'C_CAUS': 40, 'C_END': 8, 'C_stream': 48, 'serialized_bytes': 5, 'construction_method': 'LOGICAL-CBD', 'PIN_RECEIPTS': {'PIN_GM_MINIMALITY': {'C_ACTUAL': 1232, 'C_A_WHOLE_RANGE_CBD_BOUND': 8920, 'C_min': 1232, 'GLOBAL_MINIMAL_UPPER_BOUND': True, 'NOTE': 'Bound-only receipt; no per-byte scan'}, 'PIN_TC_COMPLEXITY': {'INPUT_LENGTH': 968, 'ACTUAL_OPS': 14, 'MAX_ALLOWED_OPS': 1000, 'COMPLEXITY_MARGIN': 986, 'ALPHA_CONSTANT': 32, 'BETA_LINEAR': 1, 'ENVELOPE_FORMULA': 'W(L) \u2264 32 + 1\u00b7L = 1000', 'ENVELOPE_SATISFIED': True, 'RATIO_NUM': 14, 'RATIO_DEN': 1000, 'RATIO_FORMAT': '14/1000', 'MATHEMATICAL_PROOF': 'Verified: 14 \u2264 1000'}, 'PIN_DR_RECONSTRUCTION': 'SKIPPED_IN_ENCODE', 'PIN_E2_SERIALIZABLE': True}}, 966)"
+        }
+      ],
+      "cost_accounting": {
+        "stream_cost_bits": 1200,
+        "header_cost_bits": 37,
+        "total_cost_bits": 1237,
+        "baseline_10L_bits": 9680,
+        "mathematical_ratio": 0.1277892561983471,
+        "compression_percentage": 87.22107438016529
+      }
+    },
+    "finalization": {
+      "needed_finalization": true,
+      "finalized_token_count": 14,
+      "finalized_tokens": [
+        {
+          "index": 1,
+          "finalized_token": "(9, b'\\xff\\xf6\\x9f\\xfe\\x80\\x80\\xa0\\xca\\xa3\\x92\\xa8\\xe0\\x00', 11, {'C_op': 8, 'C_params': 104, 'C_L': 8, 'C_CAUS': 120, 'C_END': 8, 'C_stream': 128, 'serialized_bytes': 15, 'construction_method': 'LOGICAL-CBD'}, 0)"
+        },
+        {
+          "index": 2,
+          "finalized_token": "(2, (1,), 3, {'C_op': 8, 'C_params': 8, 'C_L': 8, 'C_CAUS': 24, 'C_END': 8, 'C_stream': 32, 'serialized_bytes': 3}, 11)"
+        },
+        {
+          "index": 3,
+          "finalized_token": "(9, b'\\x92\\x80\\x84@', 4, {'C_op': 8, 'C_params': 40, 'C_L': 8, 'C_CAUS': 56, 'C_END': 8, 'C_stream': 64, 'serialized_bytes': 7, 'construction_method': 'LOGICAL-CBD'}, 14)"
+        },
+        {
+          "index": 4,
+          "finalized_token": "(2, (0,), 2, {'C_op': 8, 'C_params': 8, 'C_L': 8, 'C_CAUS': 24, 'C_END': 8, 'C_stream': 32, 'serialized_bytes': 3}, 18)"
+        },
+        {
+          "index": 5,
+          "finalized_token": "(9, b'\\xff\\xf6\\xe0\\x84\\x98\\xc0\\x96\\x8a\\x88\\x86\\x85\\x83\\x99t', 12, {'C_op': 8, 'C_params': 112, 'C_L': 8, 'C_CAUS': 128, 'C_END': 8, 'C_stream': 136, 'serialized_bytes': 16, 'construction_method': 'LOGICAL-CBD'}, 20)"
+        },
+        {
+          "index": 6,
+          "finalized_token": "(2, (12,), 2, {'C_op': 8, 'C_params': 8, 'C_L': 8, 'C_CAUS': 24, 'C_END': 8, 'C_stream': 32, 'serialized_bytes': 3}, 32)"
+        },
+        {
+          "index": 7,
+          "finalized_token": "(9, b'\\x87\\x84\\xe3\\xa3\\xd1\\xf0\\xee\\x8e\\x86\\xc4\\x83\\x82\\xc1\\xe5\\x8a\\xb8\\x87\\x84\\xa2\\xe1\\xe9\\xcd\\xae\\xd0\\x9f\\x84\\xc2\\xe2\\xa9\\xe1\\x88\\xed\\xb3\\xd3\\xa3\\x82\\x99\\xdd\\x80\\xd1\\xb4\\x9c\\xab\\xc3\\x8a\\x81\\x9c\\xd7\\xb3\\xde\\xaf\\x86\\xaa ', 47, {'C_op': 8, 'C_params': 432, 'C_L': 8, 'C_CAUS': 448, 'C_END': 8, 'C_stream': 456, 'serialized_bytes': 56, 'construction_method': 'LOGICAL-CBD'}, 34)"
+        },
+        {
+          "index": 8,
+          "finalized_token": "(3, (92, 3), 3, {'C_op': 8, 'C_params': 16, 'C_L': 8, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 81)"
+        },
+        {
+          "index": 9,
+          "finalized_token": "(9, b'\\xb8\\x99\\x8c\\xf6\\x18', 4, {'C_op': 8, 'C_params': 40, 'C_L': 8, 'C_CAUS': 56, 'C_END': 8, 'C_stream': 64, 'serialized_bytes': 7, 'construction_method': 'LOGICAL-CBD'}, 84)"
+        },
+        {
+          "index": 10,
+          "finalized_token": "(2, (0,), 501, {'C_op': 8, 'C_params': 8, 'C_L': 16, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 88)"
+        },
+        {
+          "index": 11,
+          "finalized_token": "(3, (2, 2), 127, {'C_op': 8, 'C_params': 16, 'C_L': 8, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 589)"
+        },
+        {
+          "index": 12,
+          "finalized_token": "(2, (255,), 200, {'C_op': 8, 'C_params': 16, 'C_L': 16, 'C_CAUS': 40, 'C_END': 8, 'C_stream': 48, 'serialized_bytes': 5}, 716)"
+        },
+        {
+          "index": 13,
+          "finalized_token": "(3, (10, 5), 50, {'C_op': 8, 'C_params': 16, 'C_L': 8, 'C_CAUS': 32, 'C_END': 8, 'C_stream': 40, 'serialized_bytes': 4}, 916)"
+        },
+        {
+          "index": 14,
+          "finalized_token": "(9, b'\\xff\\xf6 ', 2, {'C_op': 8, 'C_params': 24, 'C_L': 8, 'C_CAUS': 40, 'C_END': 8, 'C_stream': 48, 'serialized_bytes': 5, 'construction_method': 'LOGICAL-CBD', 'PIN_RECEIPTS': {'PIN_GM_MINIMALITY': {'C_ACTUAL': 1232, 'C_A_WHOLE_RANGE_CBD_BOUND': 8920, 'C_min': 1232, 'GLOBAL_MINIMAL_UPPER_BOUND': True, 'NOTE': 'Bound-only receipt; no per-byte scan'}, 'PIN_TC_COMPLEXITY': {'INPUT_LENGTH': 968, 'ACTUAL_OPS': 14, 'MAX_ALLOWED_OPS': 1000, 'COMPLEXITY_MARGIN': 986, 'ALPHA_CONSTANT': 32, 'BETA_LINEAR': 1, 'ENVELOPE_FORMULA': 'W(L) \u2264 32 + 1\u00b7L = 1000', 'ENVELOPE_SATISFIED': True, 'RATIO_NUM': 14, 'RATIO_DEN': 1000, 'RATIO_FORMAT': '14/1000', 'MATHEMATICAL_PROOF': 'Verified: 14 \u2264 1000'}, 'PIN_DR_RECONSTRUCTION': 'SKIPPED_IN_ENCODE', 'PIN_E2_SERIALIZABLE': True}}, 966)"
+        }
+      ]
+    }
+  },
+  "mathematical_witness": {
+    "decoding_time_seconds": 1.3828277587890625e-05,
+    "input_sha256": "529a3837def11ece073eaa07b79d7c91c8028f6a5bf4beb5e88bd66d4e21bb91",
+    "output_sha256": "529a3837def11ece073eaa07b79d7c91c8028f6a5bf4beb5e88bd66d4e21bb91",
+    "size_match": true,
+    "hash_match": true,
+    "bijection_perfect": true,
+    "mathematical_identity": "D \u2218 C \u2218 E = identity"
+  },
+  "performance_analysis": {
+    "construction_B_minimal": {
+      "token_count": 14,
+      "total_bits": 1237,
+      "ratio_vs_10L": 0.1277892561983471,
+      "compression_percent": 87.22107438016529
+    },
+    "construction_A_calc": {
+      "token_count": 1,
+      "total_bits": 8925,
+      "ratio_vs_10L": 0.922004132231405,
+      "compression_percent": 7.799586776859502
+    },
+    "construction_used": "B (minimal/mathematical)",
+    "baseline_10L_bits": 9680
+  },
+  "cryptographic_verification": {
+    "input_file_hash": "529a3837def11ece073eaa07b79d7c91c8028f6a5bf4beb5e88bd66d4e21bb91",
+    "decoded_output_hash": "529a3837def11ece073eaa07b79d7c91c8028f6a5bf4beb5e88bd66d4e21bb91",
+    "hash_algorithm": "SHA-256",
+    "bijection_verified": true,
+    "verification_timestamp": "2025-09-18T18:08:36.210995"
+  },
+  "audit_summary": {
+    "file_processed": "pic1.jpg",
+    "input_size_bytes": 968,
+    "mathematical_bijection_verified": true,
+    "minimal_construction_ratio": 0.1277892561983471,
+    "compression_percentage": 87.22107438016529,
+    "tokens_generated": 14,
+    "process_integrity": "VERIFIED"
+  }
+}
