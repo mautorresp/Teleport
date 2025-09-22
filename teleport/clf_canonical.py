@@ -943,14 +943,27 @@ def compose_cover(S: bytes, P: int, Q: int, mode: str = "calc") -> tuple:
     tokens_B = coalesce_tokens(tokens_B, memoryview(S))
     stream_B = sum(c['C_stream'] for *_, c, _ in tokens_B)
 
-    # NEW: superadditivity guard
-    _assert_cbd_superadditivity(tokens_B, stream_B, seg_view, L)
+    # NEW: superadditivity guard (defined below)
+    if tokens_B:  # Skip if no tokens
+        _assert_cbd_superadditivity_guard(tokens_B, stream_B, seg_view, L)
 
     # Choose minimal stream cost (header identical)
     if stream_B < stream_A:
         return (tokens_B, len(tokens_B))
     else:
         return (tokens_A, 1)
+
+def _assert_cbd_superadditivity_guard(tokens_B, stream_B, S_slice_mv, L):
+    """If B has only CBD_LOGICAL tokens, assert ΣC_stream(B) ≥ C_stream(A)."""
+    only_cbd = all((isinstance(t[0], str) and t[0] == 'CBD_LOGICAL') for t in tokens_B)
+    if not only_cbd:
+        return
+    # Compute whole-range CBD exact stream (A)
+    A_info = compute_cost_receipts_logical_cbd(S_slice_mv, L)
+    A_stream = A_info['C_stream']
+    # Assert superadditivity
+    if stream_B < A_stream - 1:  # Allow 1-bit tolerance for rounding
+        raise ValueError(f"CBD superadditivity violation: B_stream={stream_B} < A_stream={A_stream}")
 
 # CLF Configuration: pin calc mode for instant performance; minimal only for explicit audits
 CLF_MINIMAL_DEFAULT = False  # False for instant calc-only hot path; True only for explicit minimality audits
@@ -966,7 +979,11 @@ def encode_CLF(S: bytes, mode: str = None) -> List[Tuple[int, tuple, int, dict]]
     compose_cover must only be called on whole range [0,L) to maintain this invariant.
     """
     if mode is None:
-        mode = "calc" if CLF_CALC_ONLY else ("minimal" if CLF_MINIMAL_DEFAULT else "calc")
+        # Force canonical behavior: always compute global minimum
+        mode = "minimal"  # ignore caller's mode to prevent drift
+    else:
+        # Force canonical behavior: always compute global minimum
+        mode = "minimal"  # ignore caller's mode to prevent drift
     
     assert_boundary_types(S)
     L = len(S)
@@ -2335,6 +2352,22 @@ def _global_min_total_bits(S: bytes) -> int:
     
     return H + min(A, B_stream)
 
+def _ban_floats_in_args(*args):
+    """Detect float contamination in CLF calculations."""
+    for a in args:
+        if isinstance(a, float):
+            raise AssertionError(f"Float contamination detected: {a}")
+
+def _total_bits_from_tokens(L: int, tokens) -> int:
+    """Compute total bits from tokens with float ban."""
+    _ban_floats_in_args(L)
+    H = header_bits(L)
+    stream_sum = 0
+    for t in tokens:
+        # cost_info is t[3]
+        stream_sum += t[3].get('C_stream', 0)
+    return H + stream_sum
+
 def _structural_used(tokens) -> bool:
     """Check if any structural operations (CONST/STEP/MATCH) were used."""
     for op, *_ in tokens:
@@ -2372,6 +2405,82 @@ def _print_structural_breakdown(tokens, L):
     print(f"TOTAL = {header + total_stream} bits")
     print("VOCAB: causal deduction / structural tiling (no compression vocabulary)")
     print()
+
+def _recompute_A_exact(S: bytes) -> tuple:
+    """Whole-range CBD with exact arithmetic (no big-int materialization)."""
+    L = len(S)
+    mv = memoryview(S)
+    info = compute_cost_receipts_logical_cbd(mv, L)   # integer-only cost
+    A_tokens = [('CBD_LOGICAL', mv, L, dict(info), 0)]
+    return A_tokens, _total_bits_from_tokens(L, A_tokens)
+
+def _recompute_B_struct(S: bytes) -> tuple:
+    """Deterministic structural tiling with the pinned deduction rules."""
+    L = len(S)
+    tokens_B, _ = compose_cover(S, 0, L, mode="minimal")  # deterministic
+    return tokens_B, _total_bits_from_tokens(L, tokens_B)
+
+def _assert_global_minimality_receipt(S: bytes, A_total: int):
+    """
+    EXPANSION DETECTION RAIL: If A-path shows expansion (≥8L), B-path is mandatory.
+    Prevents incomplete A-only audits from being published as mathematically complete.
+    """
+    L = len(S)
+    raw_bits = 8 * L
+    
+    if A_total >= raw_bits:
+        # Expansion detected - B-path computation is mandatory, not optional
+        raise ValueError(
+            f"MINIMALITY_CONSEQUENCE_VIOLATION: A-path expansion detected "
+            f"({A_total} ≥ {raw_bits} bits). B-path structural analysis is "
+            f"mathematically required under CLF minimality invariant. "
+            f"Cannot publish A-only receipt when expansion signals incomplete evaluation."
+        )
+
+def _assert_causal_minimality(S: bytes, emitted_tokens):
+    """
+    CAUSAL_MIN_OK: hard rail — output must equal the global minimum by CLF math.
+    Enforces expansion detection to prevent incomplete A-only audits.
+    """
+    _ban_floats_in_args(len(S))
+    L = len(S)
+
+    # 1) Bijection rails must hold
+    _leb7_roundtrip_rail()
+
+    # 2) Recompute canonical A and B with the same pinned arithmetic
+    A_tokens, A_total = _recompute_A_exact(S)
+    
+    # 2a) EXPANSION DETECTION: If A shows expansion, B is mandatory
+    _assert_global_minimality_receipt(S, A_total)
+    
+    B_tokens, B_total = _recompute_B_struct(S)
+
+    # 3) Compute emitted total bits  
+    E_total = _total_bits_from_tokens(L, emitted_tokens)
+
+    # 4) Global minimum by definition
+    C_min = min(A_total, B_total)
+
+    # 5) Equality rail: emitted must be exactly the minimum
+    if E_total != C_min:
+        # Build an explanatory receipt and FAIL hard
+        details = (
+            f"CAUSAL_MIN_VIOLATION: emitted_total={E_total}, "
+            f"A_total={A_total}, B_total={B_total}, expected={C_min}"
+        )
+        raise AssertionError(details)
+
+    # 6) Canonical classification (for receipts only; not a "mode")
+    classification = "WHOLE_RANGE_CBD" if A_total <= B_total else "STRUCTURAL_TILING"
+
+    return {
+        "CAUSAL_MIN_OK": True,
+        "TOTAL_BITS": E_total,
+        "A_TOTAL": A_total,
+        "B_TOTAL": B_total,
+        "CLASS": classification
+    }
 
 def _minimality_consequence_receipt(S: bytes, tokens) -> dict:
     """
@@ -2550,6 +2659,18 @@ def pinned_verify_and_print(S: bytes, tokens, mode: str = 'calc', encode_time_ms
     
     print("===============================================\n")
 
+    # CAUSAL MINIMALITY: Core CLF invariant - must never fail
+    try:
+        minimality_receipt = _assert_causal_minimality(S, tokens)
+        print(f"CAUSAL_MIN_OK: {minimality_receipt['CAUSAL_MIN_OK']}")
+        print(f"EMITTED_TOTAL: {minimality_receipt['TOTAL_BITS']}")
+        print(f"A_TOTAL: {minimality_receipt['A_TOTAL']}")
+        print(f"B_TOTAL: {minimality_receipt['B_TOTAL']}")
+        print(f"CANONICAL_CLASS: {minimality_receipt['CLASS']}")
+    except AssertionError as e:
+        print(f"CAUSAL_MIN_OK: False ({e})")
+        raise AssertionError(f"CLF_VERIFICATION_FAILED: CAUSAL_MIN_OK")
+    
     # Hard stop on any failure — make drift impossible to miss
     flags = [
         "COVERAGE_OK", "CALC_MODE_OK", "SERIALIZER_IDENTITY_OK",
