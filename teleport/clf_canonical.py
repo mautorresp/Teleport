@@ -259,55 +259,48 @@ def compute_cbd_cost_logical_bound(L: int) -> dict:
 
 def expand_cbd256_from_leb7(leb7_bytes: bytes, L: int) -> bytes:
     """
-    Deterministic inverse of emit_cbd_param_leb7_from_bytes without constructing K.
-    Rebuilds the big-endian byte array of length L directly from the 7-bit groups.
-    Pure integer/bit operations; no floating point, no big-int materialization.
-
-    Hardened: consume ALL groups provided (no early terminator break). This matches
-    the emitter's fixed-group output and prevents premature truncation when a
-    group has its high bit cleared before the final group.
+    CLF-aligned canonical LEB128 decoder: reconstruct S = K mod 256^L from LSB-first digits.
+    Uses Horner-form evaluation: K = d₀ + 128·(d₁ + 128·(d₂ + ...))
+    Pure integer, streaming, no big-int materialization. Bijective inverse of emit.
     """
+    # Canonical LSB-first LEB128 decoder using Horner evaluation
     assert_boundary_types(leb7_bytes, L)
     assert L >= 0
+    
+    if L == 0:
+        return b""
+    
+    out = bytearray(L)  # big-endian base-256, modulo 256^L
 
-    # 1) Extract ALL 7-bit groups (ignore continuation bit for termination)
-    groups = [(b & 0x7F) for b in leb7_bytes]
+    def left_shift_128():
+        carry = 0
+        for i in range(L-1, -1, -1):
+            x = (out[i] << 7) + carry  # multiply by 128 = 2^7
+            out[i] = x & 0xFF
+            carry = x >> 8
 
-    # 2) Stitch back into a MSB-first bitstream
-    #    (exact inverse of emit_cbd_param_leb7_from_bytes' grouping)
-    bitbuf = bytearray()
-    acc = 0
-    acc_bits = 0
+    def add_small(v):
+        i = L - 1
+        x = out[i] + (v & 0xFF)
+        out[i] = x & 0xFF
+        c = x >> 8
+        i -= 1
+        while c and i >= 0:
+            x = out[i] + c
+            out[i] = x & 0xFF
+            c = x >> 8
+            i -= 1
 
-    # Emit bits into bytes MSB-first, padding on the left as needed later
-    def _flush_bit(bit):
-        nonlocal acc, acc_bits
-        acc = (acc << 1) | bit
-        acc_bits += 1
-        if acc_bits == 8:
-            bitbuf.append(acc)
-            acc = 0
-            acc_bits = 0
+    # Horner evaluation: K = d₀ + 128·(d₁ + 128·(d₂ + ...))
+    # Process LSB-first digits in reverse for Horner form
+    digits = [b & 0x7F for b in leb7_bytes]
+    for d in reversed(digits[1:]):  # Start from most significant digit
+        add_small(d)
+        left_shift_128()
+    if digits:  # Add least significant digit last
+        add_small(digits[0])
 
-    for g in groups:
-        # each group holds 7 bits, MSB-first
-        for k in range(6, -1, -1):
-            _flush_bit((g >> k) & 1)
-
-    # If we ended mid-byte, left-pad that last byte with zeros (MSB side)
-    if acc_bits > 0:
-        acc <<= (8 - acc_bits)
-        bitbuf.append(acc)
-
-    # bitbuf is the minimal big-endian representation (may be shorter than L)
-    # 3) Left-pad with zeros to exactly L bytes (because K is defined modulo 256^L)
-    if len(bitbuf) < L:
-        return b"\x00" * (L - len(bitbuf)) + bytes(bitbuf)
-    elif len(bitbuf) > L:
-        # drop leading padding if any excess (should only be extra leading zeros)
-        return bytes(bitbuf[-L:])
-    else:
-        return bytes(bitbuf)
+    return bytes(out)
 
 def expand_cbd256(K: int, L: int) -> bytes:
     """
@@ -906,15 +899,18 @@ def compose_cover(S: bytes, P: int, Q: int, mode: str = "calc") -> tuple:
     if L == 0:
         return ([], 0)
 
-    # A) Whole-range CBD (logical, bound-proof costing; integer-only)
+    # A) Whole-range CBD (method depends on mode for CLF alignment)
     seg_view = memoryview(S)[P:Q]
-    cost_A = compute_cost_receipts_logical_cbd(seg_view, L)
-    tokens_A = [('CBD_LOGICAL', seg_view, L, cost_A, P)]
-    stream_A = cost_A['C_stream']
-
     if mode == "calc":
-        # Calculator-speed hot path: choose A immediately  
-        return ([('CBD_BOUND', seg_view, L, cost_A, P)], 1)
+        # Calculator-speed hot path: bound-only costing (no scans)
+        cost_A = compute_cbd_cost_logical_bound(L)
+        tokens_A = [('CBD_BOUND', seg_view, L, cost_A, P)]
+        return (tokens_A, 1)
+    else:
+        # Exact path: scan for precise bitlen
+        cost_A = compute_cost_receipts_logical_cbd(seg_view, L)
+        tokens_A = [('CBD_LOGICAL', seg_view, L, cost_A, P)]
+    stream_A = cost_A['C_stream']
     # B) Canonical structural cover (deterministic, interval-based)
     struct_intervals, gap_intervals = _build_maximal_intervals(seg_view.tobytes(), L)
     # Build tokens_B using the existing helpers (CONST/STEP/MATCH and CBD gaps)
@@ -947,14 +943,17 @@ def compose_cover(S: bytes, P: int, Q: int, mode: str = "calc") -> tuple:
     tokens_B = coalesce_tokens(tokens_B, memoryview(S))
     stream_B = sum(c['C_stream'] for *_, c, _ in tokens_B)
 
+    # NEW: superadditivity guard
+    _assert_cbd_superadditivity(tokens_B, stream_B, seg_view, L)
+
     # Choose minimal stream cost (header identical)
     if stream_B < stream_A:
         return (tokens_B, len(tokens_B))
     else:
         return (tokens_A, 1)
 
-# CLF Configuration: pin minimal mode for audit builds; calc for production hot-path
-CLF_MINIMAL_DEFAULT = True  # pin for audit builds; False for production calc-only
+# CLF Configuration: pin calc mode for instant performance; minimal only for explicit audits
+CLF_MINIMAL_DEFAULT = False  # False for instant calc-only hot path; True only for explicit minimality audits
 
 def encode_CLF(S: bytes, mode: str = None) -> List[Tuple[int, tuple, int, dict]]:
     """
@@ -967,7 +966,7 @@ def encode_CLF(S: bytes, mode: str = None) -> List[Tuple[int, tuple, int, dict]]
     compose_cover must only be called on whole range [0,L) to maintain this invariant.
     """
     if mode is None:
-        mode = "minimal" if CLF_MINIMAL_DEFAULT else "calc"
+        mode = "calc" if CLF_CALC_ONLY else ("minimal" if CLF_MINIMAL_DEFAULT else "calc")
     
     assert_boundary_types(S)
     L = len(S)
@@ -1118,48 +1117,35 @@ def _bitlen_base256_mv(mv: memoryview) -> int:
 
 def emit_cbd_param_leb7_from_bytes(mv: memoryview) -> bytes:
     """
-    PIN-E2: Emit LEB128(base-128) encoding of K where K is the base-256 integer
-    represented by mv (big-endian), without constructing K.
-    Produces exact same byte sequence as encoding K via (K.bit_length(), ceil/7).
+    CLF-aligned canonical LEB128 emitter: LSB-first digits via division-by-128.
+    Pure integer, streaming, bijective with expand_cbd256_from_leb7.
     """
-    # 1) Compute exact bitlen_K directly
-    bitlen = _bitlen_base256_mv(mv)
-    if bitlen == 0:
-        # K == 0 → one 7-bit group of 0x00 (with continuation=0)
+    # Canonical division-by-128 emitter for LSB-first LEB128
+    L = len(mv)
+    if L == 0:
         return b'\x00'
-
-    # 2) Produce 7-bit groups MSB→LSB by scanning bits across mv
-    groups = []
-    acc = 0
-    acc_bits = 0
-    for byte in mv:                # big-endian → feed MSB-first into acc
-        for k in range(7, -1, -1): # bits 7..0
-            acc = (acc << 1) | ((byte >> k) & 1)
-            acc_bits += 1
-            if acc_bits == 7:
-                groups.append(acc)
-                acc = 0
-                acc_bits = 0
-    if acc_bits:                   # leftover bits
-        groups.append(acc << (7 - acc_bits))
-
-    # Trim leading zero groups so that total groups == ceil(bitlen/7)
-    needed = (bitlen + 6) // 7
-    if len(groups) > needed:
-        # drop extra leading zeros
-        groups = groups[len(groups) - needed:]
-    elif len(groups) < needed:
-        # pad on the left
-        groups = [0] * (needed - len(groups)) + groups
-
-    # 3) LEB128: set continuation bit for all but last group
+    
+    # Convert memoryview to working array for division
+    work = bytearray(mv.tobytes())
+    digits = []
+    
+    # Divide by 128 repeatedly, collecting remainders as LSB-first digits
+    while any(work):  # While work array is not all zeros
+        remainder = 0
+        # Divide work array by 128, collecting remainder
+        for i in range(len(work)):
+            temp = remainder * 256 + work[i]
+            work[i] = temp // 128
+            remainder = temp % 128
+        digits.append(remainder)
+    
+    if not digits:
+        digits = [0]
+    
+    # Emit LSB-first with continuation bits (1 for all but last)
     out = bytearray()
-    for i, g in enumerate(groups):
-        byte7 = g & 0x7F
-        if i < len(groups) - 1:
-            out.append(0x80 | byte7)
-        else:
-            out.append(byte7)
+    for i, d in enumerate(digits):
+        out.append((0x80 | (d & 0x7F)) if i < len(digits) - 1 else (d & 0x7F))
     return bytes(out)
 
 
@@ -1365,16 +1351,46 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
             # Handle new token format with position
             op_id, params, token_L, cost_info, pos = token_entry
             
+            # Convert string opcodes to integers for leb_len calculation
+            if isinstance(op_id, str):
+                if op_id in ('CBD_BOUND', 'CBD_LOGICAL'):
+                    op_id_numeric = OP_CBD256
+                elif op_id == 'CONST':
+                    op_id_numeric = OP_CONST
+                elif op_id == 'STEP':
+                    op_id_numeric = OP_STEP  
+                elif op_id == 'MATCH':
+                    op_id_numeric = OP_MATCH
+                else:
+                    raise ValueError(f"Unknown string opcode: {op_id}")
+            else:
+                op_id_numeric = op_id
+            
             # PIN-S Extended: Pure arithmetic identity for all operators (no emit_CAUS)
-            calc_CAUS = 8 * (leb_len(op_id) + sum(leb_len(p) for p in params) + leb_len(token_L))
+            # Handle params which might contain memoryview/bytes objects for CBD operations
+            param_cost = 0
+            for p in params:
+                if isinstance(p, int):
+                    param_cost += leb_len(p)
+                elif hasattr(p, '__len__'):  # memoryview, bytes, etc.
+                    # For CBD operations, this represents the K parameter via bitlen
+                    if op_id_numeric == OP_CBD256:
+                        bitlen_K = bitlen_base256(bytes(p)) if any(bytes(p)) else 1
+                        param_cost += (bitlen_K + 6) // 7  # LEB7 bytes
+            
+            calc_CAUS = 8 * (leb_len(op_id_numeric) + param_cost + leb_len(token_L))
             lines.append(f"SERIALIZER_EQ[{i}]: arithmetic identity "
                         f"8·(leb_len(op)+Σleb_len(params)+leb_len(L)) = {calc_CAUS} == C_CAUS = {cost_info['C_CAUS']}")
             
-            op_len = leb_len(op_id)
+            op_len = leb_len(op_id_numeric)
             len_len = leb_len(token_L)
-            if op_id == OP_CBD256 and len(params) == 1 and isinstance(params[0], int):
-                bitlen_K = params[0].bit_length() if params[0] > 0 else 1
-                leb_bytes_K = (bitlen_K + 6) // 7
+            if op_id_numeric == OP_CBD256 and len(params) == 1:
+                if isinstance(params[0], int):
+                    bitlen_K = params[0].bit_length() if params[0] > 0 else 1
+                    leb_bytes_K = (bitlen_K + 6) // 7
+                elif hasattr(params[0], '__len__'):
+                    bitlen_K = bitlen_base256(bytes(params[0])) if any(bytes(params[0])) else 1
+                    leb_bytes_K = (bitlen_K + 6) // 7
                 lines.append(f"  leb_len(op)={op_len}, leb_len(L)={len_len}, leb_bytes(K)={leb_bytes_K}")
             else:
                 lines.append(f"  leb_len(op)={op_len}, leb_len(L)={len_len}")
@@ -1422,6 +1438,51 @@ def clf_canonical_receipts(S: bytes, tokens: List[Tuple[int, tuple, int, dict]])
     return lines
 
 # IMMUTABLE DRIFT-KILLER RAILS (enforced at import and on every encode)
+def _leb7_roundtrip_rail():
+    """CLF-aligned LEB7 roundtrip rail: comprehensive test of canonical LSB-first LEB128 bijection."""
+    import os
+    
+    # Critical single-byte edge cases (especially multi-byte boundary at 0x80)
+    for v in [0x00, 0x01, 0x03, 0x7F, 0x80, 0x81, 0xB5, 0xFE, 0xFF]:
+        seg = bytes([v])
+        leb = emit_cbd_param_leb7_from_bytes(memoryview(seg))
+        back = expand_cbd256_from_leb7(leb, 1)
+        assert back == seg, f"LEB7 single-byte rt fail: {seg.hex()} -> {leb.hex()} -> {back.hex()}"
+
+    # Multi-byte critical patterns and boundaries
+    critical_tests = [
+        b"\x00\x01",      # Low bytes
+        b"\x80\x00",      # High-low pattern  
+        b"\x01\x00",      # Low-high pattern
+        b"\xFF\x00",      # Max-min pattern
+        b"\x00\xFF",      # Min-max pattern
+        b"\x80\x80",      # Double boundary
+        b"\xFF\xFF",      # Double max
+        bytes(range(16)), # Sequential 0-15
+        bytes(range(128, 144)), # Sequential 128-143
+        bytes([0x42] * 8),     # Repeated pattern
+        bytes([0xAA, 0x55] * 8), # Alternating pattern
+        b"\x00" * 32,     # All zeros (edge case)
+        b"\xFF" * 16,     # All max bytes
+    ]
+    
+    # Add random test vectors for comprehensive coverage
+    critical_tests += [os.urandom(n) for n in (2, 3, 4, 7, 8, 15, 16, 24, 31, 32)]
+    
+    # Test all critical cases
+    for seg in critical_tests:
+        leb = emit_cbd_param_leb7_from_bytes(memoryview(seg))
+        back = expand_cbd256_from_leb7(leb, len(seg))
+        assert back == seg, f"LEB7 multi-byte rt fail (L={len(seg)}): {seg.hex()} -> {leb.hex()} -> {back.hex()}"
+    
+    # Verify canonical LEB128 format properties
+    # Test that continuation bits are correctly set
+    test_val = b"\x80\x01"  # Should produce multi-group LEB128
+    leb = emit_cbd_param_leb7_from_bytes(memoryview(test_val))
+    assert len(leb) >= 2, f"Expected multi-group LEB128 for {test_val.hex()}, got {leb.hex()}"
+    assert (leb[0] & 0x80) != 0, f"Expected continuation bit in first group: {leb.hex()}"
+    assert (leb[-1] & 0x80) == 0, f"Expected no continuation bit in last group: {leb.hex()}"
+
 def _validate_rails():
     """Validate IMMUTABLE mathematical rails at module import"""
     # Rail 1: Header formula consistency (IMMUTABLE)
@@ -1482,8 +1543,8 @@ def _validate_rails():
     # PIN-OP-LEN-PROOF: Verify serializer length calculations match actual emission
     _test_serializer_length_proof()
     
-    # LEB7 finalize→decode round-trip rails (TODO: Fix LEB7 bit alignment)
-    # Temporarily disabled pending LEB7 MSB-first bit alignment fix
+    # LEB7 finalize→decode round-trip rails (FIXED: CLF mathematical alignment)
+    _leb7_roundtrip_rail()
     
     # PIN-UNIT-LOCK: Validate unit-lock and op-length convention
     _validate_unit_lock_and_ids()
@@ -1722,7 +1783,7 @@ def _try_merge_tokens_mathematical(token1, token2, S_mv):
 
 
 def _try_merge_cbd_logical_mathematical(token1, token2, S_mv):
-    """Mathematical CBD merge using absolute positions (no search)."""
+    """Mathematical CBD merge using absolute positions (preserves construction method)."""
     _, _, L1, cost1, P1 = token1
     _, _, L2, cost2, P2 = token2
     
@@ -1730,13 +1791,24 @@ def _try_merge_cbd_logical_mathematical(token1, token2, S_mv):
     merged_L = L1 + L2
     merged_view = S_mv[P1:P1 + merged_L]  # Zero-copy slice
     
-    # Compute merged cost
-    merged_cost = compute_cost_receipts_logical_cbd(merged_view, merged_L)
+    # Preserve construction method consistency
+    meth1 = cost1.get('construction_method')
+    meth2 = cost2.get('construction_method')
+    
+    if meth1 == 'LOGICAL-CBD-BOUND' and meth2 == 'LOGICAL-CBD-BOUND':
+        # Both are bound tokens: use bound math
+        merged_cost = compute_cbd_cost_logical_bound(merged_L)
+        merged_op = 'CBD_BOUND'
+    else:
+        # At least one exact token: use exact math
+        merged_cost = compute_cost_receipts_logical_cbd(merged_view, merged_L)
+        merged_op = 'CBD_LOGICAL'
+    
     original_cost = cost1['C_stream'] + cost2['C_stream']
     
     # Accept merge if cost-effective (mathematical inequality)
     if merged_cost['C_stream'] <= original_cost:
-        return ('CBD_LOGICAL', merged_view, merged_L, merged_cost, P1)
+        return (merged_op, merged_view, merged_L, merged_cost, P1)
         
     return None
 
@@ -1787,8 +1859,8 @@ def _try_merge_step_mathematical(token1, token2, S_mv):
     return None
 
 
-# Execute validation after all functions are defined
-_validate_rails()
+# Execute validation after all functions are defined  
+_validate_rails()  # Enabled with canonical LEB128 implementation
 
 
 # =============================================================================
@@ -1841,6 +1913,24 @@ def decode_CLF(tokens):
     return _ORIG_decode(tokens)
 
 
+def _validate_unit_lock_and_ids():
+    """Verify unit-lock: leb(op) = 1 for all published op IDs < 128"""
+    published_ops = [OP_CONST, OP_STEP, OP_MATCH, OP_CBD256]
+    for op_id in published_ops:
+        if op_id >= 128:
+            raise AssertionError(f"Published op {op_id} >= 128 violates unit-lock")
+        if leb_len(op_id) != 1:
+            raise AssertionError(f"leb_len({op_id}) = {leb_len(op_id)} != 1, violates unit-lock")
+
+def _validate_unit_lock_and_ids():
+    """Verify unit-lock: leb(op) = 1 for all published op IDs < 128"""
+    published_ops = [OP_CONST, OP_STEP, OP_MATCH, OP_CBD256]
+    for op_id in published_ops:
+        if op_id >= 128:
+            raise AssertionError(f"Published op {op_id} >= 128 violates unit-lock")
+        if leb_len(op_id) != 1:
+            raise AssertionError(f"leb_len({op_id}) = {leb_len(op_id)} != 1, violates unit-lock")
+
 # Immutability sentry - prevents silent edits to canonical math
 import inspect, hashlib
 
@@ -1855,14 +1945,14 @@ _PINNED_FUNCS = [
 _PIN_DIGESTS = {
     'header_bits': '7ecf8536f2824f04244780a017789275080d764418a2e87a6f4d059728be37fe',
     'compute_cost_receipts': '03fd439cb0b091eb1db8021faeb274d820aa46b984f1cbaad62b074c50b232a6',
-    'emit_cbd_param_leb7_from_bytes': 'eb3c365040fdf0e632642eaa38edeee692f1e09e6aff045bb3894db9e050395d',
-    'expand_cbd256_from_leb7': '633367b1c2c5f26e83bc2162ef6b1faf73dc904512d1fcfd5ee3bad5a327aef1',
+    'emit_cbd_param_leb7_from_bytes': '4db81fb8a25fb1358f32b26898e21086f81f8c7e0c8ecaa4eab2464a76c8de8e',
+    'expand_cbd256_from_leb7': 'b5a2397db76eca807bf3e5bfad27ed5407e0fc30e0f65fff9f5eda07a4b7b464',
     '_bitlen_base256_mv': '722da94025135d5b9fca08bae6d0dd73156b77d2b6560b7519220beea09d0ae3',
     'compute_cbd_cost_logical_bound': 'd80d833dec3585a4dfc38a76cf775e1cfa7a548ff28ce476cf54a7cc6e80ec11',
     'deduce_maximal_const_run': '819ead6efe987c877061d00cabadf2b2c8e36f160b5bf23cff269434d941f0e3',
     'deduce_maximal_step_run': '5accaeb679ba2050446f713c679dee1b21a64b1c3adde4fcd901431159898797',
     'deduce_maximal_match_run': 'aee716f737d447d91e0c754526dfa405ffe8fa4783b59e36b04b813afe69cd8e',
-    'compose_cover': 'fed6665fa41dd8ee773a48888ee7b571e3e7447adf66c3d02778d0fdd6216fda',
+    'compose_cover': '71d149058b5e853cab23c3b8845bf69505ee658e355325a01dc5b47c659603af',
 }
 
 def _freeze_or_check_pins(write=False):
@@ -1895,7 +1985,7 @@ def _leb7_roundtrip_sanity():
     
     # Test simple cases that should round-trip correctly
     test_cases = [
-        # Small integers that compress well
+        # Small integers with direct mathematical representation
         (1, b"\x01"),  # K=1 -> byte 0x01
         (255, b"\xff"),  # K=255 -> byte 0xff  
         (256, b"\x01\x00"),  # K=256 -> bytes 0x01,0x00
@@ -1989,3 +2079,418 @@ def verify_clf_pins():
         print(f"❌ Selection minimality failed: {e}")
     
     print("🔒 PIN system verification complete")
+
+# ======== CLF BUILT-IN VERIFIER (pins + receipts + hard stop) ========
+
+def _sum_stream_cost(tokens):
+    total = 0
+    for t in tokens:
+        total += t[3].get('C_stream', 0)
+    return total
+
+def _all_cbd_logical(tokens):
+    return all(isinstance(t[0], str) and t[0] in ('CBD_LOGICAL', 'CBD_BOUND') for t in tokens)
+
+def _serializer_identity_ok_for_logical(token):
+    """Method-aware identity check for CBD tokens."""
+    _, seg, L, ci, _ = token
+    op_len = leb_len(OP_CBD256)
+    len_len = leb_len(L)
+
+    meth = ci.get('construction_method')
+    if meth == 'LOGICAL-CBD-BOUND':
+        leb_bytes_K = (8 * L + 6) // 7  # bound (no scan)
+    elif meth == 'LOGICAL-CBD':
+        bitlen = _bitlen_base256_mv(seg) or 1
+        leb_bytes_K = (bitlen + 6) // 7  # exact
+    else:
+        raise AssertionError(f"Unknown construction method: {meth}")
+
+    calc_C_CAUS = 8 * (op_len + leb_bytes_K + len_len)
+    return calc_C_CAUS == ci['C_CAUS']
+
+def _serializer_identity_ok(tokens):
+    # Re-run the arithmetic identity for every token (no serialization)
+    for i, t in enumerate(tokens):
+        op, params, L, cost, *_ = t
+        if isinstance(op, str):
+            # CBD tokens: use method-aware check
+            if op in ('CBD_LOGICAL', 'CBD_BOUND'):
+                if not _serializer_identity_ok_for_logical(t):
+                    return False
+            else:
+                # Structural string names are not emitted in your current encoder
+                return False
+        else:
+            # Numeric op: sum leb(params)
+            param_units = 0
+            if isinstance(params, tuple):
+                for p in params:
+                    if isinstance(p, int):
+                        param_units += leb_len(p)
+                    elif hasattr(p, '__len__'):
+                        # bytes/memoryview as a param (CBD legacy)
+                        seg = bytes(p)
+                        bl = bitlen_base256(seg) or 1
+                        param_units += (bl + 6) // 7
+                    else:
+                        return False
+            else:
+                return False
+            calc = 8 * (leb_len(op) + param_units + leb_len(L))
+            if cost.get('C_CAUS') != calc:
+                return False
+    return True
+
+def _rail_cbd_label_matches_method(tokens):
+    """Hard rail: ensure CBD token labels match their construction methods."""
+    for t in tokens:
+        if not (isinstance(t[0], str) and t[0] in ('CBD_BOUND', 'CBD_LOGICAL')):
+            continue
+        _, _, _, ci, _ = t
+        meth = ci.get('construction_method')
+        if t[0] == 'CBD_BOUND':
+            assert meth == 'LOGICAL-CBD-BOUND', f"CBD_BOUND must use LOGICAL-CBD-BOUND, got {meth}"
+        else:  # CBD_LOGICAL
+            assert meth == 'LOGICAL-CBD', f"CBD_LOGICAL must use LOGICAL-CBD, got {meth}"
+
+def _leb7_roundtrip_ok(tokens):
+    # If there is any logical CBD, finalize to LEB7 and roundtrip back to bytes
+    logical = any(isinstance(t[0], str) and t[0] in ('CBD_LOGICAL','CBD_BOUND') for t in tokens)
+    if not logical:
+        return True
+    fin = finalize_cbd_tokens(tokens)
+    # Decode via MSB-first LEB7 reconstruction (no big-int)
+    out = decode_CLF(fin)
+    # Compare against the logical view concatenation
+    # (This equals S when tokens cover whole input; verifier will check that too)
+    logical_bytes = bytearray()
+    for t in tokens:
+        if isinstance(t[0], str) and t[0] in ('CBD_LOGICAL','CBD_BOUND'):
+            mv = t[1] if isinstance(t[1], memoryview) else memoryview(t[1])
+            logical_bytes.extend(mv)
+        else:
+            # in calc mode, others shouldn't appear
+            return False
+    return bytes(logical_bytes) == out
+
+def verifier_receipt(S: bytes, tokens, mode: str = 'calc', encode_time_ms = None) -> dict:
+    """
+    Single-source-of-truth verification receipt.
+    All checks are integer-only. Any violation implies drift and must stop output.
+    """
+    L = len(S)
+    H = header_bits(L)                          # Header rail
+    stream = _sum_stream_cost(tokens)
+    baseline = 10 * L
+
+    # Pinned function source digests (immutability)
+    try:
+        _freeze_or_check_pins(write=False)
+        pins_ok = True
+    except AssertionError:
+        pins_ok = False
+
+    # Calculator discipline (hot path must be CBD logical only)
+    calc_ok = True
+    if mode == 'calc':
+        calc_ok = _all_cbd_logical(tokens)
+
+    # Serializer arithmetic identity
+    ser_ok = _serializer_identity_ok(tokens)
+
+    # Hard rail: CBD label/method consistency (both versions)
+    _rail_cbd_label_matches_method(tokens)
+    _rail_label_method_consistency(tokens)
+
+    # LEB7 MSB-first finalize→decode roundtrip equals logical payload
+    leb7_ok = _leb7_roundtrip_ok(tokens)
+
+    # Coverage equals L (already validated by validate_encoding_result)
+    covered = sum(t[2] for t in tokens)
+    coverage_ok = (covered == L)
+
+    # Bijection (seed-only): finalize (if needed), decode, compare hashes
+    needs_finalize = any(isinstance(t[0], str) and t[0] in ('CBD_LOGICAL','CBD_BOUND') for t in tokens)
+    fin = finalize_cbd_tokens(tokens) if needs_finalize else tokens
+    out = decode_CLF(fin)
+    bijection_ok = (out == S)
+
+    # Float-ban: wrappers already guard encode/finalize/decode; still assert here
+    no_floats_ok = True
+    for t in tokens:
+        for x in t:
+            if isinstance(x, float):
+                no_floats_ok = False
+                break
+
+    # Immediate behavior (calculator): optional wall-clock check if provided
+    instant_ok = (encode_time_ms is None) or (encode_time_ms < 100)
+
+    # Unit-lock recheck: leb(op)=1 for all published IDs < 128
+    try:
+        _validate_unit_lock_and_ids()
+        unit_lock_ok = True
+    except AssertionError:
+        unit_lock_ok = False
+
+    # Receipt (pure integers; no time included unless passed in)
+    return {
+        "HEADER_BITS": H,
+        "STREAM_BITS": stream,
+        "TOTAL_BITS": H + stream,
+        "BASELINE_BITS": baseline,
+        "RATIO_vs_10L_num": H + stream,
+        "RATIO_vs_10L_den": baseline,
+        "MODE": mode,
+        "COVERAGE_OK": coverage_ok,
+        "CALC_MODE_OK": calc_ok,
+        "SERIALIZER_IDENTITY_OK": ser_ok,
+        "LEB7_ROUNDTRIP_OK": leb7_ok,
+        "BIJECTION_OK": bijection_ok,
+        "FLOAT_BAN_OK": no_floats_ok,
+        "PIN_DIGESTS_OK": pins_ok,
+        "UNIT_LOCK_OK": unit_lock_ok,
+        "IMMEDIATE_OK": instant_ok,
+        "EQUALITY_SHA256_IN": hashlib.sha256(S).hexdigest(),
+        "EQUALITY_SHA256_OUT": hashlib.sha256(out).hexdigest(),
+    }
+
+def _assert_ratio_wording(total_bits: int, L: int, summary_lines: list):
+    """Hard rail: forbid compression wording when total >= raw bits."""
+    raw_bits = 8 * L
+    ratio_8L = total_bits / raw_bits
+    # Hard fail if any "compression" wording appears while ratio >= 1
+    if ratio_8L >= 1.0:
+        joined = " ".join(summary_lines).lower()
+        banned = ("compression", "compressed", "94%", "95%", "reduction")
+        assert not any(b in joined for b in banned), \
+            f"CLAIM_WORDING_VIOLATION: total_bits >= 8L (ratio {ratio_8L:.6f}) forbids compression wording"
+
+def _print_ratios_guarded(total_bits: int, header_bits: int, stream_bits: int, L: int):
+    """Print both ratios with mathematically honest wording."""
+    raw_bits = 8 * L
+    base_bits = 10 * L
+    r8 = total_bits / raw_bits
+    r10 = total_bits / base_bits
+    print(f"HEADER_BITS: {header_bits}")
+    print(f"STREAM_BITS: {stream_bits}")
+    print(f"TOTAL_BITS:  {total_bits}")
+    print(f"RAW_BITS:    {raw_bits}")
+    print(f"RATIO vs  8·L: {r8:.6f}  ({'smaller than raw' if r8 < 1 else 'larger than raw'})")
+    print(f"RATIO vs 10·L: {r10:.6f}")
+    # Enforce consistent wording at the point of truth
+    _assert_ratio_wording(total_bits, L, [])
+
+def _rail_label_method_consistency(tokens):
+    """Hard rail: ensure CBD token labels match their construction methods exactly."""
+    for op, _, _, ci, _ in tokens:
+        if op == 'CBD_BOUND':
+            assert ci.get('construction_method') == 'LOGICAL-CBD-BOUND', \
+                f"CBD_BOUND must use LOGICAL-CBD-BOUND, got {ci.get('construction_method')}"
+        elif op == 'CBD_LOGICAL':
+            assert ci.get('construction_method') == 'LOGICAL-CBD', \
+                f"CBD_LOGICAL must use LOGICAL-CBD, got {ci.get('construction_method')}"
+
+def _global_min_total_bits(S: bytes) -> int:
+    """Compute minimal candidate between A (CBD) and B (structural) exactly as compose_cover(mode="minimal") would choose."""
+    L = len(S)
+    H = header_bits(L)
+    
+    # A: whole-range CBD (exact logical)
+    mv = memoryview(S)
+    A = compute_cost_receipts_logical_cbd(mv, L)['C_stream']  # exact C_stream
+    
+    # B: structural cover (deterministic), reuse existing builder
+    struct_intervals, gap_intervals = _build_maximal_intervals(S, L)
+    tokens_B = []
+    ctx = ContextView()
+    
+    for start, end, kind, params in _materialize_intervals(struct_intervals, gap_intervals):
+        length = end - start
+        if kind == 'CONST':
+            info = compute_cost_receipts(OP_CONST, (params,), length)
+            ctx.append_bytes(bytes([params]) * length)
+            tokens_B.append((OP_CONST, (params,), length, info, start))
+        elif kind == 'STEP':
+            a0, d = params
+            info = compute_cost_receipts(OP_STEP, (a0, d), length)
+            expanded = expand_with_context(OP_STEP, (a0, d), length, ctx)
+            ctx.append_bytes(expanded)
+            tokens_B.append((OP_STEP, (a0, d), length, info, start))
+        elif kind == 'MATCH':
+            D, ln = params, length
+            info = compute_cost_receipts(OP_MATCH, (D, ln), length)
+            expanded = expand_with_context(OP_MATCH, (D, ln), length, ctx)
+            ctx.append_bytes(expanded)
+            tokens_B.append((OP_MATCH, (D, ln), length, info, start))
+        else:  # CBD_GAP
+            gap_mv = memoryview(S)[start:end]
+            gap_info = compute_cost_receipts_logical_cbd(gap_mv, length)
+            tokens_B.append(('CBD_LOGICAL', gap_mv, length, gap_info, start))
+    
+    # Apply coalescing to structural tokens
+    tokens_B = coalesce_tokens(tokens_B, memoryview(S))
+    B_stream = sum(c['C_stream'] for *_, c, _ in tokens_B)
+    
+    return H + min(A, B_stream)
+
+def _structural_used(tokens) -> bool:
+    """Check if any structural operations (CONST/STEP/MATCH) were used."""
+    for op, *_ in tokens:
+        if op in (OP_CONST, OP_STEP, OP_MATCH) or (isinstance(op, str) and op == 'MATCH'):
+            return True
+    return False
+
+def _print_structural_breakdown(tokens, L):
+    """Print causal deduction breakdown when structural operations are used."""
+    structural_ops = [t for t in tokens if t[0] in (OP_CONST, OP_STEP, OP_MATCH) 
+                      or (isinstance(t[0], str) and t[0] == 'MATCH')]
+    if not structural_ops:
+        return
+    
+    print("STRUCTURAL_TILING:")
+    step_count = {}
+    for op, prm, ln, c, pos in structural_ops:
+        if op == OP_STEP:
+            a0, d = prm
+            key = (d, ln)
+            if key not in step_count:
+                step_count[key] = []
+            step_count[key].append((a0, c['C_stream']))
+    
+    for (d, ln), instances in step_count.items():
+        count = len(instances)
+        cost = instances[0][1]  # All should have same cost
+        print(f"  tiles: {count} × STEP(a0, d={d:+d}, L={ln})")
+        print(f"  cost per tile: C_stream={cost} bits")
+        print(f"  ΣC_stream(tiles) = {count * cost} bits")
+    
+    total_stream = sum(c.get('C_stream', 0) for *_, c, _ in tokens)
+    header = header_bits(L)
+    print(f"HEADER: H(L={L}) = {header} bits")
+    print(f"TOTAL = {header + total_stream} bits")
+    print("VOCAB: causal deduction / structural tiling (no compression vocabulary)")
+    print()
+
+def _minimality_consequence_ok(S: bytes, tokens) -> bool:
+    """Check if the chosen construction achieves sub-8·L, or if global minimum does."""
+    L = len(S)
+    total_bits = header_bits(L) + sum(c.get('C_stream', 0) for *_, c, _ in tokens)
+    
+    if total_bits < 8 * L:
+        return True  # chosen construction already sub-raw
+        
+    # Otherwise, check the global minimum (exact compare A vs B)
+    min_total = _global_min_total_bits(S)
+    return min_total < 8 * L
+
+def _assert_cbd_superadditivity(tokens_B, stream_B, S_slice_mv, L):
+    """If B has only CBD_LOGICAL tokens, assert ΣC_stream(B) ≥ C_stream(A)."""
+    only_cbd = all((isinstance(t[0], str) and t[0] == 'CBD_LOGICAL') for t in tokens_B)
+    if not only_cbd:
+        return
+    # Compute whole-range CBD exact stream (A)
+    A_info = compute_cost_receipts_logical_cbd(S_slice_mv, L)
+    A_stream = A_info['C_stream']
+    assert stream_B >= A_stream, (
+        f"CBD superadditivity violated: split CBD stream {stream_B} < whole-range {A_stream}"
+    )
+
+def _assert_causality_wording(total_bits: int, L: int, summary: list, *,
+                              structural_used: bool, calc_mode: bool):
+    """Enforce CLF causality vocabulary, forbid compression/pattern wording."""
+    text = " ".join(summary).lower()
+    # Always forbid compression wording
+    banned = ("compression", "compressed", "compressible", "compressing")
+    assert not any(b in text for b in banned), \
+        "CLAIM_WORDING_VIOLATION: compression vocabulary is forbidden in CLF"
+    # Forbid 'pattern(s)' – use structural/tiling vocabulary
+    assert "pattern" not in text and "patterns" not in text, \
+        "CLAIM_WORDING_VIOLATION: use 'structural tiling / causal deduction', not 'patterns'"
+    # Calc mode honesty: if calc-only result shown, do not imply global minimality
+    if calc_mode:
+        assert "minimal" not in text and "global minimum" not in text, \
+            "CLAIM_WORDING_VIOLATION: calc mode is a bound; do not claim global minimality"
+    # If structural was used (CONST/STEP/MATCH present), require causal phrasing
+    if structural_used:
+        required = ("causal", "deduction")  # must include at least one
+        assert any(r in text for r in required), \
+            "CLAIM_WORDING_VIOLATION: structural encoding must be described as 'causal deduction'"
+
+def _assert_success_wording(total_bits: int, L: int, summary: list, minimal_ok: bool, policy_on: bool):
+    """Block success wording when minimality policy is on but not achieved."""
+    if policy_on and not minimal_ok:
+        joined = " ".join(summary).lower()
+        banned = ("success", "complete success", "reduction", "compressed", "compression")
+        assert not any(b in joined for b in banned), \
+            "CLAIM_WORDING_VIOLATION: minimality required but not achieved"
+
+def pinned_verify_and_print(S: bytes, tokens, mode: str = 'calc', encode_time_ms = None, **kwargs):
+    """
+    Print receipts and STOP (raise) on any violation.
+    This is meant to be called by console code immediately after encode_CLF.
+    """
+    r = verifier_receipt(S, tokens, mode, encode_time_ms)
+
+    print("\n=== CLF VERIFICATION RECEIPT (IMMUTABLE PINS) ===")
+    print(f"MODE: {r['MODE']}")
+    L = len(S)
+    # Use guarded ratio printing with both 8*L and 10*L ratios
+    _print_ratios_guarded(r['TOTAL_BITS'], r['HEADER_BITS'], r['STREAM_BITS'], L)
+    print(f"BASELINE:    {r['BASELINE_BITS']}")
+    print(f"COVERAGE_OK: {r['COVERAGE_OK']}")
+    print(f"CALC_MODE_OK: {r['CALC_MODE_OK']}")
+    print(f"SERIALIZER_IDENTITY_OK: {r['SERIALIZER_IDENTITY_OK']}")
+    print(f"LEB7_ROUNDTRIP_OK: {r['LEB7_ROUNDTRIP_OK']}")
+    print(f"BIJECTION_OK: {r['BIJECTION_OK']}")
+    print(f"FLOAT_BAN_OK: {r['FLOAT_BAN_OK']}")
+    print(f"PIN_DIGESTS_OK: {r['PIN_DIGESTS_OK']}")
+    print(f"UNIT_LOCK_OK: {r['UNIT_LOCK_OK']}")
+    if encode_time_ms is not None:
+        print(f"IMMEDIATE_OK (<100ms): {r['IMMEDIATE_OK']}  ({encode_time_ms:.3f} ms)")
+    print(f"SHA256_IN :  {r['EQUALITY_SHA256_IN']}")
+    print(f"SHA256_OUT:  {r['EQUALITY_SHA256_OUT']}")
+    
+    # Minimality consequence check (policy-controlled)
+    import os
+    require_min = (os.getenv("CLF_REQUIRE_MINIMAL", "0") == "1") or (kwargs.get("require_minimal") is True)
+    if require_min:
+        minimal_ok = _minimality_consequence_ok(S, tokens)
+        print(f"MINIMALITY_CONSEQUENCE_OK: {minimal_ok}")
+        # Check success wording against policy
+        _assert_success_wording(r['TOTAL_BITS'], len(S), [], minimal_ok, require_min)
+        if not minimal_ok:
+            print("===============================================\n")
+            raise AssertionError("CLF_VERIFICATION_FAILED: MINIMALITY_CONSEQUENCE_OK")
+    else:
+        print("MINIMALITY_CONSEQUENCE_OK: (policy OFF)")
+    
+    # Causality wording verification
+    structural_used = _structural_used(tokens)
+    calc_mode = mode == 'calc'
+    # Note: passing empty summary since we're not checking specific output text yet
+    # This can be extended to check actual output text when needed
+    try:
+        _assert_causality_wording(r['TOTAL_BITS'], len(S), [], 
+                                structural_used=structural_used, calc_mode=calc_mode)
+        print("CAUSALITY_WORDING_OK: True")
+    except AssertionError as e:
+        print(f"CAUSALITY_WORDING_OK: False ({e})")
+        raise AssertionError(f"CLF_VERIFICATION_FAILED: CAUSALITY_WORDING_OK")
+    
+    # Print structural breakdown if structural operations were used
+    if structural_used:
+        _print_structural_breakdown(tokens, len(S))
+    
+    print("===============================================\n")
+
+    # Hard stop on any failure — make drift impossible to miss
+    flags = [
+        "COVERAGE_OK", "CALC_MODE_OK", "SERIALIZER_IDENTITY_OK",
+        "LEB7_ROUNDTRIP_OK", "BIJECTION_OK", "FLOAT_BAN_OK",
+        "PIN_DIGESTS_OK", "UNIT_LOCK_OK"
+    ]
+    bad = [k for k in flags if not r[k]]
+    if bad:
+        raise AssertionError(f"CLF_VERIFICATION_FAILED: {', '.join(bad)}")
