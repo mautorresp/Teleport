@@ -1,0 +1,42 @@
+CLF TELEPORT FULL EXPLANATION V8_pic1
+================================================================================
+Generated: 2025-09-23T13:02:20.270241
+
+[MATHEMATICAL_AXIOMS_V8]
+Object model: S := bytes(test_artifacts/pic1.jpg) (mathematical binary string)
+RAW_BITS := 8*L
+Header: H(L) := 16 + 8*leb_len(8*L)
+END(p): 3 + ((8-((p+3)%8))%8) (positional)
+CAUS(op,v,L): 3 + 8*leb_len(op) + sum(8*leb_len(v_i)) + 8*leb_len(L)
+STREAM := sum(CAUS + END) over tokens
+TOTAL := H + STREAM
+
+[UNIVERSALITY_RESTORED_V8]
+A-path: Universal causal seed deduction (no S-packing)
+B-path: Deterministic CAUS tiling analysis
+Both paths operate independently with integer-only arithmetic
+
+[PREDICTION_AS_FILTER_V8]
+Before building: predict STREAM for each path from S properties
+Hard lock: COMPLETE paths must have STREAM_obs == STREAM_pred
+Mismatch → CAUSEFAIL with pinpointed locus
+
+[DECISION_ALGEBRA_V8]
+C_min_total = min(H+A_stream, H+B_stream) over COMPLETE paths
+C_min_via = H + min(A_stream, B_stream) over COMPLETE paths
+Rail: C_min_total = C_min_via
+
+[EMIT_GATE_AND_RECEIPTS_V8]
+EMIT iff C(S) < 8*L
+EMIT receipts: SHA256_IN == SHA256_OUT with EQUALITY=True
+Token-local bijection required
+
+[CALCULATOR_CONSTRAINTS_V8]
+Integer-only arithmetic (NO_FP rail)
+No compression vocabulary (NO_COMPRESSION_LINGO rail)
+Time scales with L, not content complexity
+Single-pass logs, no content re-walks
+
+[RAILS_V8_SUMMARY]
+NO_FP, UNIT_LOCK, END_LOCK, PREDICTION_LOCK, DECODE_LOCK
+R0-R10: Integer-only through prediction equality enforcement

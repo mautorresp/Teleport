@@ -1,0 +1,98 @@
+CLF TELEPORT PREDICTION EXPORT V4
+================================================================================
+Generated: 2025-09-23T11:12:23.946533
+
+[PREDICTION_METHODOLOGY_V4]
+A_PRED: From Teleport causal seed model (NOT S-packing bound)
+B_PRED: From declared CAUS tiling structure
+Exact equality required: PRED == OBS for each construction
+
+[PREDICTION_RESULTS]
+
+[RUN_1] S1
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_2] S2
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_3] S3
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_4] EMPTY
+============================================================
+
+A_PREDICTION:
+  A_PRED = 0 (status: COMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_5] SINGLE
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_6] DOUBLE
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_7] TRIPLE
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_8] ARITH
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = (computed during build)
+
+PREDICTION_RAILS:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE

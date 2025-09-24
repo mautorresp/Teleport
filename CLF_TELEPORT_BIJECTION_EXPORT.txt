@@ -1,0 +1,240 @@
+CLF TELEPORT BIJECTION-COMPLETE MATHEMATICAL EXPORT
+================================================================================
+Generated: 2025-09-23T10:34:46.171599
+
+[ENVIRONMENT]
+Python version: 3.12.3 (v3.12.3:f6650f9ad7, Apr  9 2024, 08:18:47) [Clang 13.0.0 (clang-1300.0.29.30)]
+Platform: macOS-15.7-arm64-arm-64bit
+
+[TELEPORT_AXIOMS_BIJECTIVE]
+H(L) := 16 + 8 * leb_len(8*L)
+C_END(bitpos) := 3 + pad_to_byte(bitpos + 3)
+C_CAUS(op, params, L) := 3 + 8*leb_len(op) + Σ 8*leb_len(param_i) + 8*leb_len(L)
+
+BIJECTION REQUIREMENT:
+  Every token with L>0 must include parameters sufficient for reconstruction
+  CONST: params=[byte_value] for single bytes
+  STEP: params=[start_byte, stride] for sequences
+  CBD: params=[seed_K] where expand(K,L) reconstructs input exactly
+
+[BIJECTION_COMPLETE_TEST_CORPUS]
+
+[RUN_1] EMPTY
+============================================================
+PROPERTIES:
+  L = 0
+  RAW_BITS = 0
+  SHA256_IN = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 32
+  H: 24
+
+TOKENS_BIJECTIVE:
+  [0] KIND=END
+       STREAM_BITS=8
+       BITPOS=0
+
+RAILS_BIJECTIVE:
+  R_BIJECT=True  R_SEED=True  R_A_PRED=True  R_B_PRED=True
+
+OUTCOME: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  Excess: 32 bits over raw encoding
+
+[RUN_2] SINGLE_BYTE
+============================================================
+PROPERTIES:
+  L = 1
+  RAW_BITS = 8
+  SHA256_IN = 559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 56
+  H: 24
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=1 L=1 params=[65]
+       STREAM_BITS=27
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       SEED_K=65
+       EXPANSION_VERIFIED=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=27
+
+RAILS_BIJECTIVE:
+  R_BIJECT=True  R_SEED=True  R_A_PRED=True  R_B_PRED=True
+
+OUTCOME: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  Excess: 48 bits over raw encoding
+
+[RUN_3] REPETITION
+============================================================
+PROPERTIES:
+  L = 2
+  RAW_BITS = 16
+  SHA256_IN = 58bb119c35513a451d24dc20ef0e9031ec85b35bfc919d263e7e5d9868909cb5
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 64
+  H: 24
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=2 L=2 params=[65, 0]
+       STREAM_BITS=35
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=35
+
+RAILS_BIJECTIVE:
+  R_BIJECT=True  R_SEED=False  R_A_PRED=True  R_B_PRED=True
+  FAILURES:
+    RAIL_FAIL:R_SEED K length 1 != predicted 3
+
+OUTCOME: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  Excess: 48 bits over raw encoding
+
+[RUN_4] NO_PATTERN
+============================================================
+PROPERTIES:
+  L = 3
+  RAW_BITS = 24
+  SHA256_IN = b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 80
+  H: 24
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=1 L=3 params=[4407873]
+       STREAM_BITS=51
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       SEED_K=4407873
+       EXPANSION_VERIFIED=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=51
+
+RAILS_BIJECTIVE:
+  R_BIJECT=True  R_SEED=True  R_A_PRED=True  R_B_PRED=True
+
+OUTCOME: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  Excess: 56 bits over raw encoding
+
+[RUN_5] MIXED
+============================================================
+PROPERTIES:
+  L = 6
+  RAW_BITS = 48
+  SHA256_IN = 334d016f755cd6dc58c53a86e183882f8ec14f52fb05345887c8a5edd42c87b7
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 104
+  H: 24
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=1 L=6 params=[36762444129608]
+       STREAM_BITS=75
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       SEED_K=36762444129608
+       EXPANSION_VERIFIED=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=75
+
+RAILS_BIJECTIVE:
+  R_BIJECT=True  R_SEED=True  R_A_PRED=True  R_B_PRED=True
+
+OUTCOME: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  Excess: 56 bits over raw encoding
+
+[RUN_6] LONG_REP
+============================================================
+PROPERTIES:
+  L = 20
+  RAW_BITS = 160
+  SHA256_IN = b3ba5be573d7be7e9747e388741863648259b8ff483dba4ce5d4875cf739cb3a
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(RAIL_FAILURE)
+  C_total: 72
+  H: 32
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=2 L=20 params=[42, 0]
+       STREAM_BITS=35
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=35
+
+RAILS_BIJECTIVE:
+  R_BIJECT=True  R_SEED=False  R_A_PRED=True  R_B_PRED=True
+  FAILURES:
+    RAIL_FAIL:R_SEED K length 1 != predicted 23
+
+OUTCOME: CAUSEFAIL(RAIL_FAILURE)
+  Excess: -88 bits over raw encoding
+
+[RUN_7] ARITHMETIC
+============================================================
+PROPERTIES:
+  L = 10
+  RAW_BITS = 80
+  SHA256_IN = 1f825aa2f0020ef7cf91dfa30da4668d791c5d4824fc8e41354b89ec05795ab3
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 136
+  H: 24
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=1 L=10 params=[42649378395939397566720]
+       STREAM_BITS=107
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       SEED_K=42649378395939397566720
+       EXPANSION_VERIFIED=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=107
+
+RAILS_BIJECTIVE:
+  R_BIJECT=True  R_SEED=True  R_A_PRED=True  R_B_PRED=True
+
+OUTCOME: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  Excess: 56 bits over raw encoding
+
+[BIJECTION_SUMMARY]
+Name           | L   | Decision        | C_total | Rails | Bijection
+----------------------------------------------------------------------
+EMPTY          |   0 | CAUSEFAIL(MINIM |      32 | PASS  | YES
+SINGLE_BYTE    |   1 | CAUSEFAIL(MINIM |      56 | PASS  | YES
+REPETITION     |   2 | CAUSEFAIL(MINIM |      64 | FAIL  | YES
+NO_PATTERN     |   3 | CAUSEFAIL(MINIM |      80 | PASS  | YES
+MIXED          |   6 | CAUSEFAIL(MINIM |     104 | PASS  | YES
+LONG_REP       |  20 | CAUSEFAIL(RAIL_ |      72 | FAIL  | YES
+ARITHMETIC     |  10 | CAUSEFAIL(MINIM |     136 | PASS  | YES
+----------------------------------------------------------------------
+Total tests: 7
+EMIT decisions: 0
+CAUSEFAIL decisions: 7
+Bijection complete: 7/7
+
+[CRITICAL_FINDINGS]
+✅ BIJECTION_COMPLETE: All content tokens include reconstruction parameters
+⚠️  PREDICTION_RAILS: Some prediction mismatches detected
+
+[EXPORT_COMPLETE]
+Bijection-complete mathematical audit finished

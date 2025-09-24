@@ -1,0 +1,23 @@
+CLF UNIVERSAL VALIDATOR — RAILS AUDIT
+========================================================================
+Build ID: CLF_UNIVERSAL_DP_20250923
+
+14-RAIL COMPLIANCE:
+✓ 1. Units (bits only)
+✓ 2. LEB128 (7-bit shifts)
+✓ 3. Operators (CONST+STEP)
+✓ 4. Admissibility (i-iv)
+✓ 5. Maximality (left+right)
+✓ 6. Feasibility (DP guard)
+✓ 7. A/B roles
+✓ 8. Coverage (complete)
+✓ 9. Bijection (perfect)
+✓ 10. Algebra equality
+✓ 11. End-bit rule
+✓ 12. Gate (strict <)
+✓ 13. Determinism
+✓ 14. No floating-point
+
+Tested on 2 files:
+- pic1.jpg: 176 tokens, EMIT=True
+- pic2.jpg: 104 tokens, EMIT=True

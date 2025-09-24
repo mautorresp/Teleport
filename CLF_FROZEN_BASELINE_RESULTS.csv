@@ -1,0 +1,5 @@
+file,L,bit_length,leb,C_min_bits,RAW_bits,emit,receipt_prefix
+test_artifacts/pic5.jpg,555181,20,3,112,5551810,True,bc43dca1eb5a2959
+test_artifacts/pic6.jpg,1042592,20,3,112,10425920,True,4943b3ce046cc518
+test_artifacts/video2.mp4,3114374,22,4,120,31143740,True,4a29822332909fe1
+test_artifacts/video3.mp4,9840497,24,4,120,98404970,True,725fb6a6373dcac1

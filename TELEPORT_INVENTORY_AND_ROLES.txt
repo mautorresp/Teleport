@@ -1,0 +1,308 @@
+TELEPORT PROJECT INVENTORY AND ROLES
+=====================================
+
+Generated: 2025-09-23T22:20:00
+Scope: /Users/Admin/Teleport (project files only, excluding .git, .venv, __pycache__, etc.)
+Purpose: Comprehensive inventory for cleanup and reorganization planning
+Total Project Files: ~551 (excluding system directories)
+
+===============================================================================
+DIRECTORY STRUCTURE AND ROLES
+===============================================================================
+
+ROOT LEVEL (/Users/Admin/Teleport)
+Role: Main project directory - mixed concerns with heavy CLF development artifacts
+Notable: Contains both production code and extensive audit/development artifacts
+Issues: Heavy mixing of source code, generated reports, and development iterations
+
+Project Subdirectories:
+• .vscode/           - VS Code workspace settings                     [CONFIG]
+• audit/             - Audit and validation modules                   [SOURCE]
+• docs/              - Documentation and specifications               [DOCS]  
+• scripts/           - Utility scripts and tools                      [TOOLS]
+• teleport/          - Main package source code                       [SOURCE]
+• test_artifacts/    - Test data files, images, videos                [TEST_DATA]
+• test_corpus/       - Generated test binary files                    [TEST_DATA]
+• test_files/        - Additional test resources                      [TEST_DATA]
+• tests/             - Unit and integration tests                     [TESTS]
+• tools/             - Development and analysis tools                 [TOOLS]
+
+===============================================================================
+ROOT LEVEL FILE INVENTORY (330+ files)
+===============================================================================
+
+CORE CALCULATOR IMPLEMENTATIONS:
+• clf_calculator.py                      py    447  2025-09-23  Single CLF mathematical calculator (O(log L), pure integer math) [CURRENT]
+• CLF_MAXIMAL_VALIDATOR_FINAL.py         py     59  2025-09-23  Final surgical CLF validator (59-line pure math) [CURRENT]  
+• CLF_MAXIMAL_VALIDATOR_FINAL_BACKUP.py  py    559  2025-09-22  Backup of previous CLF validator [LEGACY?]
+• CLF_MAXIMAL_VALIDATOR_FINAL_CORRECTED.py py  190  2025-09-21  Corrected CLF validator [LEGACY?]
+• CLF_MAXIMAL_VALIDATOR_UNIVERSAL.py     py    454  2025-09-21  Universal CLF validator [LEGACY?]
+
+CALCULATOR VARIANTS & DEVELOPMENT:
+• CLF_BIJECTIVE_COMPLETE.py              py    647  2025-09-18  Bijective implementation [PER-FILE-SCRIPT?]
+• CLF_PURE_CALCULATOR.py                 py    178  2025-09-22  Pure calculator implementation [PER-FILE-SCRIPT?]
+• CLF_SINGLE_SEED_CALCULATOR.py          py    154  2025-09-22  Single-seed calculator [PER-FILE-SCRIPT?]
+• CLF_TELEPORT_CALCULATOR_GRADE_VALIDATOR.py py 296 2025-09-21 Console validator [PER-FILE-SCRIPT?]
+
+AUDIT AND VALIDATION SCRIPTS:
+• clf_audit_complete.py                  py    318  2025-09-17  Complete audit implementation [PER-FILE-SCRIPT?]
+• clf_complete_audit.py                  py    360  2025-09-18  Comprehensive audit system [PER-FILE-SCRIPT?]
+• clf_external_audit.py                  py    203  2025-09-18  External audit validator [PER-FILE-SCRIPT?]
+• clf_rigorous_audit.py                  py    412  2025-09-17  Rigorous mathematical audit [PER-FILE-SCRIPT?]
+• CLF_FINAL_AUDIT.py                     py    214  2025-09-18  Final audit implementation [PER-FILE-SCRIPT?]
+
+MATHEMATICAL SUPPORT:
+• canonical_dp.py                        py    176  2025-09-16  Canonical dynamic programming [SOURCE]
+• clf_bitexact.py                        py    377  2025-09-19  Bit-exact calculations [SOURCE] 
+• clf_leb_unit_lock.py                   py     96  2025-09-22  LEB unit locking [SOURCE]
+• teleport_mathematical_rails.py         py    139  2025-09-22  Mathematical rails system [SOURCE]
+
+PROJECT CONFIGURATION:
+• pyproject.toml                         toml   172  2025-09-15  Project configuration and dependencies [CONFIG]
+• README.md                              md     341  2025-09-15  Project documentation [DOCS]
+• .gitignore                             txt     23  2025-09-15  Git ignore rules [CONFIG]
+• .flake8                                txt      6  2025-09-15  Flake8 linting configuration [CONFIG]
+• .pre-commit-config.yaml                yaml   52  2025-09-15  Pre-commit hooks configuration [CONFIG]
+
+FROZEN BASELINE ARTIFACTS (Latest):
+• CLF_FROZEN_BASELINE_AUDIT.txt          txt   3422  2025-09-23  Mathematical audit evidence [GENERATED]
+• CLF_FROZEN_BASELINE_CONSOLE.txt        txt    491  2025-09-23  Console output record [GENERATED]  
+• CLF_FROZEN_BASELINE_RECEIPTS.jsonl     jsonl  970  2025-09-23  Calculation receipts [GENERATED]
+• CLF_FROZEN_BASELINE_RESULTS.csv        csv    357  2025-09-23  Tabular results [GENERATED]
+
+TEST FILES AND DEBUGGING:
+• create_test_file.py                    py     32  2025-09-15  Test file generator [TOOLS]
+• debug_*.py (multiple)                  py    var  various     Debug scripts for specific issues [TOOLS]
+• minimal_test.py                        py     34  2025-09-16  Minimal test case [TOOLS]
+• test_*.py (root level, ~40 files)      py    var  various     Test scripts (should be in tests/) [TESTS?]
+
+EXTENSIVE CLF AUDIT REPORTS (~200 TXT files):
+Pattern: CLF_*_AUDIT*.txt, PIC*_*_EVIDENCE.txt, CLF_TELEPORT_*.txt
+Examples:
+• CLF_MATHEMATICAL_EVIDENCE_AUDIT.txt    txt  11250  2025-09-18  Mathematical evidence documentation [GENERATED]
+• CLF_COMPREHENSIVE_EXTERNAL_AUDIT.txt   txt   8936  2025-09-18  External audit report [GENERATED]  
+• PIC1_CLF_MATHEMATICAL_EVIDENCE.txt     txt   4521  2025-09-17  Pic1 mathematical analysis [GENERATED]
+• CLF_SURGICAL_AUDIT_COMPLETE.md         md    2847  2025-09-18  Surgical audit documentation [GENERATED]
+[Many more audit files - see HOTSPOTS section below for categorization]
+
+TELEPORT V8 SERIES (Development Artifacts):
+Pattern: CLF_TELEPORT_V8_*.py, CLF_TELEPORT_*_V8_*.txt
+• CLF_TELEPORT_V8_*_pic1_console_validator.py (multiple versions) [PER-FILE-SCRIPT?]
+• CLF_TELEPORT_BIJECTION_EXPORT_V8_*.txt (~20 files) [GENERATED]
+• CLF_TELEPORT_RAILS_AUDIT_V8_*.txt (~15 files) [GENERATED]
+
+MATHEMATICAL EVIDENCE AND DOCUMENTATION:
+• Mathematical alignment guides (.md files) [DOCS]
+• Implementation correction guides [DOCS]  
+• Progress records and iteration summaries [DOCS]
+
+DATA AND ASSETS:
+• pic1.jpg, pic2.jpg                        jpg    var  various     Test images for CLF validation [TEST_DATA]
+• *.json files (scan results, prices, etc.) json   var  various     Analysis results and data [DATA]
+• *.bin files (test data)                   bin    var  various     Binary test files [TEST_DATA]
+
+===============================================================================
+SUBDIRECTORY INVENTORIES
+===============================================================================
+
+TELEPORT/ PACKAGE (34 files):
+Primary source code package - well-structured with clear responsibilities
+• __init__.py                              py      0  2025-09-15  Package initialization [SOURCE]
+• clf_*.py (15 files)                      py    var  various     CLF implementation modules [SOURCE]
+• encoder*.py, generators.py, guards.py    py    var  various     Core encoding and validation [SOURCE] 
+• leb_io.py, seed_*.py, costs.py          py    var  various     I/O, seed format, cost calculation [SOURCE]
+• spec_constants.py, predicates*.py       py    var  various     Constants and predicates [SOURCE]
+
+TESTS/ DIRECTORY (11 files):
+Unit and integration tests - properly organized
+• test_*.py files                          py    var  various     Unit tests for core modules [TESTS]
+• resources/violations/ subdirectory       -     -   -          Test violation cases [TEST_DATA]
+
+TOOLS/ DIRECTORY (19 files):
+Development and analysis tools
+• no_float_lint.py, linter_*.py           py    var  various     Floating-point detection tools [TOOLS]
+• Mathematical analysis and audit tools    py    var  various     Development support [TOOLS]
+
+TEST_ARTIFACTS/ DIRECTORY (103 files):
+Test data and evidence files - large collection
+• pic*.jpg (7 images)                     jpg   var  various     Test images [TEST_DATA]
+• video*.mp4 (3 videos)                   mp4   var  various     Test videos [TEST_DATA] 
+• *.bin files (50+ files)                 bin   var  various     Binary test data [TEST_DATA]
+• *.tseed files                           tseed var  various     Seed format test files [TEST_DATA]
+• Evidence and analysis text files        txt   var  various     Analysis outputs [GENERATED]
+
+===============================================================================
+GLOBAL SUMMARIES
+===============================================================================
+
+TREE VIEW (File Counts by Directory):
+```
+/Users/Admin/Teleport/                    (330+ files)
+├── .vscode/                             (2 files)
+├── audit/                               (5 files)  
+├── docs/                                (3 files)
+├── scripts/                             (10 files)
+├── teleport/                            (34 files) ★ MAIN SOURCE
+├── test_artifacts/                      (103 files)
+├── test_corpus/                         (14 files)
+├── test_files/                          (6 files)  
+├── tests/                               (11 files) ★ TESTS
+└── tools/                               (19 files)
+```
+
+COUNTS BY FILE TYPE:
+• Python (.py):           146 files  [86 root + 60 subdirs]
+• Text (.txt):            200 files  [Mostly CLF audit reports]  
+• Markdown (.md):          33 files  [Documentation]
+• JSON (.json):            16 files  [Data and results]
+• Images (.jpg):           11 files  [Test data]
+• Binary (.bin):           61 files  [Test data]
+• Videos (.mp4):            3 files  [Test data] 
+• Configuration:           10 files  [.yaml, .toml, .gitignore, etc.]
+• Other formats:           71 files  [.jsonl, .csv, .tseed, etc.]
+
+HOTSPOTS FOR CLEANUP:
+
+FILES FLAGGED AS COMPRESSION_LOGIC?:
+• teleport/clf_fb.py                     - Contains "tiling" logic
+• clf_external_audit_evidence.py        - Contains "compression_percent" calculations
+• Multiple CLF_TELEPORT_V8_* files       - References to "structural_tiling_operators"
+
+FILES FLAGGED AS FLOATING_POINT?:
+• test_linter_cases.py                   - Contains test float cases (intentional for testing)
+• teleport/seed_vm.py                    - Has "no floats" comments (defensive)
+
+FILES FLAGGED AS PER-FILE-SCRIPT?:
+High Priority - Should be consolidated into single calculator:
+• CLF_BIJECTIVE_COMPLETE.py              (647 lines) - Standalone bijective implementation
+• CLF_PURE_CALCULATOR.py                 (178 lines) - Standalone calculator
+• CLF_SINGLE_SEED_CALCULATOR.py          (154 lines) - Single-seed implementation  
+• CLF_TELEPORT_CALCULATOR_GRADE_VALIDATOR.py (296 lines) - Console validator
+• clf_audit_complete.py                  (318 lines) - Audit implementation
+• clf_complete_audit.py                  (360 lines) - Another audit system
+• clf_external_audit.py                  (203 lines) - External validator
+• clf_rigorous_audit.py                  (412 lines) - Mathematical audit
+• CLF_FINAL_AUDIT.py                     (214 lines) - Final audit
+
+Medium Priority - Specialized per-file scripts:
+• All test_*.py files in root (should move to tests/)
+• All debug_*.py files (development tools)
+• Multiple CLF_TELEPORT_V8_* console validators
+
+FILES FLAGGED AS LEGACY?:
+• CLF_MAXIMAL_VALIDATOR_FINAL_BACKUP.py  - Backup of older validator
+• CLF_MAXIMAL_VALIDATOR_FINAL_CORRECTED.py - Corrected version (superseded)  
+• CLF_MAXIMAL_VALIDATOR_UNIVERSAL.py     - Universal version (superseded)
+• teleport/seed_format_backup.py         - Backup version
+• All files with "_BACKUP" in name
+• Files with version numbers suggesting iterations (V3, V4, V5, etc.)
+
+FILES FLAGGED AS GENERATED?:
+• CLF_FROZEN_BASELINE_*.* (4 files)      - Latest frozen baseline exports
+• All CLF_*_AUDIT*.txt files (~200)     - Generated audit reports  
+• All PIC*_*_EVIDENCE.txt files         - Generated evidence files
+• All CLF_TELEPORT_*_EXPORT_V*.txt      - Version-numbered exports
+• coverage.xml, scan*.json              - Analysis outputs
+
+DUPLICATES & NEAR-DUPLICATES:
+High Confidence Duplicates:
+• pic1.jpg appears in root and test_artifacts/
+• pic2.jpg appears in root and test_artifacts/  
+• Multiple CLF validator implementations with similar functionality
+• Multiple calculator implementations (should consolidate)
+
+Potential Near-Duplicates (require content analysis):
+• clf_audit_complete.py vs clf_complete_audit.py vs CLF_FINAL_AUDIT.py
+• CLF_PURE_CALCULATOR.py vs CLF_SINGLE_SEED_CALCULATOR.py vs clf_calculator.py
+• Multiple mathematical audit implementations
+
+GENERATED ARTIFACTS VS SOURCE-OF-TRUTH:
+Source-of-Truth Code (Keep):
+• clf_calculator.py                      - Current single calculator  
+• CLF_MAXIMAL_VALIDATOR_FINAL.py         - Final 59-line validator
+• teleport/ package                      - Main source package
+• tests/ directory                       - Test suite
+
+Generated/Derived (Review for archival):
+• ~200 CLF audit .txt files              - Evidence and analysis outputs
+• All CLF_TELEPORT_*_EXPORT_* files      - Version-numbered exports  
+• CLF_FROZEN_BASELINE_* files           - Latest baseline (keep these)
+• Multiple evidence and mathematical analysis files
+
+IMMEDIATE CLEANUP CANDIDATES:
+
+Empty or Minimal Files:
+• clf_mathematical_alignment_audit.py    (0 lines) - Empty file
+• Various files with minimal content
+
+Cache and Build Artifacts:
+• .coverage                              - Coverage database
+• coverage.xml                           - Coverage report
+• .DS_Store                              - macOS metadata
+
+Large Binary/Media Files (Consider Relocation):
+• test_artifacts/*.mp4 (3 videos)        - Large test files  
+• test_artifacts/*.jpg (multiple images) - Should consolidate locations
+
+Mixed Responsibilities (Root Directory):
+• 86 Python files in root mixed with configuration and documentation
+• Test files scattered between root, test_artifacts/, test_corpus/, test_files/
+• Generated reports mixed with source code
+
+RISKS - Files That Could Reintroduce Prohibited Logic:
+
+Compression Logic Risk:
+• teleport/clf_fb.py                     - Contains tiling logic
+• Multiple files with "compression" references
+• Files implementing A_role/B_path distinctions
+
+Floating Point Risk:
+• Files with mathematical calculations not clearly integer-only
+• Any remaining .0 literals or math.* imports
+
+===============================================================================
+RECOMMENDATIONS FOR CLEANUP
+===============================================================================
+
+1. CONSOLIDATE CALCULATORS:
+   - Keep: clf_calculator.py (current single implementation)
+   - Archive: All other calculator variants to archive/ subdirectory
+   - Verify: No essential functionality lost from archived implementations
+
+2. REORGANIZE TEST FILES:
+   - Move: All root-level test_*.py files to tests/ directory
+   - Consolidate: test_artifacts/, test_corpus/, test_files/ into single test_data/
+   - Deduplicate: Remove duplicate pic1.jpg/pic2.jpg from root
+
+3. ARCHIVE DEVELOPMENT ARTIFACTS:
+   - Create: archive/development/ subdirectory
+   - Move: All CLF_TELEPORT_V8_* versioned files
+   - Move: All backup files (*_BACKUP.py, etc.)
+   - Move: All audit .txt files (keep CLF_FROZEN_BASELINE_* in root)
+
+4. REMOVE OBSOLETE FILES:
+   - Delete: Empty files (clf_mathematical_alignment_audit.py)
+   - Delete: System artifacts (.coverage, .DS_Store)
+   - Review: All debug_*.py files for current relevance
+
+5. VERIFY NO PROHIBITED LOGIC:
+   - Audit: teleport/clf_fb.py for tiling/compression logic
+   - Scan: All remaining files for float/math.* imports
+   - Test: Ensure single calculator maintains all required functionality
+
+6. ESTABLISH CLEAR STRUCTURE:
+   ```
+   /Teleport/
+   ├── src/teleport/          # Main package (renamed from teleport/)
+   ├── tests/                 # All tests consolidated  
+   ├── tools/                 # Development tools
+   ├── docs/                  # Documentation
+   ├── test_data/             # All test files consolidated
+   ├── archive/               # Historical artifacts
+   ├── clf_calculator.py      # Single calculator (root level for easy access)
+   └── config files           # Keep configuration at root
+   ```
+
+===============================================================================
+END OF INVENTORY
+===============================================================================

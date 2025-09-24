@@ -25,7 +25,7 @@ from pathlib import Path
 # Add teleport to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from teleport.clf_canonical import encode_CLF, clf_canonical_receipts
+from teleport.clf_fb import encode_minimal, clf_canonical_receipts
 from teleport.seed_format import OP_CONST, OP_CBD256
 from teleport.clf_int import leb
 from teleport.leb_io import leb128_emit_single
@@ -168,7 +168,7 @@ def generate_mathematical_proofs(S: bytes, tokens: list) -> str:
     doc.append(f"  Margin: {margin} bits {'saved' if passes_global else 'over budget'}")
     doc.append("")
     
-    # Compression ratio
+    # Stream cost ratio to RAW_BITS
     if passes_global:
         ratio = total_cost / baseline_cost
         savings_pct = (1 - ratio) * 100
@@ -259,7 +259,7 @@ def test_pic2_jpg() -> int:
     
     try:
         # Perform CLF encoding
-        tokens = encode_CLF(S)
+        tokens = encode_minimal(S)
         
         if not tokens:
             # Generate OPEN state evidence

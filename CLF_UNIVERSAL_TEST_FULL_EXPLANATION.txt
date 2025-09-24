@@ -1,0 +1,29 @@
+CLF UNIVERSAL VALIDATOR — FULL EXPLANATION
+========================================================================
+Build ID: CLF_UNIVERSAL_DP_20250923
+Deductor Signature: b6b4440a36956d67d832e965d85ee53e607957a25f3ef626cebf65b7996b33d7
+
+FILE: S_const_50.bin
+----------------------------------------
+Length: 50 bytes
+A-role: CONST
+B-tokens: 1
+H: 32, RAW: 400
+B_caus: 27, B_end: 5, B_stream: 32
+Candidates: [64, 64]
+C_min_total: 64
+EMIT: True
+Token SHA: 5e433ce8824ae37cb0faaf551e3f2911c063ed69ed0fa8d52232966dc4917716
+
+FILE: S_step_256.bin
+----------------------------------------
+Length: 256 bytes
+A-role: STEP
+B-tokens: 1
+H: 32, RAW: 2048
+B_caus: 43, B_end: 5, B_stream: 48
+Candidates: [80, 80]
+C_min_total: 80
+EMIT: True
+Token SHA: bd8a01dac98f3e0e9262661a7ac5214cfc0e7e998376bcaf4df3b8dd6c41b6ef
+

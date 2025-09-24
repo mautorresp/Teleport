@@ -14,7 +14,8 @@ Key validation:
 
 import hashlib
 import os
-from teleport.clf_canonical import encode_CLF, clf_canonical_receipts, validate_encoding_result
+from teleport.clf_fb import encode_minimal
+from teleport.clf_canonical import clf_canonical_receipts, validate_encoding_result
 
 def test_deterministic_behavior():
     """Test that encoding is deterministic - same input always gives same result"""
@@ -33,9 +34,9 @@ def test_deterministic_behavior():
         print(f"\nTest case {i}: {len(data)} bytes")
         
         # Encode multiple times
-        result1 = encode_CLF(data)
-        result2 = encode_CLF(data)
-        result3 = encode_CLF(data)
+        result1 = encode_minimal(data)
+        result2 = encode_minimal(data)
+        result3 = encode_minimal(data)
         
         # Results must be identical (determinism)
         assert result1 == result2 == result3, f"Non-deterministic behavior for case {i}"
@@ -59,7 +60,7 @@ def test_cbd256_whole_range_inclusion():
     
     print(f"Testing {len(test_data)} bytes with boundary markers")
     
-    tokens = encode_CLF(test_data)
+    tokens = encode_minimal(test_data)
     
     if tokens:
         print("PASS state achieved")
@@ -96,7 +97,7 @@ def test_no_approximation_drift():
     for i, data in enumerate(test_cases):
         print(f"\nTest case {i}: {len(data)} bytes")
         
-        tokens = encode_CLF(data)
+        tokens = encode_minimal(data)
         
         if tokens:
             # Verify exact cost computation matches receipts
@@ -131,7 +132,7 @@ def test_serializer_equality_pinned():
     print("\n=== SERIALIZER EQUALITY CONVENTION TEST ===")
     
     test_data = b"test_serializer_consistency"
-    tokens = encode_CLF(test_data)
+    tokens = encode_minimal(test_data)
     
     if tokens:
         print(f"Testing {len(tokens)} tokens for serializer equality")
@@ -152,7 +153,7 @@ def test_global_bound_consistency():
     # Test data that should be near the boundary
     test_data = b"X" * 100  # Should compress well with CONST
     
-    tokens = encode_CLF(test_data)
+    tokens = encode_minimal(test_data)
     receipts = clf_canonical_receipts(test_data, tokens)
     
     print(f"Testing global bound for {len(test_data)} bytes")

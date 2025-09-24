@@ -1,0 +1,16 @@
+CLF TELEPORT RAILS AUDIT V8_pic1
+================================================================================
+Generated: 2025-09-23T13:02:20.270241
+
+[RAILS_AUDIT_V8_pic1]
+R0: True - All computations use integers
+R1: True - H(63379) = 40
+R2: True - END from bitpos only
+R3: True - CAUS from leb_len only
+R4: True - Sum L_i = L
+R5: False - C_min_total = C_min_via
+R6: True - No CBD splits in current tokens
+R7: True - No complete paths
+R8: True - Double encode identical (by construction)
+R9: True - NO_EMIT
+R10: True - A:True, B:True

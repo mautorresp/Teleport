@@ -1,0 +1,103 @@
+CLF TELEPORT FULL MATHEMATICAL EXPLANATION V3
+================================================================================
+Generated: 2025-09-23T11:01:48.289960
+
+[ENVIRONMENT]
+Python version: 3.12.3 (v3.12.3:f6650f9ad7, Apr  9 2024, 08:18:47) [Clang 13.0.0 (clang-1300.0.29.30)]
+Platform: macOS-15.7-arm64-arm-64bit
+
+[SOURCES_OF_TRUTH]
+Module: /Users/Admin/Teleport/tools/export_bijective_v3_complete.py
+SHA256: fc6b0c58eae7f1c5767ed4d23be398abb8f90c5d5262d7dc74add800a719cd59
+First lines: #!/usr/bin/env python3
+"""
+BIJECTION-COMPLETE CLF V3 MATHEMATICAL EXPORTER
+
+[MATHEMATICAL_PIPELINE]
+
+STAGE 1: Input Processing
+- Input S: bytes of length L
+- SHA256 fingerprint for identity verification
+- Integer-only arithmetic throughout
+
+STAGE 2: Header Cost Calculation
+- H(L) = 16 + 8 * leb_len(8*L) bits
+- Unit-locked to input size (no compression vocabulary)
+- Pure LEB128 encoding length calculation
+
+STAGE 3: Construction A (Whole-Range CBD)
+- Single CBD token covering entire input
+- K = Σ(i=0 to L-1) S[i] * 256^(L-1-i) (CBD256 bijection)
+- Cost: C_A = CAUS_stream(op=1, params=[K], L)
+- Bijection: expand(K, L) must reconstruct S exactly
+
+STAGE 4: Construction B (Structural Tiling)
+- Deterministic precedence: CONST(≥2) → STEP(≥3) → CBD gap filler
+- CONST: params=[value_byte] for repetitions
+- STEP: params=[start_byte, stride_byte] for arithmetic sequences
+- CBD: params=[seed_K] for single bytes
+- All tokens must include reconstruction parameters
+
+STAGE 5: Decision Algebra
+- C_A_total = H + C_A_stream
+- C_B_total = H + C_B_stream
+- Choose minimal: if C_A ≤ C_B then CBD else STRUCT
+- Tie rule: CBD preferred for determinism
+
+STAGE 6: Admissibility Gate
+- EMIT iff C_total < 8*L (raw bit threshold)
+- Otherwise CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+STAGE 7: Bijection Validation
+- For EMIT cases: reconstruct from chosen tokens
+- Verify SHA256(reconstructed) == SHA256(S)
+- Token-by-token parameter validation
+
+[INVARIANTS]
+- I1: All arithmetic integer-only (no floats)
+- I2: Coverage complete: Σ token_L == L
+- I3: Bijection maintained: expand(tokens) == S
+- I4: Determinism: identical inputs yield identical encodings
+- I5: Superadditivity: B_stream ≥ A_stream when both complete
+
+[SEED_MAPPING]
+Canonical seed length: K_len_bytes = ceil(8*L / 7)
+This is the pinned mathematical relationship between:
+- Input length L (bytes)
+- Seed representation length (LEB7 packing)
+- Prediction accuracy for stream costs
+
+For CBD bijection:
+- Forward: K = Σ S[i] * 256^(L-1-i)
+- Inverse: S[i] = (K // 256^(L-1-i)) % 256
+- Postcondition: K reduces to 0 after L extractions
+
+[END_TOKEN_COMPUTATION]
+END cost is positional: END(bitpos) = 3 + pad_to_byte(bitpos + 3)
+Where pad_to_byte(x) = (8 - (x % 8)) % 8
+
+Example for bitpos=35:
+- bitpos + 3 = 38
+- 38 % 8 = 6
+- pad = (8 - 6) % 8 = 2
+- END cost = 3 + 2 = 5 bits
+
+[FAILURE_POLICY]
+Fail-closed operation with precise diagnostics:
+- Any rail R1-R12 failure forces CAUSEFAIL
+- No silent degradation or approximation
+- Integer-only enforcement throughout
+- Complete mathematical traceability
+
+[INTEGER_ONLY_VERIFICATION]
+All mathematical operations verified integer-only:
+- LEB128 length calculations
+- CBD bijection arithmetic
+- Stream cost computations
+- Decision algebra
+- No floating point anywhere in pipeline
+
+[TEST_CORPUS_SIZE]
+Objects processed: 6
+Each object validated through complete mathematical pipeline
+with bijection verification and rails validation.

@@ -7,7 +7,8 @@ Addresses all issues identified in the mathematical audit
 import time
 import hashlib
 from datetime import datetime
-from teleport.clf_canonical import encode_CLF, clf_canonical_receipts
+from teleport.clf_fb import encode_minimal
+from teleport.clf_canonical import clf_canonical_receipts
 
 def decode_cbd_token(token, input_data):
     """Decode a single CBD token to verify bijection"""
@@ -81,7 +82,7 @@ def generate_audit_compliant_evidence(filename, pic_number):
     
     # Perform encoding with precise timing
     start_time = time.time()
-    tokens = encode_CLF(input_data)
+    tokens = encode_minimal(input_data)
     end_time = time.time()
     encoding_duration = end_time - start_time
     

@@ -10,7 +10,7 @@ This validates that the core architectural issues identified in the audit are re
 5. Mathematical consistency verified
 """
 
-from teleport.clf_canonical import encode_CLF
+from teleport.clf_fb import encode_minimal
 import random
 
 def test_pin_s_unblended():
@@ -19,7 +19,7 @@ def test_pin_s_unblended():
     
     # Encode data and check that CAUS != END in receipts
     test_data = bytes([50] * 10)
-    tokens = encode_CLF(test_data)
+    tokens = encode_minimal(test_data)
     
     if tokens:
         for token in tokens:
@@ -39,7 +39,7 @@ def test_pin_cz2_global_coalescing():
     
     # Create data with mixed structure that could fragment
     test_data = bytes([100] * 8 + [1, 2, 3, 4] + [200] * 6)
-    tokens = encode_CLF(test_data)
+    tokens = encode_minimal(test_data)
     
     print(f"  Input: CONST(8) + GAP(4) + CONST(6)")
     if tokens:
@@ -57,7 +57,7 @@ def test_pin_t_struct_calculator_speed():
     
     # Large structured data should have O(intervals) not O(bytes) complexity
     large_const = bytes([123] * 100)
-    tokens = encode_CLF(large_const)
+    tokens = encode_minimal(large_const)
     
     if tokens:
         # Should be exactly 1 token for 100-byte constant run
@@ -77,7 +77,7 @@ def test_pin_match_onset_determinism():
     repeated = bytes([10, 20, 30, 10, 20, 30])
     test_data = context + repeated
     
-    tokens = encode_CLF(test_data)
+    tokens = encode_minimal(test_data)
     print(f"  Input with potential MATCH: {list(test_data)}")
     
     if tokens:
@@ -97,7 +97,7 @@ def test_pin_l5_consistency():
     random_data = bytes(random.randint(0, 255) for _ in range(50))
     
     try:
-        tokens = encode_CLF(random_data)
+        tokens = encode_minimal(random_data)
         # If we get here without assertion errors, PIN-L5 validation passed
         print("  ✅ PIN-L5-CONSISTENCY: Bitlen verification passed for all CBD calculations")
     except AssertionError as e:
@@ -124,7 +124,7 @@ def test_reduction_too_small_fix():
     success_count = 0
     for i, test_data in enumerate(test_cases):
         try:
-            tokens = encode_CLF(test_data)
+            tokens = encode_minimal(test_data)
             if tokens:
                 # Calculate compression effectiveness
                 total_cost = sum(t[3]['C_stream'] for t in tokens)

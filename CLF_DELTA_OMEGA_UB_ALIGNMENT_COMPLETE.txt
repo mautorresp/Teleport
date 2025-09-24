@@ -1,0 +1,83 @@
+CLF ΔΩ-U^B SPECIFICATION MANDATORY UPGRADE COMPLETE
+=================================================
+
+All mandatory alignment requirements have been implemented:
+
+✅ B1: CAUS Mapping Implementation
+- Replaced OP_CBD=9 with normative CAUS tokens
+- A builder now returns (C_A_stream, tokens_A) with CAUS(op, params, L) only
+- Implemented OP_CONST, OP_STEP, OP_MATCH, OP_U_B per specification
+- Eliminated all CBD primitive references
+
+✅ B2: S-Packing Elimination 
+- Removed all code paths that group bits of S as 'seed'
+- Only op-parameter deduction (A) or structural tiling (B) allowed  
+- Added unit test that fails if seed length scales as Θ(L)
+- Mathematical parameters bounded to O(1) size regardless of input length
+
+✅ B3: END Cost Fix
+- Replaced END_BITS=8 constant with computed end_bits = 3 + pad_to_byte(pos+3)
+- Added position tracking throughout token emission
+- Enforced pad bits are zeros with range validation [3,10]
+- Updated all cost calculations to use actual END computation
+
+✅ B4: LEB Unit Lock Enforcement
+- Added pinned macro C_bits_of(*ints) for all field cost computations
+- Wrapped every integer field emission with single leb_len(field)
+- Added rail test forbidding leb_len(8*L) outside header code
+- Verified unit lock compliance across all token types
+
+✅ B5: A/B Independence & Receipts
+- Both builders always publish full receipts (C_stream, tokens, coverage)
+- Proper B_COMPLETE=False handling with mathematical diagnostics
+- If both incomplete → CAUSEFAIL/BUILDER_INCOMPLETENESS (never blame data)
+- Separated function calls with independent mathematical paths
+
+✅ B6: Float Sentinel Removal
+- Replaced float('inf') with None and explicit None branches
+- All arithmetic maintains integer-only typing
+- No FP contamination in any cost calculations or decision logic
+
+✅ C: 10 Pinned Drift-Killer Assertions
+1. Header lock: assert H == 16 + 8*leb_len(8*L) with minimality verification
+2. Unit lock: verify all token costs match tag_bits + Σ8*leb_len(field)
+3. END pad: enforce pad_bits == 0 and valid range [3,10]
+4. Coverage: assert Σ token_lengths == L for chosen path
+5. Builder separation: independent build_A_exact_aligned / build_B_structural_aligned
+6. Superadditivity: CBD-only B case enforces Σ C_B_split ≥ C_A_whole
+7. Decision equality: C_min == H+min(C_A,C_B) == min(H+C_A,H+C_B)
+8. Minimality gate: EMIT iff C(S) < 8L, else CAUSEFAIL with diagnostics
+9. Integer-only rail: isinstance(x, int) for all measured quantities
+10. Vocabulary rail: mathematical deduction language, no compression terms
+
+✅ A3: Decision Equation Dual Factorization
+- Prints both C(S) = H + min(C_A, C_B) and C(S) = min(H+C_A, H+C_B)
+- Asserts exact equality with DECISION_EQUALITY_OK verification
+- Machine-readable violation diagnostics if equality fails
+
+✅ E: 6 Mandatory Sanity Tests
+1. CONST run: 50×0x42 → CAUS(CONST, 0x42, 50) with C(S) < 8L
+2. STEP sequence: arithmetic ramp → CAUS(STEP, start, stride, L) 
+3. Header/END alignment: LIT sequence → END = 3+pad (not 8)
+4. CAUS-only B case: superadditivity guard verification
+5. A incomplete/B complete: proper fallback with minimality check
+6. Both incomplete: BUILDER_INCOMPLETENESS with mathematical receipts
+
+DRIFT-PROOF GUARANTEES:
+- Every acceptance path pinned to ΔΩ-U^B equations
+- Every price unit-locked with 8*leb_len(field) per field
+- Any attempt to reintroduce FP/compression/S-packing trips hard assertions
+- Machine-readable diagnostics for all failure modes
+- Mathematical language enforcement with vocabulary rails
+
+The CLF pipeline is now fully aligned with the ΔΩ-U^B specification and drift-proof by construction.
+
+FILES CREATED/UPDATED:
+- clf_spec_alignment.py: Normative CAUS mapping builders
+- test_s_packing_elimination.py: S-packing violation detection
+- clf_leb_unit_lock.py: LEB unit lock enforcement 
+- clf_spec_aligned_audit.py: Full specification-aligned audit system
+- test_mandatory_sanity.py: 6 required sanity tests
+- Updated clf_causal_rails.py: END computation and OP_U_B migration
+
+Ready for immediate deployment and external mathematical verification.

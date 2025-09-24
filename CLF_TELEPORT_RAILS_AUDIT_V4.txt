@@ -1,0 +1,53 @@
+CLF TELEPORT RAILS AUDIT V4
+================================================================================
+Generated: 2025-09-23T11:12:23.946974
+
+[RAILS_R0_R10_DEFINITIONS]
+R0: Integer-only guard
+R1: Header lock H(L) recomputed verification
+R2: END positional from actual bitpos
+R3: CAUS unit lock (no S-packing)
+R4: Coverage exactness Σ token_L == L
+R5: Algebra equality min(H+A,H+B)==H+min(A,B)
+R6: Superadditivity B_stream ≥ A_stream
+R7: Decision gate C_total < 8L
+R8: Determinism receipts
+R9: Bijection receipts (EMIT only)
+R10: Prediction equality A_PRED==A_OBS, B_PRED==B_OBS
+
+[RAILS_AUDIT_RESULTS]
+
+[S1] L=50
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=T R8=T R9=T R10=F
+  RAIL_FAIL:R10 A_PRED=INCOMPLETE
+
+[S2] L=60
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=T R8=T R9=T R10=F
+  RAIL_FAIL:R10 A_PRED=INCOMPLETE
+
+[S3] L=1024
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=T R8=T R9=T R10=F
+  RAIL_FAIL:R10 A_PRED=INCOMPLETE
+
+[EMPTY] L=0
+R0=T R1=T R2=T R3=F R4=T R5=T R6=T R7=F R8=T R9=T R10=T
+  RAIL_FAIL:R7 C_total=24 >= 8L=0
+
+[SINGLE] L=1
+R0=T R1=T R2=F R3=F R4=F R5=F R6=F R7=F R8=F R9=F R10=F
+  RAIL_FAIL:R10 A_PRED=INCOMPLETE
+
+[DOUBLE] L=2
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=F
+  RAIL_FAIL:R7 C_total=51 >= 8L=16
+  RAIL_FAIL:R10 A_PRED=INCOMPLETE
+
+[TRIPLE] L=3
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=F
+  RAIL_FAIL:R7 C_total=59 >= 8L=24
+  RAIL_FAIL:R10 A_PRED=INCOMPLETE
+
+[ARITH] L=4
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=F
+  RAIL_FAIL:R7 C_total=59 >= 8L=32
+  RAIL_FAIL:R10 A_PRED=INCOMPLETE

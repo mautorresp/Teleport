@@ -7,7 +7,7 @@ PIN-ENC-CALC: Verify calculator hot-path is instant & size-independent
 Evidence: Must match pic1.jpg and pic2.jpg external audit performance
 """
 
-from teleport.clf_canonical import encode_CLF
+from teleport.clf_fb import build_A_exact
 import time, os, hashlib
 
 def verify_calculator_behavior():
@@ -30,7 +30,8 @@ def verify_calculator_behavior():
         
         # Test calculator mode - should be instant
         t0 = time.perf_counter()
-        toks = encode_CLF(S, mode="calc")
+        builder = build_A_exact(S)
+        toks = builder.finalize().tokens
         t1 = time.perf_counter()
         
         print(f"📁 {display_name}: {len(S):,} bytes")

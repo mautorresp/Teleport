@@ -1,0 +1,22 @@
+CLF TELEPORT PREDICTION EXPORT V8.1_pic1
+================================================================================
+Generated: 2025-09-23T13:13:07.131841
+
+[OBJECT_FACTS_V8_1]
+S := bytes(test_artifacts/pic1.jpg)
+L = 63379 bytes
+RAW_BITS = 8*L = 507032 bits
+H(L) = 40 bits (recomputed)
+SHA256_IN = b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+
+[A_PREDICTION_CONSTRUCTIVE_V8_1]
+Method: Constructive causal seed derivation (no S-packing)
+A_PRED_STATUS = INCOMPLETE_CAUSAL_SEED_DERIVATION_NOT_CONSTRUCTIVE
+STREAM_A_pred = None (INCOMPLETE)
+Predicted tokens: None
+
+[B_PREDICTION_CONSTRUCTIVE_V8_1]
+Method: Constructive CAUS tiling with exact coverage
+B_PRED_STATUS = INCOMPLETE_TILING_DEDUCTION_NOT_CONSTRUCTIVE
+STREAM_B_pred = None (INCOMPLETE)
+Predicted tokens: None

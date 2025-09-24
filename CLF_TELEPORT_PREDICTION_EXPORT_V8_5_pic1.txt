@@ -1,0 +1,71 @@
+CLF TELEPORT PREDICTION EXPORT V8.5 pic1
+==========================================
+Generated: 2025-09-23T14:25:58
+
+PER-PATH PREDICTOR BINDING WITH THEOREM-LOCKED RAILS
+
+[PREDICTION_METHODOLOGY_V8_5]
+RAIL P1: For every COMPLETE path P, require STREAM_obs == Π_P(S)
+predict_A_from_S(S): Compute A-path stream using same equations A builder uses
+predict_B_from_S(S): Compute B-path stream using same equations B builder uses
+Zero-Guessing Global Predictor: Π(S) = min(C_LIT(L), available Π_path(S))
+
+[PREDICTION_RESULTS_PIC1]
+
+pic1.jpg (L=968):
+==================
+
+PER_PATH_PREDICTOR_BINDING:
+
+  predict_A_from_S(S) ANALYSIS:
+    Status: N/A_INADMISSIBLE
+    Reason: A-path fails Rail A1 (bijection wall)
+    A_COMPLETE: False
+    Predicted: N/A
+    Observed: N/A
+    RAIL_P1_BINDING: N/A (path inadmissible)
+    
+  predict_B_from_S(S) ANALYSIS:
+    Method: Per-byte CAUS tiling recomputation
+    Tokens: 968 × (op=1, params=[], L=1)
+    Predicted_Calculation:
+      CAUS_Total: 968 × C_CAUS(op=1, [], L=1) = 968 × 19 = 18,392
+      END_Cost: END(18392) = 8
+      Predicted_Stream: 18,400
+    Observed_Stream: 18,400
+    RAIL_P1_BINDING: PRED_18400_OBS_18400_EQ_True ✓
+    B_COMPLETE: True
+
+ZERO_GUESSING_GLOBAL_PREDICTOR:
+  Available_Components:
+    C_LIT(L): 10 × 968 = 9,680 (literal fallback)
+    Π_A(S): N/A (path inadmissible)
+    Π_B(S): 18,400 (bound and verified)
+    
+  Π(S): min(9680, 18400) = 9,680
+  Π_reason: LITERAL_FALLBACK
+  
+  PREDICTOR_PURPOSE: Baseline calculator for drift detection
+  
+BUILDER_COMPARISON:
+  Valid_Candidates: [18432] (H + B_STREAM = 32 + 18400)
+  C_min_total: 18,432
+  Builder_Decision: CAUSEFAIL (18432 ≥ 7744)
+
+FILTER_VERIFICATION:
+  Threshold: 8 × 968 = 7,744
+  Π_would_emit: False (9680 ≥ 7744)
+  Builder_would_emit: False (18432 ≥ 7744)
+  Gate_Agreement: True ✓
+  
+BINDING_STATUS_SUMMARY:
+✓ RAIL_P1_A: N/A (A inadmissible - correct exclusion)
+✓ RAIL_P1_B: True (Π_B(S) == B_STREAM exactly)
+✓ Gate_Agreement: Both predictor and builder agree on CAUSEFAIL
+✓ Theorem-Locked: Any stream mispricing will fail P1 binding immediately
+
+MATHEMATICAL_CONCLUSION:
+Per-path predictor binding successfully enforced.
+B-path stream cost verified through equation recomputation.
+A-path correctly excluded until bijection proven.
+System drift-proof through calculator-grade equality checks.

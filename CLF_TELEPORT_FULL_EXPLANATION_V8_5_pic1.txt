@@ -1,0 +1,119 @@
+CLF TELEPORT MATHEMATICAL EXPORT V8.5 - STRICT CLF ALIGNMENT
+================================================================================
+Generated: 2025-09-23T14:25:58.576287
+
+MATHEMATICAL RAILS ENFORCED AS THEOREMS:
+- Admissibility wall: A contributes only if expand_A(params,L) == S byte-for-byte
+- Per-path predictor binding: STREAM_obs == Π_path(S) for every COMPLETE path
+- Unit-locked pricing: C_CAUS = 3 + 8*leb(op) + Σ 8*leb(param_i) + 8*leb(L)
+- Algebra discipline: CANDIDATES from COMPLETE set only, no placeholders
+- Gate calculator honesty: EMIT iff C_total < 8*L, otherwise CAUSEFAIL
+
+[RUN] pic1.jpg
+============================================================
+INPUT:
+  Length: 968 bytes
+  RAW_BITS: 7744
+  Header: H(968) = 32
+
+A-PATH:
+  Complete: False
+  Admissible: False
+  Stream: None
+  Binding_Valid: None
+
+B-PATH:
+  Complete: True
+  Stream: 18400
+  Binding_Valid: True
+
+PREDICTOR:
+  Π(S): 9680
+  Π_reason: LITERAL_FALLBACK
+
+DECISION:
+  Gate: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+  C_min_total: 18432
+
+[RUN] S1
+============================================================
+INPUT:
+  Length: 1 bytes
+  RAW_BITS: 8
+  Header: H(1) = 24
+
+A-PATH:
+  Complete: False
+  Admissible: False
+  Stream: None
+  Binding_Valid: None
+
+B-PATH:
+  Complete: True
+  Stream: 24
+  Binding_Valid: True
+
+PREDICTOR:
+  Π(S): 10
+  Π_reason: LITERAL_FALLBACK
+
+DECISION:
+  Gate: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+  C_min_total: 48
+
+[RUN] EMPTY
+============================================================
+INPUT:
+  Length: 0 bytes
+  RAW_BITS: 0
+  Header: H(0) = 24
+
+A-PATH:
+  Complete: True
+  Admissible: True
+  Stream: 0
+  Binding_Valid: True
+
+B-PATH:
+  Complete: True
+  Stream: 0
+  Binding_Valid: True
+
+PREDICTOR:
+  Π(S): 0
+  Π_reason: LITERAL_FALLBACK
+
+DECISION:
+  Gate: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+  C_min_total: 24
+
+[RUN] SINGLE
+============================================================
+INPUT:
+  Length: 1 bytes
+  RAW_BITS: 8
+  Header: H(1) = 24
+
+A-PATH:
+  Complete: False
+  Admissible: False
+  Stream: None
+  Binding_Valid: None
+
+B-PATH:
+  Complete: True
+  Stream: 24
+  Binding_Valid: True
+
+PREDICTOR:
+  Π(S): 10
+  Π_reason: LITERAL_FALLBACK
+
+DECISION:
+  Gate: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+  C_min_total: 48
+

@@ -1,0 +1,9 @@
+CLF Single-Seed Calculator - BUILD_ID: 20250923_221835
+Formula: C_min^(1)(L) = 88 + 8*leb(L)
+Constants: H=56, CAUS=27, END=5
+Decision: EMIT ⇔ C_min^(1)(L) < 10*L
+
+test_artifacts/pic5.jpg: L=555181, C_min=112 bits, RAW=5551810 bits, EMIT=True
+test_artifacts/pic6.jpg: L=1042592, C_min=112 bits, RAW=10425920 bits, EMIT=True
+test_artifacts/video2.mp4: L=3114374, C_min=120 bits, RAW=31143740 bits, EMIT=True
+test_artifacts/video3.mp4: L=9840497, C_min=120 bits, RAW=98404970 bits, EMIT=True

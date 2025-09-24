@@ -1,0 +1,146 @@
+CLF TELEPORT PREDICTION EXPORT V5
+================================================================================
+Generated: 2025-09-23T12:00:00.588185
+
+[PREDICTION_METHODOLOGY_V5_COMPLETE]
+A_PRED: From Teleport causal seed deduction (NOT S-packing)
+B_PRED: From declared CAUS tiling structure (pre-build analysis)
+Status: COMPLETE (PRED == OBS required) or INCOMPLETE
+
+[PREDICTION_RESULTS]
+
+[RUN_1] S1
+============================================================
+
+A_PREDICTION:
+  A_PRED = 27 (status: COMPLETE)
+  A_OBS = 27
+  A_PRED_EQUALS_OBS = True
+
+B_PREDICTION:
+  B_PRED = 27 (status: COMPLETE)
+  B_OBS = 27
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_2] S2
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = 0
+  A_PRED_EQUALS_OBS = False
+
+B_PREDICTION:
+  B_PRED = 35 (status: COMPLETE)
+  B_OBS = 35
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_3] S3
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = 0
+  A_PRED_EQUALS_OBS = False
+
+B_PREDICTION:
+  B_PRED = 43 (status: COMPLETE)
+  B_OBS = 43
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_4] EMPTY
+============================================================
+
+A_PREDICTION:
+  A_PRED = 0 (status: COMPLETE)
+  A_OBS = 0
+  A_PRED_EQUALS_OBS = True
+
+B_PREDICTION:
+  B_PRED = 0 (status: COMPLETE)
+  B_OBS = 0
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_5] SINGLE
+============================================================
+
+A_PREDICTION:
+  A_PRED = 27 (status: COMPLETE)
+  A_OBS = 27
+  A_PRED_EQUALS_OBS = True
+
+B_PREDICTION:
+  B_PRED = 27 (status: COMPLETE)
+  B_OBS = 27
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_6] DOUBLE
+============================================================
+
+A_PREDICTION:
+  A_PRED = 27 (status: COMPLETE)
+  A_OBS = 27
+  A_PRED_EQUALS_OBS = True
+
+B_PREDICTION:
+  B_PRED = 27 (status: COMPLETE)
+  B_OBS = 27
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_7] TRIPLE
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = 0
+  A_PRED_EQUALS_OBS = False
+
+B_PREDICTION:
+  B_PRED = 35 (status: COMPLETE)
+  B_OBS = 35
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE
+
+[RUN_8] ARITH
+============================================================
+
+A_PREDICTION:
+  A_PRED = None (status: INCOMPLETE)
+  A_OBS = 0
+  A_PRED_EQUALS_OBS = False
+
+B_PREDICTION:
+  B_PRED = 35 (status: COMPLETE)
+  B_OBS = 35
+  B_PRED_EQUALS_OBS = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = False
+  R10_DIAG = A_PRED=INCOMPLETE

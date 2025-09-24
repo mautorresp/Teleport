@@ -1,0 +1,47 @@
+CLF TELEPORT RAILS AUDIT V7
+================================================================================
+Generated: 2025-09-23T12:41:46.588106
+
+[RAILS_R0_R10_DEFINITIONS_COMPLETENESS_CONTRACT]
+R0: Integer-only guard
+R1: Header lock H(L) recomputed verification
+R2: END positional from actual bitpos (included in TOTAL)
+R3: CAUS unit lock (no S-packing, bijection-complete tokens)
+R4: Coverage exactness Σ token_L == L (COMPLETE paths)
+R5: Algebra equality on COMPLETE candidate set only
+R6: Superadditivity (CBD-split only)
+R7: Decision gate C(S) < 8*L where C(S) from COMPLETE paths
+R8: Determinism receipts
+R9: Bijection receipts (EMIT only)
+R10: Prediction equality matches path completeness status
+
+[RAILS_AUDIT_RESULTS]
+
+[S1] L=50
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=T R8=T R9=T R10=T
+
+[S2] L=60
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=T R8=T R9=T R10=T
+
+[S3] L=1024
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=T R8=T R9=T R10=T
+
+[EMPTY] L=0
+R0=T R1=T R2=T R3=F R4=T R5=T R6=T R7=F R8=T R9=T R10=T
+  RAIL_FAIL:R7 C_S=32 >= 8L=0
+
+[SINGLE] L=1
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=T
+  RAIL_FAIL:R7 C_S=56 >= 8L=8
+
+[DOUBLE] L=2
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=T
+  RAIL_FAIL:R7 C_S=56 >= 8L=16
+
+[TRIPLE] L=3
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=T
+  RAIL_FAIL:R7 C_S=64 >= 8L=24
+
+[ARITH] L=4
+R0=T R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=T
+  RAIL_FAIL:R7 C_S=64 >= 8L=32

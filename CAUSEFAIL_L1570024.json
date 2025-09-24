@@ -1,0 +1,22 @@
+{
+  "CAUSEFAIL": "MINIMALITY_NOT_ACHIEVED",
+  "L": 1570024,
+  "RAW_BITS": 12560192,
+  "H": 48,
+  "A_stream": 12560512,
+  "B_stream": 42003496,
+  "C_min_total": 12560560,
+  "DELTA": 368,
+  "DECOMP": {
+    "header_bits": 48,
+    "A_stream_bits": 12560512,
+    "B_stream_bits": 42003496,
+    "builder_status": "B_COMPLETE_TRUE",
+    "chosen_path": "A",
+    "notes": "Implementation bug - causal minimality not achieved"
+  },
+  "PINS": {
+    "build_A": "sha256:a6e84eca95146b4c",
+    "build_B": "sha256:d9c6179afc17c737"
+  }
+}

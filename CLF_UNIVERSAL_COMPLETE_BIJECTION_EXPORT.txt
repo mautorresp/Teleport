@@ -1,0 +1,24 @@
+CLF UNIVERSAL VALIDATOR — BIJECTION EXPORT
+========================================================================
+Build ID: CLF_UNIVERSAL_DP_20250923
+
+FILE: pic1.jpg
+Token SHA: 0ca26304784a228529eac02984053716d47bdb7e6a45368ae99362a7e0536906
+Tokens: 176
+Bijection: VERIFIED
+
+FILE: pic2.jpg
+Token SHA: 66bc148fc3355e915490a9ac5cf4c5d589f7502a4c59940ebe1cd4fc44b1c394
+Tokens: 104
+Bijection: VERIFIED
+
+FILE: S_const_50.bin
+Token SHA: 5e433ce8824ae37cb0faaf551e3f2911c063ed69ed0fa8d52232966dc4917716
+Tokens: 1
+Bijection: VERIFIED
+
+FILE: S_step_256.bin
+Token SHA: bd8a01dac98f3e0e9262661a7ac5214cfc0e7e998376bcaf4df3b8dd6c41b6ef
+Tokens: 1
+Bijection: VERIFIED
+

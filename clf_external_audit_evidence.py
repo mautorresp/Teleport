@@ -26,8 +26,9 @@ from pathlib import Path
 # Add teleport to path
 sys.path.append('/Users/Admin/Teleport')
 
+from teleport.clf_fb import encode_minimal
 from teleport.clf_canonical import (
-    encode_CLF, decode_CLF, finalize_cbd_tokens,
+    decode_CLF, finalize_cbd_tokens,
     _validate_unit_lock_and_ids, _validate_rails
 )
 
@@ -85,7 +86,7 @@ class CLFExternalAudit:
         
         # Encode in minimal mode (mathematical default)
         start_time = time.time()
-        self.tokens = encode_CLF(self.input_data, mode="minimal")
+        self.tokens = encode_minimal(self.input_data)
         encoding_time = time.time() - start_time
         
         print(f"Encoding Mode: minimal (mathematical bijection)")
@@ -125,7 +126,7 @@ class CLFExternalAudit:
         print(f"Total Cost: {total_cost} bits")
         print(f"10*L Baseline: {baseline_10L} bits")
         print(f"Mathematical Ratio: {mathematical_ratio:.6f}")
-        print(f"Compression Percentage: {(1 - mathematical_ratio) * 100:.3f}%")
+        print(f"Causal Deduction Efficiency: {(1 - mathematical_ratio) * 100:.3f}%")
         
         # Store in evidence
         self.evidence['process_chain']['encoding'] = {
@@ -139,7 +140,7 @@ class CLFExternalAudit:
                 'total_cost_bits': total_cost,
                 'baseline_10L_bits': baseline_10L,
                 'mathematical_ratio': mathematical_ratio,
-                'compression_percentage': (1 - mathematical_ratio) * 100
+                'causal_deduction_efficiency': (1 - mathematical_ratio) * 100
             }
         }
         
@@ -231,8 +232,14 @@ class CLFExternalAudit:
         print(f"\n=== STEP 5: CONSTRUCTION ANALYSIS ===")
         
         # Test both modes for comparison
-        tokens_minimal = encode_CLF(self.input_data, mode="minimal")  # Construction B
-        tokens_calc = encode_CLF(self.input_data, mode="calc")       # Construction A
+        from teleport.clf_fb import build_A_exact, build_B_structural
+        
+        # Build A and B independently using Function-Builder
+        builder_A = build_A_exact(self.input_data)
+        builder_B = build_B_structural(self.input_data)
+        
+        tokens_minimal = encode_minimal(self.input_data)  # Final chosen tokens
+        tokens_calc = builder_A.finalize().tokens          # Construction A exact
         
         # Analyze minimal mode (Construction B)
         minimal_stream_cost = sum(

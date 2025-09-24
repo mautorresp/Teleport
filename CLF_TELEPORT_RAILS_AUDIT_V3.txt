@@ -1,0 +1,61 @@
+CLF TELEPORT RAILS AUDIT V3
+================================================================================
+Generated: 2025-09-23T11:01:48.289960
+
+[RAILS_DEFINITIONS]
+R1: Header lock H(L) == 16+8*leb_len(8L)
+R2: END positional END(bitpos) == 3+pad_to_byte(bitpos+3)
+R3: CAUS unit lock all tokens priced as 3+8*leb_len(op)+Σ8*leb_len(p)+8*leb_len(L)
+R4: Coverage exactness Σ token_L == L
+R5: Decision algebra C_min_total == C_min_via_streams
+R6: Superadditivity (B) Σ C_stream(B) ≥ C_stream(A_whole); else B_COMPLETE=False
+R7: EMIT gate EMIT iff C_total < 8L
+R8: Determinism double-run bytes identical
+R9: Bijection-global (EMIT) SHA256(expand) == SHA256(S)
+R10: Integer-only no float anywhere
+R11: Seed presence (A) whole-range token has params=[K] AND leb_len(K)==K_len_bytes
+R12: Prediction equality A_stream_pred==obs AND (if B) B_stream_pred==obs
+
+[RAILS_AUDIT_RESULTS]
+
+[EMPTY]
+L=0 
+R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=T R11=F R12=T
+FAILURES=2
+  R7_FAIL: C_total=24 >= 8L=0
+  R11_FAIL: No CBD token in A construction
+
+[SINGLE_BYTE]
+L=1 
+R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=T R11=F R12=T
+FAILURES=2
+  R7_FAIL: C_total=51 >= 8L=8
+  R11_FAIL: leb_len(K)=1 != K_len_pred=2
+
+[REPETITION]
+L=2 
+R1=T R2=T R3=T R4=T R5=T R6=F R7=F R8=T R9=T R10=T R11=T R12=T
+FAILURES=2
+  R6_FAIL: B_stream=27 < A_stream=43
+  R7_FAIL: C_total=51 >= 8L=16
+
+[NO_PATTERN]
+L=3 
+R1=T R2=T R3=T R4=T R5=T R6=F R7=F R8=T R9=T R10=T R11=T R12=T
+FAILURES=2
+  R6_FAIL: B_stream=35 < A_stream=51
+  R7_FAIL: C_total=59 >= 8L=24
+
+[ARITHMETIC]
+L=5 
+R1=T R2=T R3=T R4=T R5=T R6=F R7=F R8=T R9=T R10=T R11=F R12=T
+FAILURES=3
+  R6_FAIL: B_stream=35 < A_stream=59
+  R7_FAIL: C_total=59 >= 8L=40
+  R11_FAIL: leb_len(K)=5 != K_len_pred=6
+
+[MIXED]
+L=5 
+R1=T R2=T R3=T R4=T R5=T R6=T R7=F R8=T R9=T R10=T R11=T R12=T
+FAILURES=1
+  R7_FAIL: C_total=91 >= 8L=40

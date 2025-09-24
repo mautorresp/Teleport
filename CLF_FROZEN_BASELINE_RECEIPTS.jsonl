@@ -1,0 +1,4 @@
+{"file": "test_artifacts/pic5.jpg", "L": 555181, "bit_length": 20, "leb": 3, "C_min_bits": 112, "RAW_bits": 5551810, "EMIT": true, "BUILD_ID": "20250923_221835", "sha256": "bc43dca1eb5a2959945df3f7fa7e70f3836d9fe82c4555c1f31f12489ba98efc"}
+{"file": "test_artifacts/pic6.jpg", "L": 1042592, "bit_length": 20, "leb": 3, "C_min_bits": 112, "RAW_bits": 10425920, "EMIT": true, "BUILD_ID": "20250923_221835", "sha256": "4943b3ce046cc5188883ae640d79fa01be9c57535463eebec2525faee41d72db"}
+{"file": "test_artifacts/video2.mp4", "L": 3114374, "bit_length": 22, "leb": 4, "C_min_bits": 120, "RAW_bits": 31143740, "EMIT": true, "BUILD_ID": "20250923_221835", "sha256": "4a29822332909fe134d9ee30ccf5085c20de79635dbd3e42aec418f4f3db4793"}
+{"file": "test_artifacts/video3.mp4", "L": 9840497, "bit_length": 24, "leb": 4, "C_min_bits": 120, "RAW_bits": 98404970, "EMIT": true, "BUILD_ID": "20250923_221835", "sha256": "725fb6a6373dcac1c2799be77f14f6f5fe39b3a03d327c1b628e5b4f23fe20b5"}

@@ -1,0 +1,86 @@
+CLF TELEPORT FULL MATHEMATICAL EXPLANATION V6
+================================================================================
+Generated: 2025-09-23T12:09:36.207563
+Platform: macOS-15.7-arm64-arm-64bit
+
+[CRITICAL_V5_AUDIT_FIX]
+
+FIXED: END bits included in totals
+- V5 computed END(p) but excluded from decision algebra
+- V6 enforces END-inclusive STREAM = CAUS + END for all paths
+- Decision algebra: TOTAL = H + STREAM where STREAM includes END
+- Algebra equality: min(H+STREAM_A, H+STREAM_B) = H + min(STREAM_A, STREAM_B)
+
+[TELEPORT_AXIOMS_IMPLEMENTED]
+
+H(L) = 16 + 8*leb_len(8*L)                    # Header bits
+C_stream(op,...,L) = 3 + 8*leb_len(op) + Σ 8*leb_len(param_i) + 8*leb_len(L)  # CAUS only
+END(p) = 3 + ((8 - ((p+3) % 8)) % 8)         # END positional cost
+STREAM = CAUS + END                           # Total path stream cost
+TOTAL = H(L) + STREAM                         # Total path cost
+
+[END_INCLUSIVE_ACCOUNTING]
+
+For each path P ∈ {A, B}:
+- CAUS_P = Σ C_stream(tokens_P)  # Sum of CAUS token costs
+- END_P = Σ END(bitpos)          # Sum of END token costs
+- STREAM_P = CAUS_P + END_P      # Total stream cost
+- TOTAL_P = H(L) + STREAM_P      # Total path cost
+
+Decision algebra (single source):
+- C_min_total = min(TOTAL_A, TOTAL_B)
+- C_min_via_streams = min(H + STREAM_A, H + STREAM_B)
+- Assert: C_min_total == C_min_via_streams
+- C(S) = C_min_total
+
+[MATHEMATICAL_PIPELINE_V6]
+
+STAGE 1: Input Processing
+- Input S: bytes of length L
+- Integer-only arithmetic throughout (R0)
+- SHA256 identity fingerprinting
+
+STAGE 2: Predictions (R10) - END-inclusive
+- A_PRED: Teleport causal seed → CAUS + END
+- B_PRED: CAUS tiling structure → CAUS + END
+- Status: COMPLETE or INCOMPLETE
+
+STAGE 3: Construction Building
+- A: Single causal seed token + END
+- B: CAUS-only tiling + END
+- Path accounting: STREAM = CAUS + END
+
+STAGE 4: Decision Algebra (END-inclusive)
+- Compute TOTAL = H + STREAM for each complete path
+- C(S) = min(TOTAL_A, TOTAL_B) where available
+- Enforce algebra equality on STREAM (not CAUS-only)
+
+STAGE 5: Decision Gate (R7)
+- EMIT iff C(S) < 8*L
+- Otherwise CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+STAGE 6: Rails Validation (R0-R10)
+- R2: END positional included in path totals
+- R5: Algebra equality on END-inclusive STREAM
+- All other rails enforced with fail-closed operation
+
+[RAILS_R0_R10_END_INCLUSIVE]
+
+R0: Integer-only guard (scan modules)
+R1: Header lock H(L) recomputed verification
+R2: END positional from actual bitpos (included in TOTAL)
+R3: CAUS unit lock (no S-packing, stable for L=0)
+R4: Coverage exactness Σ token_L == L
+R5: Algebra equality on END-inclusive STREAM (double-header guard)
+R6: Superadditivity (CBD-split only, CAUS-only bypassed)
+R7: Decision gate C(S) < 8*L where C(S) includes END
+R8: Determinism receipts
+R9: Bijection receipts (EMIT only)
+R10: Prediction equality A_PRED==A_STREAM, B_PRED==B_STREAM (END-inclusive)
+
+[FAIL_CLOSED_OPERATION]
+
+Any rail failure prints RAIL_FAIL:<id> <diagnostic>
+Processing continues for complete audit coverage
+No silent degradation or approximation
+END-inclusive bit accounting prevents under-counting

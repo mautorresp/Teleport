@@ -1,0 +1,16 @@
+CLF TELEPORT RAILS AUDIT V8.1_pic1
+================================================================================
+Generated: 2025-09-23T13:13:07.131841
+
+[RAILS_AUDIT_FAIL_CLOSED_V8_1]
+R0: True - All computations use integers
+R1: True - H(63379) = 40
+R2: True - Positional END verified
+R3: True - CAUS from leb_len only
+R4: True - Coverage verified
+R5: False - CAUSEFAIL_BUILDER_INCOMPLETENESS
+R6: True - No CBD splits
+R7: True - NO_EMIT_CAUSEFAIL_BUILDER_INCOMPLETENESS
+R8: False - Run1=RUN1_NO_COMPLETE_PATH, Run2=RUN2_NO_COMPLETE_PATH
+R9: True - NO_SHA_RECEIPT_NO_EMIT_CAUSEFAIL_BUILDER_INCOMPLETENESS
+R10: True - A_lock=True, B_lock=True

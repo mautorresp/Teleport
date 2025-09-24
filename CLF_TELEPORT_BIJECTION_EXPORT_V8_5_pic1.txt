@@ -1,0 +1,62 @@
+CLF TELEPORT BIJECTION EXPORT V8.5 pic1
+==========================================
+Generated: 2025-09-23T14:25:58
+
+BIJECTION ANALYSIS WITH THEOREM-LOCKED RECEIPTS
+
+[BIJECTION_METHODOLOGY_V8_5]
+RAIL A1: A contributes only if expand_A(params, L) == S byte-for-byte
+RAIL R8/R9: Bijection receipts required for any EMIT decision
+SHA256 equality verification with cryptographic receipts
+Re-encode determinism checks (identical bytes)
+
+[BIJECTION_RESULTS_PIC1]
+
+pic1.jpg (L=968):
+==================
+INPUT_SHA256: 529a3837def11ece4f70b6928e7c7d5ce33cfa3b47043fbeab1936a5eb9a4f89
+
+RAIL A1 ADMISSIBILITY WALL:
+  Causal_Seed: [82, 154, 968]
+  Expansion_Attempt: expand_A_causal_seed([82, 154, 968], 968)
+  
+  BIJECTION_TEST:
+    Input_SHA256:  529a3837def11ece...
+    Output_SHA256: 521317ec...
+    Byte_Equality: False
+    
+  RAIL_A1_RESULT: INADMISSIBLE
+  A_COMPLETE: False
+  A_CONTRIBUTES_TO_CANDIDATES: False
+  
+  DIAGNOSTIC: BIJECTION_FAILED_SHA_IN_529a3837_SHA_OUT_521317ec
+
+B-PATH BIJECTION VERIFICATION:
+  Method: Per-byte CAUS deterministic tiling
+  Total_Tokens: 968
+  
+  UNIT_LOCKED_VERIFICATION:
+    Each_Token: op=1, params=[], L_token=1
+    Unit_Cost: C_CAUS = 3 + 8*leb(1) + 8*leb(1) = 19 bits
+    Total_CAUS: 968 * 19 = 18,392 bits
+    END_Cost: END(18392) = 8 bits
+    B_STREAM_Total: 18,400 bits
+    
+  COVERAGE_VERIFICATION:
+    Coverage_Sum: Σ L_token = 968
+    Target_Length: 968
+    Coverage_Exact: True
+    
+  BIJECTION_STATUS: True (by deterministic construction)
+  B_COMPLETE: True
+  B_CONTRIBUTES_TO_CANDIDATES: True
+
+BIJECTION_RAILS_STATUS:
+  R8_B_BIJECTION: True (deterministic per-byte)
+  R9_A_BIJECTION: False (expansion fails SHA equality)
+  
+MATHEMATICAL_CONCLUSION:
+Only B-path provides admissible bijection for pic1.jpg.
+A-path blocked by Rail A1 - causal seed expansion produces wrong bytes.
+No EMIT decision possible until A-path bijection is mathematically proven.
+B-path bijection verified through unit-locked deterministic construction.

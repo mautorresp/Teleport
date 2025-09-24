@@ -1,0 +1,147 @@
+CLF TELEPORT PREDICTION EXPORT V7
+================================================================================
+Generated: 2025-09-23T12:41:46.587511
+
+[PREDICTION_METHODOLOGY_V7_COMPLETENESS_CONTRACT]
+A_PRED: From Teleport causal seed → CAUS + END (END-inclusive)
+B_PRED: From declared CAUS tiling → CAUS + END (END-inclusive)
+Status: COMPLETE (numeric PRED, equals STREAM) or INCOMPLETE (N/A)
+Rail R10: Prediction equality matches path completeness status
+
+[PREDICTION_RESULTS]
+
+[RUN_1] S1
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = 32 (status: COMPLETE)
+  A_STREAM = 32 (CAUS=27 + END=5)
+  A_PRED_EQUALS_STREAM = True
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 32 (status: COMPLETE)
+  B_STREAM = 32 (CAUS=27 + END=5)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_2] S2
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = N/A (status: INCOMPLETE)
+  A_STREAM = N/A (A_COMPLETE=False)
+  A_PRED_EQUALS_STREAM = N/A
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 40 (status: COMPLETE)
+  B_STREAM = 40 (CAUS=35 + END=5)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_3] S3
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = N/A (status: INCOMPLETE)
+  A_STREAM = N/A (A_COMPLETE=False)
+  A_PRED_EQUALS_STREAM = N/A
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 48 (status: COMPLETE)
+  B_STREAM = 48 (CAUS=43 + END=5)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_4] EMPTY
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = 8 (status: COMPLETE)
+  A_STREAM = 8 (CAUS=0 + END=8)
+  A_PRED_EQUALS_STREAM = True
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 8 (status: COMPLETE)
+  B_STREAM = 8 (CAUS=0 + END=8)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_5] SINGLE
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = 32 (status: COMPLETE)
+  A_STREAM = 32 (CAUS=27 + END=5)
+  A_PRED_EQUALS_STREAM = True
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 32 (status: COMPLETE)
+  B_STREAM = 32 (CAUS=27 + END=5)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_6] DOUBLE
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = 32 (status: COMPLETE)
+  A_STREAM = 32 (CAUS=27 + END=5)
+  A_PRED_EQUALS_STREAM = True
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 32 (status: COMPLETE)
+  B_STREAM = 32 (CAUS=27 + END=5)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_7] TRIPLE
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = N/A (status: INCOMPLETE)
+  A_STREAM = N/A (A_COMPLETE=False)
+  A_PRED_EQUALS_STREAM = N/A
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 40 (status: COMPLETE)
+  B_STREAM = 40 (CAUS=35 + END=5)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 
+
+[RUN_8] ARITH
+============================================================
+
+A_PREDICTION (END-inclusive):
+  A_PRED = N/A (status: INCOMPLETE)
+  A_STREAM = N/A (A_COMPLETE=False)
+  A_PRED_EQUALS_STREAM = N/A
+
+B_PREDICTION (END-inclusive):
+  B_PRED = 40 (status: COMPLETE)
+  B_STREAM = 40 (CAUS=35 + END=5)
+  B_PRED_EQUALS_STREAM = True
+
+PREDICTION_RAIL_R10:
+  R10_VALID = True
+  R10_DIAG = 

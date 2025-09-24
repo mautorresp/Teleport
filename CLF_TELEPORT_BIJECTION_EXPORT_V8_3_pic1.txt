@@ -1,0 +1,44 @@
+CLF TELEPORT BIJECTION EXPORT V8.3 pic1
+==========================================
+Generated: 2025-09-23T13:56:16
+
+BIJECTION ANALYSIS FOCUS - Mathematical Honesty Applied
+
+[BIJECTION_METHODOLOGY_V8_3]
+A_BIJECTION: expand(params, L) == S exactly (byte-for-byte)
+B_BIJECTION: Per-byte CAUS reconstruction with exact coverage
+Status: VALID (True bijection) or FAILED (with SHA diagnostic)
+Admissibility Gate: Only VALID bijections contribute to candidates
+
+[BIJECTION_RESULTS_PIC1]
+
+pic1.jpg (L=968):
+==================
+INPUT_SHA256: 529a3837def11ece...
+
+A_BIJECTION_TEST:
+  Causal_Seed: [82, 154, 968]
+  Expansion_Attempt: expand_causal_seed([82, 154, 968], 968)
+  Result_SHA256: 521317ec...
+  BIJECTION_VALID: False
+  Diagnostic: BIJECTION_FAILED_SHA_IN_529a3837_SHA_OUT_521317ec
+  A_ADMISSIBLE: False
+  A_CONTRIBUTES_TO_CANDIDATES: False
+
+B_BIJECTION_TEST:
+  Method: Per-byte CAUS tiling
+  Token_Count: 968
+  Coverage_Sum: 968/968
+  Reconstruction: Deterministic per-byte
+  BIJECTION_VALID: True
+  B_ADMISSIBLE: True
+  B_CONTRIBUTES_TO_CANDIDATES: True
+
+BIJECTION_RAIL_STATUS:
+  R8_B_BIJECTION: True
+  R9_A_BIJECTION: False
+
+MATHEMATICAL_CONCLUSION:
+Only B-path provides valid bijection for pic1.jpg.
+A-path expansion fails SHA equality test.
+No A numeric totals included in decision algebra.

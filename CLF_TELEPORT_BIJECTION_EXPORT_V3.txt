@@ -1,0 +1,179 @@
+CLF TELEPORT BIJECTION EXPORT V3
+================================================================================
+Generated: 2025-09-23T11:01:48.289960
+
+[BIJECTION_AXIOMS]
+Every token with L>0 must include parameters sufficient for reconstruction
+CONST: params=[byte_value] for single bytes
+STEP: params=[start_byte, stride] for sequences
+CBD: params=[seed_K] where expand(K,L) reconstructs input exactly
+
+[BIJECTION_TEST_RESULTS]
+
+[RUN_1] EMPTY
+============================================================
+PROPERTIES:
+  L = 0
+  RAW_BITS = 0
+  SHA256_IN = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 24
+  H: 24
+  Excess: 24 bits
+
+TOKENS_BIJECTIVE:
+  [0] KIND=END
+       STREAM_BITS=8
+       BITPOS=0
+
+COVERAGE:
+  Σ token_L = 0
+  L = 0
+  COVERAGE_COMPLETE = True
+
+[RUN_2] SINGLE_BYTE
+============================================================
+PROPERTIES:
+  L = 1
+  RAW_BITS = 8
+  SHA256_IN = 559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 51
+  H: 24
+  Excess: 43 bits
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=1 L=1 params=[65]
+       STREAM_BITS=27
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       RECONSTRUCTED=41
+       BIJECTION_VALID=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=27
+
+COVERAGE:
+  Σ token_L = 1
+  L = 1
+  COVERAGE_COMPLETE = True
+
+[RUN_3] REPETITION
+============================================================
+PROPERTIES:
+  L = 2
+  RAW_BITS = 16
+  SHA256_IN = 58bb119c35513a451d24dc20ef0e9031ec85b35bfc919d263e7e5d9868909cb5
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 51
+  H: 24
+  Excess: 35 bits
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=1 L=2 params=[65]
+       STREAM_BITS=27
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       RECONSTRUCTED=4141
+       BIJECTION_VALID=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=27
+
+COVERAGE:
+  Σ token_L = 2
+  L = 2
+  COVERAGE_COMPLETE = True
+
+[RUN_4] NO_PATTERN
+============================================================
+PROPERTIES:
+  L = 3
+  RAW_BITS = 24
+  SHA256_IN = b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 59
+  H: 24
+  Excess: 35 bits
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=2 L=3 params=[65, 1]
+       STREAM_BITS=35
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       RECONSTRUCTED=414243
+       BIJECTION_VALID=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=35
+
+COVERAGE:
+  Σ token_L = 3
+  L = 3
+  COVERAGE_COMPLETE = True
+
+[RUN_5] ARITHMETIC
+============================================================
+PROPERTIES:
+  L = 5
+  RAW_BITS = 40
+  SHA256_IN = c9401324ddc3574c44742d6cee900fd5af105227b3211225eb5a64d349543c24
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 59
+  H: 24
+  Excess: 19 bits
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=2 L=5 params=[7, 3]
+       STREAM_BITS=35
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       RECONSTRUCTED=070a0d1013
+       BIJECTION_VALID=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=35
+
+COVERAGE:
+  Σ token_L = 5
+  L = 5
+  COVERAGE_COMPLETE = True
+
+[RUN_6] MIXED
+============================================================
+PROPERTIES:
+  L = 5
+  RAW_BITS = 40
+  SHA256_IN = 80da37596c02f3db2a04489656f13fe99c5afbf845391beeac6475bc7a711004
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+  C_total: 91
+  H: 24
+  Excess: 51 bits
+
+TOKENS_BIJECTIVE:
+  [0] KIND=CAUS op=1 L=5 params=[280267735619]
+       STREAM_BITS=67
+       BITPOS_START=0
+       BIJECTION_COMPLETE=True
+       RECONSTRUCTED=4141424243
+       BIJECTION_VALID=True
+  [1] KIND=END
+       STREAM_BITS=5
+       BITPOS=67
+
+COVERAGE:
+  Σ token_L = 5
+  L = 5
+  COVERAGE_COMPLETE = True

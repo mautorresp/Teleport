@@ -1,0 +1,32 @@
+CLF TELEPORT FULL EXPLANATION V8.1_pic1
+================================================================================
+Generated: 2025-09-23T13:13:07.131841
+
+[PINNED_AXIOMS_V8_1]
+Single source of truth (calculator rails):
+leb_len(n): 7-bit groups, if n=0 return 1
+H(L) = 16 + 8*leb_len(8*L) (bits)
+END(pos) = 3 + ((8-((pos+3)%8))%8) (bits)
+C_CAUS(op,params,L) = 3 + 8*leb_len(op) + sum(8*leb_len(param_i)) + 8*leb_len(L)
+All integers, no floats, no compression vocabulary
+
+[CONSTRUCTIVE_PREDICTION_AS_FILTER_V8_1]
+A_pred(S): Constructive causal seed derivation (no S-packing)
+B_pred(S): Constructive CAUS tiling with exact coverage sum(L_i)=L
+Hard binding: COMPLETE paths must have STREAM_obs == STREAM_pred
+Fail-closed: INCOMPLETE predictors cannot be built
+
+[PATH_COMPLETENESS_CONTRACT_V8_1]
+P_COMPLETE = (pred COMPLETE) AND (build COMPLETE) AND (PRED==OBS)
+If P_COMPLETE=False: P_STREAM=N/A, P_TOTAL=N/A, exclude from candidates
+
+[FAIL_CLOSED_DECISION_ALGEBRA_V8_1]
+Candidates C = {H+P_stream | P_COMPLETE}
+If C=empty: CAUSEFAIL(BUILDER_INCOMPLETENESS)
+Else: C(S) = min(C), verify min(H+A,H+B) = H+min(A,B)
+EMIT gate: C(S) < 8*L, else CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+[DETERMINISM_AND_RECEIPTS_V8_1]
+Double encode: bit-for-bit identical
+EMIT receipts: SHA256_IN == SHA256_OUT
+Integer-only logs, single-pass computation

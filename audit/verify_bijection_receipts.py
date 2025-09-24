@@ -7,7 +7,8 @@ PIN-DR: Verify bijection receipts match external audit evidence
 Evidence: pic1.jpg and pic2.jpg must show SHA_in == SHA_out
 """
 
-from teleport.clf_canonical import encode_CLF, finalize_cbd_tokens, decode_CLF
+from teleport.clf_fb import encode_minimal
+from teleport.clf_canonical import finalize_cbd_tokens, decode_CLF
 import hashlib, os
 
 def verify_bijection_receipts():
@@ -56,7 +57,7 @@ def verify_bijection_receipts():
             continue
         
         # Test minimal mode encoding + direct decoding (proven bijection path)
-        toks = encode_CLF(S, mode="minimal")
+        toks = encode_minimal(S)
         # Use raw tokens for bijection test - finalization may be separate concern
         D = decode_CLF(toks)
         

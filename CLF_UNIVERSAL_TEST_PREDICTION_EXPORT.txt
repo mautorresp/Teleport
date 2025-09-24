@@ -1,0 +1,24 @@
+CLF UNIVERSAL VALIDATOR — PREDICTION EXPORT
+========================================================================
+Build ID: CLF_UNIVERSAL_DP_20250923
+
+FILE: S_const_50.bin
+----------------------------------------
+H: 32
+A_stream: 32
+B_stream: 32
+Candidates: [64, 64]
+C_min_total: 64
+RAW: 400
+EMIT: True
+
+FILE: S_step_256.bin
+----------------------------------------
+H: 32
+A_stream: 48
+B_stream: 48
+Candidates: [80, 80]
+C_min_total: 80
+RAW: 2048
+EMIT: True
+

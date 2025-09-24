@@ -1,0 +1,38 @@
+CLF TELEPORT FULL EXPLANATION V8.2_pic1
+================================================================================
+Generated: 2025-09-23T13:24:05.175406
+
+[PINNED_AXIOMS_V8_2]
+Single source of truth (unchanged from V8.1):
+leb_len(n): 7-bit groups, if n=0 return 1
+H(L) = 16 + 8*leb_len(8*L) (bits)
+END(pos) = 3 + ((8-((pos+3)%8))%8) (bits)
+C_CAUS(op,params,L) = 3 + 8*leb_len(op) + sum(8*leb_len(param_i)) + 8*leb_len(L)
+All integers, no floats, no compression vocabulary
+
+[CONSTRUCTIVE_PREDICTORS_V8_2]
+A_pred(S): Constructive causal seed derivation with witness parameters
+- EMPTY: void seed, no params
+- SINGLE: direct byte value (no S-packing)
+- MULTI: frequency analysis or boundary analysis for witness
+- Coverage: token_L = L exactly
+- Bijection: params sufficient for reconstruction
+
+B_pred(S): Deterministic CAUS tiling with exact coverage
+- Token set: CONST(byte,L), optimal chunking
+- Coverage: sum(L_i) = L exactly, no gaps/overlaps
+- END(pos): computed at true bit position
+- Reconstruction: per-token bijection parameters
+
+[PREDICTION_AS_FILTER_BINDING_V8_2]
+Hard binding: STREAM_obs == STREAM_pred (bit-for-bit)
+Per-token verification: CAUS_obs == CAUS_pred, END_obs == END_pred
+Positional END: computed from actual bit position
+Local receipts: reconstruction hash per token
+
+[CONSTRUCTIVE_ALGEBRA_V8_2]
+Candidates = {H+P_stream | P_COMPLETE with witnesses}
+C_min_total = min(H+A_stream, H+B_stream)
+C_min_via_streams = H + min(A_stream, B_stream)
+Verification: C_min_total == C_min_via_streams
+EMIT gate: C(S) < 8*L with constructive proof

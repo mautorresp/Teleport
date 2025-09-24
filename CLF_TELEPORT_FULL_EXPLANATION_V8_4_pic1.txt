@@ -1,0 +1,139 @@
+CLF TELEPORT MATHEMATICAL EXPORT V8.4 - UNIT-LOCKED CORRECTIONS
+================================================================================
+Generated: 2025-09-23T14:14:04.200008
+
+MATHEMATICAL CONTRADICTIONS FIXED:
+C1) CAUS unit-lock enforcement - exact per-token pricing with mathematical floor
+C2) Predictor binding to deducible operators - Π_B(S) = B_STREAM when B_COMPLETE
+C3) R6 falsifiable witnesses - explicit A_whole_range_stream integers published
+
+[RUN] pic1.jpg
+============================================================
+INPUT:
+  Length: 968
+  Header: H(968) = 32
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Bijection: False
+
+B-PATH (UNIT-LOCKED):
+  Complete: True
+  Stream: 18400
+  Tokens: 968
+  Unit_Lock_Valid: True
+
+PREDICTION BINDING:
+  Π(S): 9680
+  Π_reason: LITERAL_FALLBACK
+  Π_A binding: N/A_INADMISSIBLE
+  Π_B binding: BOUND
+    PRED==OBS: True
+
+[RUN] S1
+============================================================
+INPUT:
+  Length: 1
+  Header: H(1) = 24
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Bijection: False
+
+B-PATH (UNIT-LOCKED):
+  Complete: True
+  Stream: 24
+  Tokens: 1
+  Unit_Lock_Valid: True
+
+PREDICTION BINDING:
+  Π(S): 10
+  Π_reason: LITERAL_FALLBACK
+  Π_A binding: N/A_INADMISSIBLE
+  Π_B binding: BOUND
+    PRED==OBS: True
+
+[RUN] S2
+============================================================
+INPUT:
+  Length: 2
+  Header: H(2) = 24
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Bijection: False
+
+B-PATH (UNIT-LOCKED):
+  Complete: True
+  Stream: 48
+  Tokens: 2
+  Unit_Lock_Valid: True
+
+PREDICTION BINDING:
+  Π(S): 20
+  Π_reason: LITERAL_FALLBACK
+  Π_A binding: N/A_INADMISSIBLE
+  Π_B binding: BOUND
+    PRED==OBS: True
+
+[RUN] EMPTY
+============================================================
+INPUT:
+  Length: 0
+  Header: H(0) = 24
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: True
+  Stream: 40
+  Bijection: True
+
+B-PATH (UNIT-LOCKED):
+  Complete: True
+  Stream: 0
+  Tokens: 0
+  Unit_Lock_Valid: True
+
+PREDICTION BINDING:
+  Π(S): 0
+  Π_reason: LITERAL_FALLBACK
+  Π_A binding: BOUND
+    PRED==OBS: True
+  Π_B binding: N/A_INCOMPLETE
+
+[RUN] SINGLE
+============================================================
+INPUT:
+  Length: 1
+  Header: H(1) = 24
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Bijection: False
+
+B-PATH (UNIT-LOCKED):
+  Complete: True
+  Stream: 24
+  Tokens: 1
+  Unit_Lock_Valid: True
+
+PREDICTION BINDING:
+  Π(S): 10
+  Π_reason: LITERAL_FALLBACK
+  Π_A binding: N/A_INADMISSIBLE
+  Π_B binding: BOUND
+    PRED==OBS: True
+

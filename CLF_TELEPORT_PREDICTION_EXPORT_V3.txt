@@ -1,0 +1,192 @@
+CLF TELEPORT PREDICTION EXPORT V3
+================================================================================
+Generated: 2025-09-23T11:01:48.289960
+
+[PREDICTION_METHODOLOGY]
+Prediction→Construction rails verify mathematical accuracy:
+1. Predict costs based on input analysis
+2. Build actual constructions
+3. Measure observed costs
+4. Assert predictions == observations
+
+[PREDICTION_RESULTS]
+
+[RUN_1] EMPTY
+============================================================
+
+PREDICTIONS:
+  H(L) = 24
+  A_stream_pred = 0
+  A_total_pred = 24
+  B_stream_pred = 0 (estimated)
+  B_total_pred = 24
+
+OBSERVED:
+  H(L) = 24
+  A_stream_obs = 0
+  A_total_obs = 24
+  B_stream_obs = 0
+  B_total_obs = 24
+  B_complete = True
+
+EQUALITY:
+  H_pred == H_obs: True
+  A_stream_pred == A_stream_obs: True
+  A_total_pred == A_total_obs: True
+
+ALGEBRA:
+  C_min_total = 24
+  C_min_via_streams = 24
+  Decision_algebra_valid = True
+
+DECISION_RESULT: CAUSEFAIL (excess = 24 bits)
+
+[RUN_2] SINGLE_BYTE
+============================================================
+
+PREDICTIONS:
+  H(L) = 24
+  A_stream_pred = 27
+  A_total_pred = 51
+  B_stream_pred = 24 (estimated)
+  B_total_pred = 48
+
+OBSERVED:
+  H(L) = 24
+  A_stream_obs = 27
+  A_total_obs = 51
+  B_stream_obs = 27
+  B_total_obs = 51
+  B_complete = True
+
+EQUALITY:
+  H_pred == H_obs: True
+  A_stream_pred == A_stream_obs: True
+  A_total_pred == A_total_obs: True
+
+ALGEBRA:
+  C_min_total = 51
+  C_min_via_streams = 51
+  Decision_algebra_valid = True
+
+DECISION_RESULT: CAUSEFAIL (excess = 43 bits)
+
+[RUN_3] REPETITION
+============================================================
+
+PREDICTIONS:
+  H(L) = 24
+  A_stream_pred = 43
+  A_total_pred = 67
+  B_stream_pred = 48 (estimated)
+  B_total_pred = 72
+
+OBSERVED:
+  H(L) = 24
+  A_stream_obs = 43
+  A_total_obs = 67
+  B_stream_obs = 27
+  B_total_obs = 51
+  B_complete = True
+
+EQUALITY:
+  H_pred == H_obs: True
+  A_stream_pred == A_stream_obs: True
+  A_total_pred == A_total_obs: True
+
+ALGEBRA:
+  C_min_total = 51
+  C_min_via_streams = 51
+  Decision_algebra_valid = True
+
+DECISION_RESULT: CAUSEFAIL (excess = 35 bits)
+
+[RUN_4] NO_PATTERN
+============================================================
+
+PREDICTIONS:
+  H(L) = 24
+  A_stream_pred = 51
+  A_total_pred = 75
+  B_stream_pred = 72 (estimated)
+  B_total_pred = 96
+
+OBSERVED:
+  H(L) = 24
+  A_stream_obs = 51
+  A_total_obs = 75
+  B_stream_obs = 35
+  B_total_obs = 59
+  B_complete = True
+
+EQUALITY:
+  H_pred == H_obs: True
+  A_stream_pred == A_stream_obs: True
+  A_total_pred == A_total_obs: True
+
+ALGEBRA:
+  C_min_total = 59
+  C_min_via_streams = 59
+  Decision_algebra_valid = True
+
+DECISION_RESULT: CAUSEFAIL (excess = 35 bits)
+
+[RUN_5] ARITHMETIC
+============================================================
+
+PREDICTIONS:
+  H(L) = 24
+  A_stream_pred = 59
+  A_total_pred = 83
+  B_stream_pred = 120 (estimated)
+  B_total_pred = 144
+
+OBSERVED:
+  H(L) = 24
+  A_stream_obs = 59
+  A_total_obs = 83
+  B_stream_obs = 35
+  B_total_obs = 59
+  B_complete = True
+
+EQUALITY:
+  H_pred == H_obs: True
+  A_stream_pred == A_stream_obs: True
+  A_total_pred == A_total_obs: True
+
+ALGEBRA:
+  C_min_total = 59
+  C_min_via_streams = 59
+  Decision_algebra_valid = True
+
+DECISION_RESULT: CAUSEFAIL (excess = 19 bits)
+
+[RUN_6] MIXED
+============================================================
+
+PREDICTIONS:
+  H(L) = 24
+  A_stream_pred = 67
+  A_total_pred = 91
+  B_stream_pred = 120 (estimated)
+  B_total_pred = 144
+
+OBSERVED:
+  H(L) = 24
+  A_stream_obs = 67
+  A_total_obs = 91
+  B_stream_obs = 81
+  B_total_obs = 105
+  B_complete = True
+
+EQUALITY:
+  H_pred == H_obs: True
+  A_stream_pred == A_stream_obs: True
+  A_total_pred == A_total_obs: True
+
+ALGEBRA:
+  C_min_total = 91
+  C_min_via_streams = 91
+  Decision_algebra_valid = True
+
+DECISION_RESULT: CAUSEFAIL (excess = 51 bits)

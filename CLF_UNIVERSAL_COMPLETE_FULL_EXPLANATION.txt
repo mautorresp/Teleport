@@ -1,0 +1,53 @@
+CLF UNIVERSAL VALIDATOR — FULL EXPLANATION
+========================================================================
+Build ID: CLF_UNIVERSAL_DP_20250923
+Deductor Signature: b6b4440a36956d67d832e965d85ee53e607957a25f3ef626cebf65b7996b33d7
+
+FILE: pic1.jpg
+----------------------------------------
+Length: 968 bytes
+A-role: N/A
+B-tokens: 176
+H: 32, RAW: 7744
+B_caus: 5760, B_end: 8, B_stream: 5768
+Candidates: [5800]
+C_min_total: 5800
+EMIT: True
+Token SHA: 0ca26304784a228529eac02984053716d47bdb7e6a45368ae99362a7e0536906
+
+FILE: pic2.jpg
+----------------------------------------
+Length: 456 bytes
+A-role: N/A
+B-tokens: 104
+H: 32, RAW: 3648
+B_caus: 3240, B_end: 8, B_stream: 3248
+Candidates: [3280]
+C_min_total: 3280
+EMIT: True
+Token SHA: 66bc148fc3355e915490a9ac5cf4c5d589f7502a4c59940ebe1cd4fc44b1c394
+
+FILE: S_const_50.bin
+----------------------------------------
+Length: 50 bytes
+A-role: CONST
+B-tokens: 1
+H: 32, RAW: 400
+B_caus: 27, B_end: 5, B_stream: 32
+Candidates: [64, 64]
+C_min_total: 64
+EMIT: True
+Token SHA: 5e433ce8824ae37cb0faaf551e3f2911c063ed69ed0fa8d52232966dc4917716
+
+FILE: S_step_256.bin
+----------------------------------------
+Length: 256 bytes
+A-role: STEP
+B-tokens: 1
+H: 32, RAW: 2048
+B_caus: 43, B_end: 5, B_stream: 48
+Candidates: [80, 80]
+C_min_total: 80
+EMIT: True
+Token SHA: bd8a01dac98f3e0e9262661a7ac5214cfc0e7e998376bcaf4df3b8dd6c41b6ef
+

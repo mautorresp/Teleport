@@ -1,0 +1,196 @@
+CLF TELEPORT MATHEMATICAL EXPORT V8.3 with PREDICTION-AS-FILTER
+================================================================================
+Generated: 2025-09-23T13:56:16.387357
+
+MATHEMATICAL CORRECTIONS APPLIED:
+B1) A-path admissibility gate - require expand(params, L) == S exactly
+B2) Superadditivity R6 - correct scope using whole-range CBD reference
+B3) Decision algebra - single candidate set, no placeholders
+B4) Rail truth table - mutually exclusive states, no contradictions
+C1/C2) Prediction-as-filter - Π(S) calculator with drift-proof binding
+
+[RUN] pic1.jpg
+============================================================
+INPUT:
+  Length: 968
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Total: None
+  Diagnostic: BIJECTION_FAILED_SHA_IN_529a3837_SHA_OUT_521317ec
+
+B-PATH:
+  Complete: True
+  Stream: 10656
+  Total: 10688
+  Tokens: 968
+
+PREDICTION:
+  Π(S): 9680
+  Π reason: LITERAL_FALLBACK
+  Gate agreement: True
+  Value agreement: None
+
+RAILS:
+  R0: True
+  R1: True
+  R3: True
+  R4: True
+  R5: True
+  R6: True
+  R7: False
+  R8: True
+  R9: False
+  ALL_PASS: False
+
+[RUN] S1
+============================================================
+INPUT:
+  Length: 1
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Total: None
+  Diagnostic: BIJECTION_FAILED_SHA_IN_684888c0_SHA_OUT_aaa8e61e
+
+B-PATH:
+  Complete: True
+  Stream: 16
+  Total: 40
+  Tokens: 1
+
+PREDICTION:
+  Π(S): 10
+  Π reason: LITERAL_FALLBACK
+  Gate agreement: True
+  Value agreement: None
+
+RAILS:
+  R0: True
+  R1: True
+  R3: True
+  R4: True
+  R5: True
+  R6: False
+  R7: False
+  R8: True
+  R9: False
+  ALL_PASS: False
+
+[RUN] S2
+============================================================
+INPUT:
+  Length: 2
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Total: None
+  Diagnostic: BIJECTION_FAILED_SHA_IN_a12871fe_SHA_OUT_0674bda5
+
+B-PATH:
+  Complete: True
+  Stream: 32
+  Total: 56
+  Tokens: 2
+
+PREDICTION:
+  Π(S): 20
+  Π reason: LITERAL_FALLBACK
+  Gate agreement: True
+  Value agreement: None
+
+RAILS:
+  R0: True
+  R1: True
+  R3: True
+  R4: True
+  R5: True
+  R6: True
+  R7: False
+  R8: True
+  R9: False
+  ALL_PASS: False
+
+[RUN] EMPTY
+============================================================
+INPUT:
+  Length: 0
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Total: None
+  Diagnostic: S_PACKING_DETECTED
+
+B-PATH:
+  Complete: True
+  Stream: 0
+  Total: 24
+  Tokens: 0
+
+PREDICTION:
+  Π(S): 0
+  Π reason: LITERAL_FALLBACK
+  Gate agreement: True
+  Value agreement: None
+
+RAILS:
+  R0: True
+  R1: True
+  R3: True
+  R4: True
+  R5: True
+  R6: N/A
+  R7: False
+  R8: True
+  R9: False
+  ALL_PASS: False
+
+[RUN] SINGLE
+============================================================
+INPUT:
+  Length: 1
+  Decision: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+
+A-PATH:
+  Complete: False
+  Stream: None
+  Total: None
+  Diagnostic: BIJECTION_FAILED_SHA_IN_a8100ae6_SHA_OUT_9e076cea
+
+B-PATH:
+  Complete: True
+  Stream: 16
+  Total: 40
+  Tokens: 1
+
+PREDICTION:
+  Π(S): 10
+  Π reason: LITERAL_FALLBACK
+  Gate agreement: True
+  Value agreement: None
+
+RAILS:
+  R0: True
+  R1: True
+  R3: True
+  R4: True
+  R5: True
+  R6: False
+  R7: False
+  R8: True
+  R9: False
+  ALL_PASS: False
+

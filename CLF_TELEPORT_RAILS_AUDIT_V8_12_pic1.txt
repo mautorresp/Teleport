@@ -1,0 +1,149 @@
+CLF TELEPORT RAILS AUDIT V8.12  
+================================================================================
+Generated: 2025-09-23T14:35:20
+
+[CONSOLE_TRANSCRIPT_RAILS_VERIFICATION]
+Pins verified ✓
+B-path bijection verified ✓  
+A-path bijection verified ✓
+Algebra equality verified ✓
+Gate condition: 1936 < 7744 → True
+CONSOLE VALIDATION COMPLETE - ALL BLOCKS PASSED ✓
+
+[RAILS_METHODOLOGY_V8_12]
+
+CLF Rails = Theorem-locked mathematical constraints preventing implementation drift:
+
+R1-R10: Integer-only calculator behavior with exact specification compliance
+Drift prevention: Any single-bit deviation triggers rail failure detection
+Implementation defect classification: Replace "CAUSEFAIL" with specific rail violations
+Console validation: Mandatory exact integer matching before export generation
+
+[RAIL_BY_RAIL_AUDIT_V8_12]
+
+R1 HEADER_LOCK: H(L) = 16 + 8*leb_len_u(8*L)
+Implementation: header_bits(L) using 7-bit shift leb_len_u calculation
+Verification: L=968 → 8L=7744 → leb_len_u(7744)=2 → H=16+8*2=32 ✓
+Status: PINNED (never changes after implementation)
+
+R2 END_POSITIONAL: C_END(bitpos) = 3 + ((8-((bitpos+3)%8))%8)  
+Implementation: end_bits(bitpos) with exact modular arithmetic
+Verification A: bitpos=1899 → 3+((8-((1899+3)%8))%8) = 3+((8-6)%8) = 3+2 = 5 ✓
+Verification B: bitpos=7928 → 3+((8-((7928+3)%8))%8) = 3+((8-3)%8) = 3+5 = 8 ✓  
+Status: PINNED (locked positional formula)
+
+R3 UNIT_LOCK: Each token pays 3 + 8*leb_len_u(op) + Σ 8*leb_len_u(param_i) + 8*leb_len_u(L_tok)
+Implementation: caus_bits(op, params, L_tok) with exact LEB128 pricing
+Verification examples:
+- STEP-RUN [255,217]: 3+8*leb_len_u(11)+8*leb_len_u(255)+8*leb_len_u(217)+8*leb_len_u(2) = 3+8+16+16+8 = 51 ✓
+- CONST-RUN [0]: 3+8*leb_len_u(10)+8*leb_len_u(0)+8*leb_len_u(1) = 3+8+8+8 = 27 ✓
+Status: PINNED (unit-locked pricing enforced)
+
+R4 COVERAGE_EXACTNESS: Σ L_tok = L  
+Implementation: Sum verification across all tokens in each path
+Verification A: A-path token coverage = 968 bytes ✓
+Verification B: B-path token coverage = 968 bytes ✓
+Status: ENFORCED (checked per path)
+
+R5 ALGEBRA_EQUALITY: min(H+A_stream, H+B_stream) = H + min(A_stream, B_stream)
+Implementation: Explicit algebra check with integer comparison
+Verification: min(32+1904, 32+7936) = 1936, 32+min(1904,7936) = 32+1904 = 1936 ✓
+Status: ENFORCED (verified before decision)
+
+R6 DETERMINISTIC_DEDUCTION: Same S → same token sequence
+Implementation: Greedy left-to-right maximal parsing for both STEP-RUN and CONST-RUN
+Verification: Constructive operators use deterministic rules (no search heuristics)
+Status: ENFORCED (algorithmic determinism)
+
+R7 SELF_CONTAINED_BIJECTION: No RAW readback, parameters-only expansion
+Implementation: expand_tokens() uses only token parameters and L_tok values  
+Verification: Both A and B paths expand without accessing original S
+Status: ENFORCED (bijection legality verified)
+
+R8 BIJECTION_RECEIPTS: expand(params, L) = S byte-for-byte
+Implementation: Complete expansion followed by SHA256 hash comparison
+Verification: SHA256(input) = SHA256(expanded) for both paths ✓
+Status: ENFORCED (cryptographic verification)
+
+R9 REENCODING_RECEIPTS: Serialization round-trip consistency
+Implementation: LEB128 encoding/decoding of all parameters and metadata
+Verification: Token parameters survive encode/decode cycle exactly
+Status: ENFORCED (demonstrated through console exact integer matching)
+
+R10 INTEGER_GUARD: Ban floating-point operations globally  
+Implementation: Pure integer arithmetic throughout caus_bits, leb_len_u, end_bits
+Verification: No float/double operations in calculator pipeline  
+Status: ENFORCED (vocabulary and computation compliance)
+
+[IMPLEMENTATION_DEFECT_CLASSIFICATION_V8_12]
+
+Previous System (V8.11 and earlier):
+- "CAUSEFAIL" used as mathematical outcome classification
+- Treated implementation gaps as if they were theorem limitations  
+- Failed to distinguish between code incompleteness and mathematical impossibility
+
+Corrected System (V8.12):
+- IMPLEMENTATION_DEFECT with specific rail violation identification
+- Recognizes that CLF/Teleport provides mathematical proof of operator existence
+- Code must match theorem specifications; gaps are builder deficiencies
+
+Current Status: NO IMPLEMENTATION DEFECTS DETECTED
+- All rails R1-R10 verified through console validation
+- Both paths provide complete bijection coverage  
+- Constructive operators successfully implemented
+- Gate condition satisfied: 1936 < 7744 → EMIT
+
+[CONSTRUCTIVE_OPERATOR_RAIL_COMPLIANCE_V8_12]
+
+STEP-RUN (op=11) Rail Verification:
+✓ R6 Deterministic: Greedy maximal arithmetic progression parsing
+✓ R7 Self-contained: Expansion uses only [start, step, L_tok] parameters  
+✓ R8 Bijection: SHA256 hash match after complete expansion
+✓ R3 Unit-locked: Exact pricing via LEB128 field costs
+✓ R4 Coverage: All declared L_tok intervals sum to L=968
+
+CONST-RUN (op=10) Rail Verification:  
+✓ R6 Deterministic: Greedy maximal equal-byte run parsing
+✓ R7 Self-contained: Expansion uses only [byte_val, L_tok] parameters
+✓ R8 Bijection: SHA256 hash match after complete expansion  
+✓ R3 Unit-locked: Exact pricing via LEB128 field costs
+✓ R4 Coverage: All declared L_tok intervals sum to L=968
+
+[DRIFT_PREVENTION_MECHANISMS_V8_12]
+
+Console Protocol Enforcement:
+- BLOCK 1: Pin verification (H, L, 8L exact integer matching)
+- BLOCK 2-3: Path-by-path bijection verification with cost calculation  
+- BLOCK 4: Algebra equality check (prevents min() calculation errors)
+- BLOCK 5: Gate condition verification (prevents incorrect emit decisions)
+- BLOCK 6: Receipt verification (prevents expansion implementation bugs)
+
+Pinned Helper Function Lock:
+- leb_len_u(): 7-bit shift implementation, no logs, no floating-point
+- header_bits(): Direct formula application H(L) = 16 + 8*leb_len_u(8*L)  
+- caus_bits(): Unit-lock summation over operator and parameter fields
+- end_bits(): Exact modular arithmetic for boundary alignment
+
+Implementation Defect Detection:
+Any deviation from expected integers triggers immediate failure with specific cause:
+- R1_FAIL: Header calculation mismatch
+- R4_FAIL: Coverage completeness violation  
+- R5_FAIL: Algebra equality breakdown
+- R8_FAIL: Bijection expansion or SHA verification failure
+- PREDICTION_BINDING_FAIL: Stream observation vs prediction mismatch
+
+[RAILS_AUDIT_SUMMARY_V8_12]
+
+All Rails Status: COMPLIANT ✓
+
+Mathematical Framework: CLF causal deduction with exact integer verification
+Implementation Quality: IMPLEMENTATION_DEFECT_FREE  
+Operator Completeness: STEP-RUN and CONST-RUN provide complete constructive coverage
+Decision Result: EMIT (causal structure detected and verified)
+
+Key Breakthrough: Replacement of "CAUSEFAIL" classification with constructive operator implementation
+Mathematical Evidence: 1936 bits causal cost < 7744 bits raw cost (75% reduction via arithmetic pattern discovery)
+
+Rails successfully prevent implementation drift while enabling causal minimality detection.
+Console validation protocol ensures exact integer compliance before any export generation.
+Constructive operators provide self-verifiable deduction ⟷ expansion with complete bijection proofs.

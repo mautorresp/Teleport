@@ -1,0 +1,83 @@
+CLF TELEPORT FULL MATHEMATICAL EXPLANATION V5
+================================================================================
+Generated: 2025-09-23T12:00:00.559835
+Platform: macOS-15.7-arm64-arm-64bit
+
+[TELEPORT_AXIOMS_IMPLEMENTED]
+
+H(L) = 16 + 8*leb_len(8*L)                    # Header bits
+END(p) = 3 + ((8 - ((p+3) % 8)) % 8)         # END positional cost
+C_stream = 3 + 8*leb_len(op) + Σ 8*leb_len(param_i) + 8*leb_len(L)
+
+[SURGICAL_CORRECTIONS_FROM_V4]
+
+FIXED: Double-header leak in decision algebra
+- Single C(S) source of truth enforced
+- Algebra equality: min(H+A, H+B) = H + min(A, B) asserted
+
+CORRECTED: R6 superadditivity specification
+- Only applies to CBD-split cases: Σ C_CBD_parts ≥ C_CBD_whole
+- CAUS-only constructions bypass R6
+
+COMPLETED: R10 prediction rails
+- A_PRED: from Teleport causal seed deduction
+- B_PRED: from declared CAUS tiling structure
+- Requires PRED == OBS when status COMPLETE
+
+STABILIZED: Small-L rail behavior
+- R3 (CAUS unit lock) handles L=0 gracefully
+- R7 (decision gate) deterministic for all L
+
+[MATHEMATICAL_PIPELINE_V5]
+
+STAGE 1: Input Processing
+- Input S: bytes of length L
+- Integer-only arithmetic throughout (R0)
+- SHA256 identity fingerprinting
+
+STAGE 2: Predictions (R10)
+- A_PRED: Teleport causal seed deduction
+- B_PRED: CAUS tiling structure analysis
+- Status: COMPLETE or INCOMPLETE
+
+STAGE 3: Construction Building
+- A: Single causal seed token (if deducible)
+- B: CAUS-only tiling (CONST/STEP precedence)
+
+STAGE 4: Decision Algebra (Single Source)
+- H = H_header(L)
+- A_total = H + A_stream (if A complete)
+- B_total = H + B_stream (if B complete)
+- C_min_total = min(A_total, B_total)
+- C_min_via_streams = H + min(A_stream, B_stream)
+- ASSERT: C_min_total == C_min_via_streams
+- C(S) = C_min_total (single value)
+
+STAGE 5: Decision Gate (R7)
+- EMIT iff C(S) < 8*L
+- Otherwise CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+STAGE 6: Rails Validation (R0-R10)
+- All rails enforced with fail-closed operation
+- Precise diagnostics for any failures
+
+[RAILS_R0_R10_CORRECTED]
+
+R0: Integer-only guard (scan modules)
+R1: Header lock H(L) recomputed verification
+R2: END positional from actual bitpos
+R3: CAUS unit lock (no S-packing, stable for L=0)
+R4: Coverage exactness Σ token_L == L
+R5: Algebra equality (double-header guard)
+R6: Superadditivity (CBD-split only, CAUS-only bypassed)
+R7: Decision gate C(S) < 8*L
+R8: Determinism receipts
+R9: Bijection receipts (EMIT only)
+R10: Prediction equality A_PRED==A_OBS, B_PRED==B_OBS
+
+[FAIL_CLOSED_OPERATION]
+
+Any rail failure prints RAIL_FAIL:<id> <diagnostic>
+Processing continues for complete audit coverage
+No silent degradation or approximation
+Single C(S) prevents double-header arithmetic errors

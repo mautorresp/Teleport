@@ -1,0 +1,27 @@
+CLF TELEPORT BIJECTION EXPORT V8_pic1
+================================================================================
+Generated: 2025-09-23T13:02:20.270241
+
+[PATH_A_UNIVERSAL_V8]
+A_COMPLETE = False
+A_STREAM_obs = 0
+A_TOKENS: (empty - path incomplete)
+A_PREDICTION_LOCK = True
+
+[PATH_B_DETERMINISTIC_V8]
+B_COMPLETE = False
+B_STREAM_obs = 0
+B_TOKENS: (empty - path incomplete)
+B_PREDICTION_LOCK = True
+
+[DECISION_ALGEBRA_V8]
+H = 40
+A: STREAM=N/A TOTAL=N/A COMPLETE=False
+B: STREAM=N/A TOTAL=N/A COMPLETE=False
+C_min_total       = None
+C_min_via_streams = None
+ALGEBRA_VALID     = False
+
+[EMIT_DECODE_receipts_V8]
+EMIT_GATE = False
+DECODE_STATUS = NO_EMIT

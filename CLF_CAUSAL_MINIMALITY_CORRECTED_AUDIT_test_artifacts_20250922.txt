@@ -1,0 +1,203 @@
+CLF CAUSAL MINIMALITY - CORRECTED EXTERNAL AUDIT
+=================================================
+
+AUDIT DATE: September 22, 2025
+MATHEMATICAL LAW: CLF Causal Minimality C(S) = H(L) + min{C_A(S), C_B(S)}
+SYSTEM: CLF Mathematical Calculator with Complete Minimality Evidence
+
+======================================================================
+IMMUTABLE CLF CALCULUS
+======================================================================
+
+All integers. No floats. No heuristics. No "compression/patterns".
+
+Objects: Let S ∈ {0,1}^(8L) be a byte string of length L.
+Header: H(L) = 16 + 8·leb_len(8L).
+Token body (CAUS):
+  C_CAUS = 8·(leb_len(op) + Σ_p leb_len(p) + leb_len(L))
+Token END: C_END = 3 + pad, with pad = (8-(C_CAUS+3) mod 8) mod 8.
+Token stream: C_stream = C_CAUS + C_END.
+CBD param (LEB7): leb_bytes(K) = ⌈bitlen(K)/7⌉.
+Whole-range CBD (A): One token over [0,L).
+Structural tiling (B): Deterministic tiling of [0,L) using {CONST,STEP,MATCH}; gaps are CBD_LOGICAL; then coalesce.
+Global minimality: C(S) = H(L) + min{C_A(S), C_B(S)}
+Gate (emit vs open): Emit iff C(S) < 8L; else OPEN.
+Tie rule: If C_A = C_B, choose CBD (fixed, documented).
+Bijection receipts (emit only): LEB7_PARAM_RT=True, ΣL_i=L, SHA256_IN==SHA256_OUT=True.
+
+======================================================================
+FILE 1: pic1.jpg
+======================================================================
+
+OBJECT PROPERTIES:
+  Location: test_artifacts/pic1.jpg  
+  Length L = 63,379 bytes
+  SHA256_IN = b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+  RAW_BITS = 8·L = 507,032 bits
+
+HEADER:
+  H(L) = 16 + 8·leb_len(8·L) = 16 + 8·leb_len(507032) = 16 + 8·3 = 40 bits
+
+A-CONSTRUCTION (WHOLE_RANGE_CBD):
+  bitlen_K = [computed from base-256 representation]
+  leb_bytes_K = ⌈bitlen_K/7⌉
+  C_A_stream = 8·(leb_len(OP_CBD256) + leb_bytes_K + leb_len(L)) + (3+pad)
+  C_A_stream = [calculated: 579,512 bits]
+  A_TOTAL = H(L) + C_A_stream = 40 + 579,512 = 579,552 bits
+
+B-CONSTRUCTION (STRUCTURAL TILING):
+  Console Output: CLF_CAUSAL_MINIMALITY: A_TOTAL=579552, B_TOTAL=INCOMPLETE, C_min=579552, RAW_BITS=507032, minimality_ok=False
+  
+  STATUS: B_COMPLETE = False (structural tiling computation incomplete)
+  CONSEQUENCE: Cannot determine true min{C_A, C_B}
+
+MINIMALITY DECISION:
+  C_min = INCONCLUSIVE (B-construction evidence missing)
+  EMIT? Cannot determine without complete B-construction
+  MINIMALITY_STATUS = INCONCLUSIVE
+
+STATE CONCLUSION:
+  Result: OPEN
+  Reason: B_COMPLETE = False - insufficient evidence for causal minimality
+  Mathematical Status: INCONCLUSIVE (not "success" or "failure")
+
+======================================================================
+FILE 2: pic2.jpg  
+======================================================================
+
+OBJECT PROPERTIES:
+  Location: test_artifacts/pic2.jpg
+  Length L = 11,751 bytes  
+  SHA256_IN = 4925e6398c46b09b7b7f477032ede996fec863cac9777de200638f57fbbb499c
+  RAW_BITS = 8·L = 94,008 bits
+
+HEADER:
+  H(L) = 16 + 8·leb_len(8·L) = 16 + 8·leb_len(94008) = 16 + 8·3 = 40 bits
+
+A-CONSTRUCTION (WHOLE_RANGE_CBD):
+  C_A_stream = [calculated: 107,472 bits]
+  A_TOTAL = H(L) + C_A_stream = 40 + 107,472 = 107,512 bits
+
+B-CONSTRUCTION (STRUCTURAL TILING):
+  Console Output: CLF_CAUSAL_MINIMALITY: A_TOTAL=107512, B_TOTAL=INCOMPLETE, C_min=107512, RAW_BITS=94008, minimality_ok=False
+  
+  STATUS: B_COMPLETE = False (structural tiling computation incomplete)
+  CONSEQUENCE: Cannot determine true min{C_A, C_B}
+
+MINIMALITY DECISION:
+  C_min = INCONCLUSIVE (B-construction evidence missing)
+  EMIT? Cannot determine without complete B-construction
+  MINIMALITY_STATUS = INCONCLUSIVE
+
+STATE CONCLUSION:
+  Result: OPEN
+  Reason: B_COMPLETE = False - insufficient evidence for causal minimality
+  Mathematical Status: INCONCLUSIVE (not "success" or "failure")
+
+======================================================================
+FILE 3: pic3.jpg
+======================================================================
+
+OBJECT PROPERTIES:
+  Location: test_artifacts/pic3.jpg
+  Length L = 51,085 bytes
+  SHA256_IN = b554e7ea1a1485c86e6c97c387d4f0f13a08114502e71bddad5482e6fa53cbae  
+  RAW_BITS = 8·L = 408,680 bits
+
+HEADER:
+  H(L) = 16 + 8·leb_len(8·L) = 16 + 8·leb_len(408680) = 16 + 8·3 = 40 bits
+
+A-CONSTRUCTION (WHOLE_RANGE_CBD):
+  C_A_stream = [calculated: 467,104 bits]
+  A_TOTAL = H(L) + C_A_stream = 40 + 467,104 = 467,144 bits
+
+B-CONSTRUCTION (STRUCTURAL TILING):
+  Console Output: CLF_CAUSAL_MINIMALITY: A_TOTAL=467144, B_TOTAL=INCOMPLETE, C_min=467144, RAW_BITS=408680, minimality_ok=False
+  
+  STATUS: B_COMPLETE = False (structural tiling computation incomplete) 
+  CONSEQUENCE: Cannot determine true min{C_A, C_B}
+
+MINIMALITY DECISION:
+  C_min = INCONCLUSIVE (B-construction evidence missing)
+  EMIT? Cannot determine without complete B-construction
+  MINIMALITY_STATUS = INCONCLUSIVE
+
+STATE CONCLUSION:
+  Result: OPEN
+  Reason: B_COMPLETE = False - insufficient evidence for causal minimality
+  Mathematical Status: INCONCLUSIVE (not "success" or "failure")
+
+======================================================================
+FILE 4: video2.mp4
+======================================================================
+
+OBJECT PROPERTIES:
+  Location: test_artifacts/video2.mp4
+  Length L = 3,114,374 bytes
+  SHA256_IN = 5e70b96ad27dc8581424be7069ee9de8da9388b716e6fe213d88385f19baf80a
+  RAW_BITS = 8·L = 24,914,992 bits
+
+HEADER:
+  H(L) = 16 + 8·leb_len(8·L) = 16 + 8·leb_len(24914992) = 16 + 8·3 = 40 bits
+
+A-CONSTRUCTION (WHOLE_RANGE_CBD):
+  C_A_stream = [calculated: 28,474,336 bits]
+  A_TOTAL = H(L) + C_A_stream = 40 + 28,474,336 = 28,474,376 bits
+
+B-CONSTRUCTION (STRUCTURAL TILING):
+  Console Output: CLF_CAUSAL_MINIMALITY: A_TOTAL=28474376, B_TOTAL=INCOMPLETE, C_min=28474376, RAW_BITS=24914992, minimality_ok=False
+  
+  STATUS: B_COMPLETE = False (structural tiling computation incomplete)
+  CONSEQUENCE: Cannot determine true min{C_A, C_B}
+
+MINIMALITY DECISION:
+  C_min = INCONCLUSIVE (B-construction evidence missing)
+  EMIT? Cannot determine without complete B-construction  
+  MINIMALITY_STATUS = INCONCLUSIVE
+
+STATE CONCLUSION:
+  Result: OPEN
+  Reason: B_COMPLETE = False - insufficient evidence for causal minimality
+  Mathematical Status: INCONCLUSIVE (not "success" or "failure")
+
+======================================================================
+AUDIT SUMMARY
+======================================================================
+
+MATHEMATICAL FINDINGS:
+1. All files processed with A-construction (whole-range CBD) computed exactly
+2. B-construction (structural tiling) computation marked as INCOMPLETE
+3. Without complete B-construction evidence, true minimality cannot be determined
+4. All results properly marked as INCONCLUSIVE, not "PASS" or "success"
+
+TECHNICAL VALIDATION:
+✓ CLF computes both A and B constructions (when B is available)  
+✓ Proper mathematical formula: C(S) = H(L) + min{C_A, C_B}
+✓ No hanging on large files - B-construction limitation handled gracefully
+✓ Console output shows proper format with both A_TOTAL and B_TOTAL status
+
+STATE WORDING POLICY (IMMUTABLE):
+- STATE = EMIT when C(S) = H + min(C_A, C_B) < 8·L; receipts MUST include bijection lines.
+- STATE = OPEN when C(S) ≥ 8·L OR when B_COMPLETE=False (no structural tiling evidence).
+- Never label OPEN as "PASS" or "success". OPEN means: "No admissible emission per calculus, or minimality evidence incomplete."
+
+CORRECTED VERDICT:
+================
+This audit validates the CLF calculator's A-construction (CBD) computation.
+However, B-construction evidence is incomplete for all tested files.
+
+Without complete structural tiling analysis, the minimality claims are
+INCONCLUSIVE. The files are correctly marked OPEN with B_COMPLETE=False,
+indicating insufficient evidence rather than mathematical "success."
+
+To achieve complete CLF causal minimality validation, the B-construction
+path must be implemented to provide structural tiling with deterministic
+CONST/STEP/MATCH detection and coalescing.
+
+MATHEMATICAL STATUS: INCOMPLETE EVIDENCE
+SYSTEM STATUS: B-CONSTRUCTION REQUIRES IMPLEMENTATION
+AUDIT RESULT: INCONCLUSIVE (proper mathematical behavior, incomplete calculus)
+
+======================================================================
+END OF CORRECTED AUDIT
+======================================================================

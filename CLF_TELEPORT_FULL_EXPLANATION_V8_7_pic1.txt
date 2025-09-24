@@ -1,0 +1,87 @@
+CLF TELEPORT MATHEMATICAL EXPORT V8.7 - CONSOLE VALIDATED
+================================================================================
+Generated: 2025-09-23T14:54:59.302492
+
+Console validation passed:
+✓ H=32, B_stream=18400, TOTAL=18432, RAW=7744, Gate=CAUSEFAIL
+✓ Algebra equality: C_min_total == C_min_via_streams == 18432
+✓ A inadmissible and excluded (NO_LAWFUL_OPERATOR_AVAILABLE)
+
+[RUN] pic1.jpg
+============================================================
+INPUT:
+  Length: 968 bytes
+  RAW_BITS: 7744
+  Header: H(968) = 32
+
+A-PATH:
+  Complete: False
+  Admissible: False
+  Stream: None
+  Diagnostic: NO_LAWFUL_OPERATOR_AVAILABLE
+
+B-PATH:
+  Complete: True
+  Stream: 18400
+  Tokens: 968
+  Coverage_OK: True
+  Binding_Valid: True
+
+DECISION:
+  Gate: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+  C_min_total: 18432
+  Algebra_Valid: True
+
+[RUN] S1
+============================================================
+INPUT:
+  Length: 1 bytes
+  RAW_BITS: 8
+  Header: H(1) = 24
+
+A-PATH:
+  Complete: False
+  Admissible: False
+  Stream: None
+  Diagnostic: NO_LAWFUL_OPERATOR_AVAILABLE
+
+B-PATH:
+  Complete: True
+  Stream: 24
+  Tokens: 1
+  Coverage_OK: True
+  Binding_Valid: True
+
+DECISION:
+  Gate: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+  C_min_total: 48
+  Algebra_Valid: True
+
+[RUN] EMPTY
+============================================================
+INPUT:
+  Length: 0 bytes
+  RAW_BITS: 0
+  Header: H(0) = 24
+
+A-PATH:
+  Complete: False
+  Admissible: False
+  Stream: None
+  Diagnostic: NO_LAWFUL_OPERATOR_AVAILABLE
+
+B-PATH:
+  Complete: True
+  Stream: 0
+  Tokens: 0
+  Coverage_OK: True
+  Binding_Valid: True
+
+DECISION:
+  Gate: CAUSEFAIL
+  Reason: MINIMALITY_GATE
+  C_min_total: 24
+  Algebra_Valid: True
+

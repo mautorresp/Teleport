@@ -7,7 +7,7 @@ Generates irrefutable mathematical evidence for external auditors
 import time
 import hashlib
 from datetime import datetime
-from teleport.clf_canonical import encode_CLF, clf_canonical_receipts
+from teleport.clf_fb import encode_minimal, clf_canonical_receipts
 
 def generate_pic4_evidence():
     # Load pic4.jpg
@@ -93,7 +93,7 @@ def generate_pic4_evidence():
     
     # Perform encoding with enhanced timing analysis
     start_time = time.time()
-    tokens = encode_CLF(pic4_data)
+    tokens = encode_minimal(pic4_data)
     end_time = time.time()
     encoding_time = end_time - start_time
     

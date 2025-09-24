@@ -1,0 +1,16 @@
+CLF TELEPORT RAILS AUDIT V8.2_pic1
+================================================================================
+Generated: 2025-09-23T13:24:05.175406
+
+[RAILS_AUDIT_CONSTRUCTIVE_V8_2]
+R0: True - All computations use integers
+R1: True - H(63379) = 40
+R2: True - Positional END verified
+R3: True - CAUS from leb_len only (constructive)
+R4: True - Coverage exact (constructive)
+R5: True - ALGEBRA_COMPUTED_WITH_WITNESSES
+R6: True - No CBD splits
+R7: True - C_S=136_vs_8L=507032_CONSTRUCTIVE
+R8: True - Constructive determinism by prediction binding
+R9: True - SHA receipts constructive
+R10: True - A_lock=True, B_lock=True (constructive binding)

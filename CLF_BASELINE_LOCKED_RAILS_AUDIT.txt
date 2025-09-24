@@ -1,0 +1,3 @@
+pic1.jpg: roles=A/B enforced; admissibility clauses (i)-(iv) enforced; DP canonicalization; determinism guard
+pic2.jpg: roles=A/B enforced; admissibility clauses (i)-(iv) enforced; DP canonicalization; determinism guard
+video1.mp4: roles=A/B enforced; admissibility clauses (i)-(iv) enforced; DP canonicalization; determinism guard

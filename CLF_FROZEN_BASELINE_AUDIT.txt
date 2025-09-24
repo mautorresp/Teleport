@@ -1,0 +1,110 @@
+CLF SINGLE-SEED MATHEMATICAL CALCULATOR - AUDIT EVIDENCE
+============================================================
+
+BUILD_ID: 20250923_221835
+Generation Time: 2025-09-23T22:18:35.714195
+
+IMMUTABLE MATHEMATICAL CONSTANTS:
+- H (Header bits): 56
+- CAUS (Causality bits): 27
+- END (Termination bits): 5
+- BASE_BITS = H + CAUS + END = 88
+
+FORMULA (Single-Seed Causal Bound):
+C_min^(1)(L) = 88 + 8*leb(L)
+
+LEB128 LENGTH RULE:
+leb(L) = 1 if L == 0 else (bit_length(L) + 6) // 7
+
+DECISION RULE:
+EMIT ⇔ C_min^(1)(L) < 10*L (strict inequality)
+
+PROHIBITED LOGIC:
+❌ deduct_B, STEP, CONST, tiling, DP, feasibility, A/B roles
+❌ bijection, byte iteration, entropy, compression heuristics
+❌ floating point arithmetic, math.* float functions
+✅ Only int, bit_length, shifts, adds, multiplies, LEB rule
+
+FILE-BY-FILE MATHEMATICAL EVIDENCE:
+----------------------------------------
+
+File 1: test_artifacts/pic5.jpg
+Step 1 - File Length: L = 555181 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 20
+  k = bit_length - 1 = 19
+  Verify: 2^19 ≤ 555181 < 2^20
+  Check: 524288 ≤ 555181 < 1048576 ✓
+Step 3 - LEB128 Length:
+  leb(555181) = (20 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(555181) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*555181 = 5551810 bits
+Step 6 - Decision:
+  Check: 112 < 5551810 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (555181, 3, 112, 5551810, True, '20250923_221835')
+  SHA256: bc43dca1eb5a2959945df3f7fa7e70f3836d9fe82c4555c1f31f12489ba98efc
+
+File 2: test_artifacts/pic6.jpg
+Step 1 - File Length: L = 1042592 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 20
+  k = bit_length - 1 = 19
+  Verify: 2^19 ≤ 1042592 < 2^20
+  Check: 524288 ≤ 1042592 < 1048576 ✓
+Step 3 - LEB128 Length:
+  leb(1042592) = (20 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(1042592) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*1042592 = 10425920 bits
+Step 6 - Decision:
+  Check: 112 < 10425920 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (1042592, 3, 112, 10425920, True, '20250923_221835')
+  SHA256: 4943b3ce046cc5188883ae640d79fa01be9c57535463eebec2525faee41d72db
+
+File 3: test_artifacts/video2.mp4
+Step 1 - File Length: L = 3114374 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 22
+  k = bit_length - 1 = 21
+  Verify: 2^21 ≤ 3114374 < 2^22
+  Check: 2097152 ≤ 3114374 < 4194304 ✓
+Step 3 - LEB128 Length:
+  leb(3114374) = (22 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(3114374) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*3114374 = 31143740 bits
+Step 6 - Decision:
+  Check: 120 < 31143740 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (3114374, 4, 120, 31143740, True, '20250923_221835')
+  SHA256: 4a29822332909fe134d9ee30ccf5085c20de79635dbd3e42aec418f4f3db4793
+
+File 4: test_artifacts/video3.mp4
+Step 1 - File Length: L = 9840497 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 24
+  k = bit_length - 1 = 23
+  Verify: 2^23 ≤ 9840497 < 2^24
+  Check: 8388608 ≤ 9840497 < 16777216 ✓
+Step 3 - LEB128 Length:
+  leb(9840497) = (24 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(9840497) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*9840497 = 98404970 bits
+Step 6 - Decision:
+  Check: 120 < 98404970 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (9840497, 4, 120, 98404970, True, '20250923_221835')
+  SHA256: 725fb6a6373dcac1c2799be77f14f6f5fe39b3a03d327c1b628e5b4f23fe20b5
+

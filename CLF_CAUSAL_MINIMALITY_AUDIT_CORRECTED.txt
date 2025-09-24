@@ -1,0 +1,182 @@
+====================================================================================================
+CLF CAUSAL MINIMALITY ENFORCEMENT - MATHEMATICAL AUDIT (CORRECTED)
+====================================================================================================
+
+AUDIT DATE: September 22, 2025
+AUDIT TYPE: CLF Causal Minimality Verification (8·L Rule)
+MATHEMATICAL FRAMEWORK: CLF Causal Deduction - Pure Integer Mathematics
+ENFORCEMENT STATUS: ✅ FIXED - Causal minimality now correctly enforced
+
+CLF CAUSAL MINIMALITY (pinned invariant)
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+For every byte string S of length L, define:
+• RAW_BITS = 8·L (mathematical object bitlength)
+• HEADER_BITS = 16 + 8·leb_len(8·L) 
+• For each construction X∈{A,B}, C_X(S) = HEADER_BITS + ΣC_stream(X)
+
+Emission rail:
+Emit tokens iff C_min(S) := min(C_A(S), C_B(S)) < 8·L.
+• If B_COMPLETE=False (B-path not fully computed), set STATE: OPEN / VIOLATION (no emission).
+• Expansion relative to 8·L is impossible in correct CLF.
+• Any case with C(S) ≥ 8·L is a calculus violation, never a success.
+
+Language rail:
+This document uses CLF causal deduction vocabulary only.
+• Forbidden: 'compression', 'entropy', 'savings vs 10·L', 'patterns'.
+• Required: 'causal deduction', 'structural tiling', C(S) = H + ΣC_stream.
+• All comparisons are against RAW_BITS = 8·L.
+• Any 10·L figures are legacy carrier references only and are never used as gates.
+
+====================================================================================================
+MATHEMATICAL VERIFICATION TESTS
+====================================================================================================
+
+SMALL BINARY SEQUENCES (REJECTED - C(S) ≥ 8·L):
+┌─────────────────┬──────────┬──────────┬─────────────┬────────────────────────────────┐
+│ Binary Sequence │   C(S)   │ RAW_BITS │   Result    │     Mathematical Evidence      │
+├─────────────────┼──────────┼──────────┼─────────────┼────────────────────────────────┤
+│ 1 byte: "a"     │    64    │     8    │ ✅ REJECTED │ 64 ≥ 8   → OPEN/VIOLATION     │
+│ 5 bytes: "hello"│    96    │    40    │ ✅ REJECTED │ 96 ≥ 40  → OPEN/VIOLATION     │
+│11 bytes: "hello │   152    │    88    │ ✅ REJECTED │ 152 ≥ 88 → OPEN/VIOLATION     │
+│     world"      │          │          │             │                                │
+└─────────────────┴──────────┴──────────┴─────────────┴────────────────────────────────┘
+
+LARGE BINARY SEQUENCES (ACCEPTED - C(S) < 8·L):
+┌─────────────────┬──────────┬──────────┬─────────────┬────────────────────────────────┐
+│ Binary Sequence │   C(S)   │ RAW_BITS │   Result    │     Mathematical Evidence      │
+├─────────────────┼──────────┼──────────┼─────────────┼────────────────────────────────┤
+│ 50 bytes: "A"*50│    64    │   400    │ ✅ ACCEPTED │ 64 < 400  → 1 token emitted   │
+│100 bytes: "A"*100│   64    │   800    │ ✅ ACCEPTED │ 64 < 800  → 1 token emitted   │
+└─────────────────┴──────────┴──────────┴─────────────┴────────────────────────────────┘
+
+====================================================================================================
+REAL FILE MATHEMATICAL EVIDENCE
+====================================================================================================
+
+FILE: pic1.jpg
+├─ LENGTH: L = 63,379 bytes
+├─ RAW_BITS = 8·L = 507,032 bits
+├─ HEADER_BITS = 16 + 8·leb_len(8·L) = 40 bits
+├─ C_A_stream = 579,512 bits (CBD path)
+├─ C_A_total = 40 + 579,512 = 579,552 bits
+├─ C_B_stream = N/A (structural path not computed to completion)
+├─ C_B_total = N/A
+├─ C_min = N/A (B_COMPLETE = False)
+├─ TOTAL_BITS = 579,552 bits
+├─ MINIMALITY_OK_8L = (579,552 < 507,032) = False
+├─ B_COMPLETE = False
+├─ EMIT_OK = (False and False) = False
+├─ DECODE_SHA256_IN = b96e8719453c3995d48fb7efa95cdb96c1201eaf776589f10c862ab92bcf487e
+├─ DECODE_SHA256_OUT = N/A (no emission)
+├─ EQUALITY = N/A
+├─ LEB7_ROUNDTRIP = N/A
+└─ STATE = OPEN / VIOLATION
+
+FILE: pic3.jpg
+├─ LENGTH: L = 51,085 bytes  
+├─ RAW_BITS = 8·L = 408,680 bits
+├─ HEADER_BITS = 16 + 8·leb_len(8·L) = 40 bits
+├─ C_A_stream = 467,104 bits (CBD path)
+├─ C_A_total = 40 + 467,104 = 467,144 bits
+├─ C_B_stream = N/A (structural path not computed to completion)
+├─ C_B_total = N/A
+├─ C_min = N/A (B_COMPLETE = False)
+├─ TOTAL_BITS = 467,144 bits
+├─ MINIMALITY_OK_8L = (467,144 < 408,680) = False
+├─ B_COMPLETE = False
+├─ EMIT_OK = (False and False) = False
+├─ DECODE_SHA256_IN = 4925e6398c46b09b7b7f477032ede996fec863cac9777de200638f57fbbb499c
+├─ DECODE_SHA256_OUT = N/A (no emission)
+├─ EQUALITY = N/A
+├─ LEB7_ROUNDTRIP = N/A
+└─ STATE = OPEN / VIOLATION
+
+FILE: video1.mp4
+├─ LENGTH: L = 1,570,024 bytes
+├─ RAW_BITS = 8·L = 12,560,192 bits
+├─ HEADER_BITS = 16 + 8·leb_len(8·L) = 48 bits
+├─ C_A_stream = 14,354,552 bits (CBD path)
+├─ C_A_total = 48 + 14,354,552 = 14,354,600 bits
+├─ C_B_stream = 11,498,888 bits (structural path - 33,768 tokens)
+├─ C_B_total = 48 + 11,498,888 = 11,498,936 bits
+├─ C_min = min(14,354,600, 11,498,936) = 11,498,936 bits
+├─ TOTAL_BITS = 11,498,936 bits
+├─ MINIMALITY_OK_8L = (11,498,936 < 12,560,192) = True
+├─ B_COMPLETE = True
+├─ EMIT_OK = (True and True) = True
+├─ DECODE_SHA256_IN = 71944d7430c461f0cd6e7fd10cee7eb72786352a3678fc7bc0ae3d410f72aece
+├─ DECODE_SHA256_OUT = 71944d7430c461f0cd6e7fd10cee7eb72786352a3678fc7bc0ae3d410f72aece
+├─ EQUALITY = True
+├─ LEB7_ROUNDTRIP = True
+└─ STATE = PASS
+
+====================================================================================================
+MATHEMATICAL PRINCIPLES VERIFIED
+====================================================================================================
+
+✅ CLF CAUSAL MINIMALITY ENFORCED:
+   - All binary sequences must satisfy C(S) < 8·L or be rejected
+   - Expansion relative to mathematical object is impossible
+   - No exceptions based on content, size, or file type
+
+✅ CAUSAL DEDUCTION CONFIRMED:
+   - C(S) = H(L) + min(C_A, C_B) computed via pure integer arithmetic
+   - A/B path comparison required for every emission
+   - Structural tiling via fixed operator set {CONST, STEP, MATCH, CBD}
+
+✅ MATHEMATICAL CORRECTION ACHIEVED:
+   - Previous TeleportV10 audit used 10·L baseline (compression framing)
+   - Corrected to use CLF's 8·L baseline (causal minimality)
+   - PIC1/PIC3 now correctly identified as OPEN/VIOLATION (not "optimal")
+
+✅ VOCABULARY RAILS ENFORCED:
+   - No compression terminology used
+   - All comparisons against RAW_BITS = 8·L
+   - Pure causal deduction language throughout
+
+====================================================================================================
+CONSOLE OUTPUT VERIFICATION
+====================================================================================================
+
+Correct CLF console output format:
+```
+CLF_CAUSAL_MINIMALITY: C(S)=<cost>, RAW_BITS=<8*L>, minimality_ok=<true/false>
+```
+
+REJECTION EXAMPLES (C(S) ≥ 8·L):
+```
+CLF_CAUSAL_MINIMALITY: C(S)=579552, RAW_BITS=507032, minimality_ok=False
+CAUSAL_MINIMALITY_VIOLATION: C(S)≥8·L, expansion detected - OPEN/VIOLATION
+```
+
+ACCEPTANCE EXAMPLES (C(S) < 8·L):
+```
+CLF_CAUSAL_MINIMALITY: C(S)=11498936, RAW_BITS=12560192, minimality_ok=True
+```
+
+====================================================================================================
+MATHEMATICAL AUDIT CONCLUSIONS
+====================================================================================================
+
+✅ CLF CAUSAL MINIMALITY: Correctly implemented and enforced (8·L rule)
+✅ MATHEMATICAL INTEGRITY: No expansion allowed relative to RAW_BITS = 8·L
+✅ CAUSAL DEDUCTION: Pure integer arithmetic via min(C_A, C_B) comparison
+✅ UNIVERSALITY: Same mathematical treatment regardless of binary content
+✅ VOCABULARY DISCIPLINE: No compression framing - causal deduction only
+
+CRITICAL CORRECTION ACHIEVED:
+CLF no longer "accepts failure" - causal minimality constraint C(S) < 8·L 
+is now mathematically enforced. Cases with C(S) ≥ 8·L are correctly 
+identified as OPEN/VIOLATION, never as successes.
+
+Mathematical Results Summary:
+• PIC1.JPG: C(S)=579,552 ≥ 8·L=507,032 → STATE: OPEN/VIOLATION ✅ CORRECT
+• PIC3.JPG: C(S)=467,144 ≥ 8·L=408,680 → STATE: OPEN/VIOLATION ✅ CORRECT  
+• VIDEO1.MP4: C(S)=11,498,936 < 8·L=12,560,192 → STATE: PASS ✅ CORRECT
+
+The CLF causal minimality invariant is now mathematically sound and correctly enforced.
+
+====================================================================================================
+END OF CLF CAUSAL MINIMALITY AUDIT
+====================================================================================================

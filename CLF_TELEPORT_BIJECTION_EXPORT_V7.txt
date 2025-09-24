@@ -1,0 +1,337 @@
+CLF TELEPORT BIJECTION EXPORT V7
+================================================================================
+Generated: 2025-09-23T12:41:46.586677
+
+[V7_COMPLETENESS_CONTRACT_APPLIED]
+- Path completeness enforced: A_COMPLETE/B_COMPLETE booleans
+- Incomplete paths show TOTAL=N/A (not numeric placeholders)
+- Decision algebra operates on COMPLETE paths only
+- Algebra equality checked on same candidate set as decision
+
+[BIJECTION_TEST_RESULTS]
+
+[RUN_1] S1
+============================================================
+PROPERTIES:
+  L = 50
+  RAW_BITS = 400
+  SHA256_IN = 68f9b9c97915bdde6894ef8326166952ec88e281b5cd6dc991e6d94ba71ef338
+
+PATH_COMPLETENESS:
+  A_COMPLETE = True
+  B_COMPLETE = True
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 32
+  A: CAUS=27, END=5, STREAM=32, TOTAL=64
+  B: CAUS=27, END=5, STREAM=32, TOTAL=64
+  CANDIDATES = [64, 64]
+  C_min_total = 64
+  C_min_via_streams = 64
+  ALGEBRA_VALID = True
+  C(S) = 64
+
+ENCODING_RESULT:
+  Decision: EMIT
+
+TOKENS_DETAILED:
+  [0] KIND=CAUS op=1 L=50 params=[66]
+       STREAM_BITS(advertised) = 27
+       STREAM_BITS(rederived) = 27
+       BITPOS_START = 0
+       BITPOS_END = 27
+       BIJECTION_COMPLETE = True
+  [1] KIND=END
+       STREAM_BITS(advertised) = 5
+       STREAM_BITS(rederived) = 5
+       BITPOS = 27
+
+COVERAGE:
+  Σ token_L = 50
+  L = 50
+  COVERAGE_EXACT = True
+
+[RUN_2] S2
+============================================================
+PROPERTIES:
+  L = 60
+  RAW_BITS = 480
+  SHA256_IN = 2b8a702ea7f45e7ac5b72716782f1f3524e26cdabce76d39124221d56d52eb14
+
+PATH_COMPLETENESS:
+  A_COMPLETE = False
+  B_COMPLETE = True
+  A_FAILURE_REASON = A_PRED=INCOMPLETE
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 32
+  A: COMPLETE=False, TOTAL=N/A
+  B: CAUS=35, END=5, STREAM=40, TOTAL=72
+  CANDIDATES = [72]
+  C_min_total = 72
+  C_min_via_streams = 72
+  ALGEBRA_VALID = True
+  C(S) = 72
+
+ENCODING_RESULT:
+  Decision: EMIT
+
+TOKENS_DETAILED:
+  [0] KIND=CAUS op=2 L=60 params=[7, 3]
+       STREAM_BITS(advertised) = 35
+       STREAM_BITS(rederived) = 35
+       BITPOS_START = 0
+       BITPOS_END = 35
+       BIJECTION_COMPLETE = True
+  [1] KIND=END
+       STREAM_BITS(advertised) = 5
+       STREAM_BITS(rederived) = 5
+       BITPOS = 35
+
+COVERAGE:
+  Σ token_L = 60
+  L = 60
+  COVERAGE_EXACT = True
+
+[RUN_3] S3
+============================================================
+PROPERTIES:
+  L = 1024
+  RAW_BITS = 8192
+  SHA256_IN = 785b0751fc2c53dc14a4ce3d800e69ef9ce1009eb327ccf458afe09c242c26c9
+
+PATH_COMPLETENESS:
+  A_COMPLETE = False
+  B_COMPLETE = True
+  A_FAILURE_REASON = A_PRED=INCOMPLETE
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 32
+  A: COMPLETE=False, TOTAL=N/A
+  B: CAUS=43, END=5, STREAM=48, TOTAL=80
+  CANDIDATES = [80]
+  C_min_total = 80
+  C_min_via_streams = 80
+  ALGEBRA_VALID = True
+  C(S) = 80
+
+ENCODING_RESULT:
+  Decision: EMIT
+
+TOKENS_DETAILED:
+  [0] KIND=CAUS op=2 L=1024 params=[0, 1]
+       STREAM_BITS(advertised) = 43
+       STREAM_BITS(rederived) = 43
+       BITPOS_START = 0
+       BITPOS_END = 43
+       BIJECTION_COMPLETE = True
+  [1] KIND=END
+       STREAM_BITS(advertised) = 5
+       STREAM_BITS(rederived) = 5
+       BITPOS = 43
+
+COVERAGE:
+  Σ token_L = 1024
+  L = 1024
+  COVERAGE_EXACT = True
+
+[RUN_4] EMPTY
+============================================================
+PROPERTIES:
+  L = 0
+  RAW_BITS = 0
+  SHA256_IN = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+PATH_COMPLETENESS:
+  A_COMPLETE = True
+  B_COMPLETE = True
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 24
+  A: CAUS=0, END=8, STREAM=8, TOTAL=32
+  B: CAUS=0, END=8, STREAM=8, TOTAL=32
+  CANDIDATES = [32, 32]
+  C_min_total = 32
+  C_min_via_streams = 32
+  ALGEBRA_VALID = True
+  C(S) = 32
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+TOKENS_DETAILED:
+  [0] KIND=END
+       STREAM_BITS(advertised) = 8
+       STREAM_BITS(rederived) = 8
+       BITPOS = 0
+
+COVERAGE:
+  Σ token_L = 0
+  L = 0
+  COVERAGE_EXACT = True
+
+[RUN_5] SINGLE
+============================================================
+PROPERTIES:
+  L = 1
+  RAW_BITS = 8
+  SHA256_IN = 559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd
+
+PATH_COMPLETENESS:
+  A_COMPLETE = True
+  B_COMPLETE = True
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 24
+  A: CAUS=27, END=5, STREAM=32, TOTAL=56
+  B: CAUS=27, END=5, STREAM=32, TOTAL=56
+  CANDIDATES = [56, 56]
+  C_min_total = 56
+  C_min_via_streams = 56
+  ALGEBRA_VALID = True
+  C(S) = 56
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+TOKENS_DETAILED:
+  [0] KIND=CAUS op=1 L=1 params=[65]
+       STREAM_BITS(advertised) = 27
+       STREAM_BITS(rederived) = 27
+       BITPOS_START = 0
+       BITPOS_END = 27
+       BIJECTION_COMPLETE = True
+  [1] KIND=END
+       STREAM_BITS(advertised) = 5
+       STREAM_BITS(rederived) = 5
+       BITPOS = 27
+
+COVERAGE:
+  Σ token_L = 1
+  L = 1
+  COVERAGE_EXACT = True
+
+[RUN_6] DOUBLE
+============================================================
+PROPERTIES:
+  L = 2
+  RAW_BITS = 16
+  SHA256_IN = 58bb119c35513a451d24dc20ef0e9031ec85b35bfc919d263e7e5d9868909cb5
+
+PATH_COMPLETENESS:
+  A_COMPLETE = True
+  B_COMPLETE = True
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 24
+  A: CAUS=27, END=5, STREAM=32, TOTAL=56
+  B: CAUS=27, END=5, STREAM=32, TOTAL=56
+  CANDIDATES = [56, 56]
+  C_min_total = 56
+  C_min_via_streams = 56
+  ALGEBRA_VALID = True
+  C(S) = 56
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+TOKENS_DETAILED:
+  [0] KIND=CAUS op=1 L=2 params=[65]
+       STREAM_BITS(advertised) = 27
+       STREAM_BITS(rederived) = 27
+       BITPOS_START = 0
+       BITPOS_END = 27
+       BIJECTION_COMPLETE = True
+  [1] KIND=END
+       STREAM_BITS(advertised) = 5
+       STREAM_BITS(rederived) = 5
+       BITPOS = 27
+
+COVERAGE:
+  Σ token_L = 2
+  L = 2
+  COVERAGE_EXACT = True
+
+[RUN_7] TRIPLE
+============================================================
+PROPERTIES:
+  L = 3
+  RAW_BITS = 24
+  SHA256_IN = b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78
+
+PATH_COMPLETENESS:
+  A_COMPLETE = False
+  B_COMPLETE = True
+  A_FAILURE_REASON = A_PRED=INCOMPLETE
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 24
+  A: COMPLETE=False, TOTAL=N/A
+  B: CAUS=35, END=5, STREAM=40, TOTAL=64
+  CANDIDATES = [64]
+  C_min_total = 64
+  C_min_via_streams = 64
+  ALGEBRA_VALID = True
+  C(S) = 64
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+TOKENS_DETAILED:
+  [0] KIND=CAUS op=2 L=3 params=[65, 1]
+       STREAM_BITS(advertised) = 35
+       STREAM_BITS(rederived) = 35
+       BITPOS_START = 0
+       BITPOS_END = 35
+       BIJECTION_COMPLETE = True
+  [1] KIND=END
+       STREAM_BITS(advertised) = 5
+       STREAM_BITS(rederived) = 5
+       BITPOS = 35
+
+COVERAGE:
+  Σ token_L = 3
+  L = 3
+  COVERAGE_EXACT = True
+
+[RUN_8] ARITH
+============================================================
+PROPERTIES:
+  L = 4
+  RAW_BITS = 32
+  SHA256_IN = 07de26835cbae50ba764a558f16a06ea0eb4c12aebf0267873adfd1db61229e1
+
+PATH_COMPLETENESS:
+  A_COMPLETE = False
+  B_COMPLETE = True
+  A_FAILURE_REASON = A_PRED=INCOMPLETE
+
+DECISION_ALGEBRA (COMPLETE paths only):
+  H = 24
+  A: COMPLETE=False, TOTAL=N/A
+  B: CAUS=35, END=5, STREAM=40, TOTAL=64
+  CANDIDATES = [64]
+  C_min_total = 64
+  C_min_via_streams = 64
+  ALGEBRA_VALID = True
+  C(S) = 64
+
+ENCODING_RESULT:
+  Decision: CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+TOKENS_DETAILED:
+  [0] KIND=CAUS op=2 L=4 params=[10, 3]
+       STREAM_BITS(advertised) = 35
+       STREAM_BITS(rederived) = 35
+       BITPOS_START = 0
+       BITPOS_END = 35
+       BIJECTION_COMPLETE = True
+  [1] KIND=END
+       STREAM_BITS(advertised) = 5
+       STREAM_BITS(rederived) = 5
+       BITPOS = 35
+
+COVERAGE:
+  Σ token_L = 4
+  L = 4
+  COVERAGE_EXACT = True

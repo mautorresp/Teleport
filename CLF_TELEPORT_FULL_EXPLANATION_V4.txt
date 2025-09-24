@@ -1,0 +1,76 @@
+CLF TELEPORT FULL MATHEMATICAL EXPLANATION V4
+================================================================================
+Generated: 2025-09-23T11:12:23.924840
+Platform: macOS-15.7-arm64-arm-64bit
+
+[TELEPORT_AXIOMS_IMPLEMENTED]
+
+H(L) = 16 + 8*leb_len(8*L)                    # Header bits
+END(bitpos) = 3 + ((8 - ((bitpos+3) % 8)) % 8) # END positional cost
+CAUS_stream(op, params, L) = 3 + 8*leb_len(op) + Σ 8*leb_len(param_i) + 8*leb_len(L)
+
+[CRITICAL_CORRECTION_FROM_V3]
+
+REMOVED: S-packing definition K = Σ S[i] * 256^(L-1-i)
+This was FORBIDDEN under Teleport - seeds must be causal integers,
+not base-256 numeralization of input bytes.
+
+IMPLEMENTED: Teleport causal seed deduction
+Seeds are deduced causal objects per Teleport/TOE specification,
+not input re-expression in different base.
+
+[MATHEMATICAL_PIPELINE_V4]
+
+STAGE 1: Input Processing
+- Input S: bytes of length L
+- Integer-only arithmetic throughout (R0)
+- SHA256 identity fingerprinting
+
+STAGE 2: Header Cost (R1)
+- H = header_bits(L) = 16 + 8*leb_len(8*L)
+- Recomputed independently and verified
+
+STAGE 3: Construction A (Teleport Causal)
+- Deduce causal seed (NOT S-packing)
+- Single CBD token with causal parameters
+- If causal deduction incomplete: A_INCOMPLETE
+
+STAGE 4: Construction B (CAUS-only tiling)
+- CONST/STEP precedence with causal parameters
+- All tokens must be bijection-complete
+- Superadditivity check: B_stream ≥ A_stream
+
+STAGE 5: Decision Algebra (R5)
+- C_total = H + stream_total (exact arithmetic)
+- min(H+A, H+B) = H + min(A, B) enforced
+- Choose minimal construction
+
+STAGE 6: Decision Gate (R7)
+- EMIT iff C_total < 8*L
+- Otherwise CAUSEFAIL(MINIMALITY_NOT_ACHIEVED)
+
+STAGE 7: Bijection Validation (R9)
+- For EMIT: reconstruct from tokens
+- Verify SHA256(reconstructed) == SHA256(input)
+- Re-encode and verify determinism (R8)
+
+[RAILS_ENFORCEMENT_R0_R10]
+
+R0: Integer-only everywhere (hard assert)
+R1: Header lock H(L) recomputed and verified
+R2: END positional from actual bitpos
+R3: CAUS unit lock (no S-packing)
+R4: Coverage exactness Σ token_L == L
+R5: Algebra equality (double-header guard)
+R6: Superadditivity B_stream ≥ A_stream
+R7: Decision gate C_total < 8L
+R8: Determinism receipts (double encode)
+R9: Bijection receipts (expand + re-encode)
+R10: Prediction rails (A_PRED/B_PRED match)
+
+[FAIL_CLOSED_OPERATION]
+
+Any rail failure prints RAIL_FAIL:<id> <diagnostic>
+Processing continues to next object for complete audit
+No silent degradation or approximation allowed
+Integer-only arithmetic enforced throughout

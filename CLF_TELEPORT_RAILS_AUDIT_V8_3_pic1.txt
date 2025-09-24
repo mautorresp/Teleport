@@ -1,0 +1,63 @@
+CLF TELEPORT RAILS AUDIT V8.3 pic1
+=====================================
+Generated: 2025-09-23T13:56:16
+
+RAILS AUDIT SYSTEM - Mutually Exclusive States, No Contradictions
+
+[RAIL_METHODOLOGY_V8_3]
+Rail States: {True, False, 'N/A'} - exactly one per rail
+No dual reporting allowed (e.g., R9: True + RAIL_FAIL:R9)
+Each rail atomic with single diagnostic
+
+[RAILS_AUDIT_RESULTS_PIC1]
+
+pic1.jpg (L=968):
+==================
+
+R0_INTEGER_ONLY: True
+  Diagnostic: INTEGER_ONLY_ENFORCED
+  Status: All arithmetic uses integer-only operations
+
+R1_NO_S_PACKING: True
+  Diagnostic: S_PACKING_NONE
+  Status: No S-packing detected in causal seed
+
+R3_ANTI_S_PACKING: True
+  Diagnostic: ANTI_S_PACKING
+  Status: S-packing prevention active
+
+R4_COVERAGE_EXACT: True
+  Diagnostic: COVERAGE_EXACT_True
+  Status: Token coverage sum equals L exactly (968/968)
+
+R5_DECISION_ALGEBRA: True
+  Diagnostic: DECISION_ALGEBRA
+  Status: C_min_total == C_min_via_streams (10688 == 10688)
+
+R6_SUPERADDITIVITY: True
+  Diagnostic: B_STREAM_10656_GE_A_WHOLE_35
+  Status: B stream cost ≥ whole-range CBD reference (10656 ≥ 35)
+
+R7_MINIMALITY_GATE: False
+  Diagnostic: MINIMALITY_GATE
+  Status: C_min_total ≥ 8*L (10688 ≥ 7744) → CAUSEFAIL
+
+R8_B_BIJECTION: True
+  Diagnostic: B_BIJECTION_VALID
+  Status: B-path provides valid bijective reconstruction
+
+R9_A_BIJECTION: False
+  Diagnostic: BIJECTION_FAILED_SHA_IN_529a3837_SHA_OUT_521317ec
+  Status: A-path expansion fails byte-for-byte equality
+
+RAIL_SUMMARY:
+  Total_Rails: 9
+  Passing_Rails: 6 (R0,R1,R3,R4,R5,R6,R8)
+  Failing_Rails: 2 (R7,R9)
+  N/A_Rails: 0
+  ALL_RAILS_PASS: False
+
+MATHEMATICAL_CONCLUSION:
+pic1.jpg fails minimality gate (R7) and A-bijection (R9).
+B-path is mathematically valid but too expensive.
+System correctly fails closed - no false EMIT claims.
