@@ -1,0 +1,14 @@
+clf_maximal_validator module
+============================
+
+.. automodule:: CLF_MAXIMAL_VALIDATOR_FINAL
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+CLI Interface
+-------------
+
+.. autofunction:: CLF_MAXIMAL_VALIDATOR_FINAL.main
+
+This module provides a lightweight command-line interface for CLF validation, implementing the same mathematical core as the main calculator in a standalone 59-line script.

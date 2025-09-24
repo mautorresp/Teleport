@@ -1,0 +1,506 @@
+Examples
+========
+
+This page provides comprehensive examples of using the Teleport CLF Calculator in various scenarios.
+
+Basic Examples
+--------------
+
+**Single File Analysis**
+
+.. code-block:: python
+
+    from clf_calculator import clf_single_seed_cost, should_emit, receipt
+    
+    # Basic cost calculation
+    L = 11751  # File size in bytes
+    cost = clf_single_seed_cost(L)
+    print(f"CLF cost: {cost} bits")  # Output: 104 bits
+    
+    # Emission decision
+    emit = should_emit(L)
+    print(f"Should emit: {emit}")  # Output: True
+    
+    # Complete analysis
+    r = receipt(L, "EXAMPLE_001")
+    print(f"Receipt: {r}")
+
+**File Processing**
+
+.. code-block:: python
+
+    from clf_calculator import process_file
+    
+    # Process a single file
+    result = process_file("test_data/pic2.jpg", "ANALYSIS_001")
+    if result:
+        print(f"L={result['L']}, C={result['cost_bits']}, EMIT={result['emit']}")
+    else:
+        print("File processing failed")
+
+**Command Line Usage**
+
+.. code-block:: bash
+
+    # Analyze single file
+    python clf_calculator.py test_data/pic2.jpg
+    
+    # Multiple files
+    python clf_calculator.py *.jpg *.png *.mp4
+    
+    # Direct length input
+    python clf_calculator.py --stdin-length 11751
+    
+    # With export generation  
+    python clf_calculator.py data/*.jpg --export-prefix BATCH_ANALYSIS
+
+Advanced Examples  
+-----------------
+
+**Batch Processing with Error Handling**
+
+.. code-block:: python
+
+    import glob
+    import os
+    from clf_calculator import process_file, generate_exports
+    
+    def batch_analyze(pattern, build_id, export_prefix=None):
+        """Analyze multiple files with comprehensive error handling."""
+        files = glob.glob(pattern)
+        results = []
+        errors = []
+        
+        print(f"Processing {len(files)} files...")
+        
+        for i, file_path in enumerate(files, 1):
+            try:
+                if not os.path.exists(file_path):
+                    errors.append(f"{file_path}: File not found")
+                    continue
+                    
+                result = process_file(file_path, build_id)
+                if result:
+                    results.append(result)
+                    print(f"[{i}/{len(files)}] {file_path}: "
+                          f"L={result['L']}, C={result['cost_bits']}, "
+                          f"EMIT={result['emit']}")
+                else:
+                    errors.append(f"{file_path}: Processing failed")
+                    
+            except PermissionError:
+                errors.append(f"{file_path}: Permission denied")
+            except Exception as e:
+                errors.append(f"{file_path}: {str(e)}")
+        
+        # Generate exports if requested
+        if export_prefix and results:
+            try:
+                generate_exports(results, export_prefix)
+                print(f"Exports generated with prefix: {export_prefix}")
+            except Exception as e:
+                print(f"Export generation failed: {e}")
+        
+        # Report summary
+        print(f"\nSummary: {len(results)} processed, {len(errors)} errors")
+        if errors:
+            print("Errors:")
+            for error in errors[:5]:  # Show first 5 errors
+                print(f"  {error}")
+            if len(errors) > 5:
+                print(f"  ... and {len(errors)-5} more errors")
+        
+        return results, errors
+    
+    # Usage
+    results, errors = batch_analyze("data/*.jpg", "BATCH_001", "PHOTO_ANALYSIS")
+
+**Efficiency Analysis**
+
+.. code-block:: python
+
+    from clf_calculator import clf_single_seed_cost, should_emit, leb128_byte_length
+    
+    def efficiency_analysis(L):
+        """Analyze efficiency characteristics for a given file size."""
+        leb_bytes = leb128_byte_length(L)
+        cost = clf_single_seed_cost(L)
+        raw = 10 * L
+        emit = should_emit(L)
+        
+        # Calculate efficiency
+        if emit:
+            efficiency = raw / cost
+            savings = raw - cost
+        else:
+            efficiency = 0
+            savings = 0
+        
+        # Determine LEB band
+        band = leb_bytes
+        band_start = 128 ** (band - 1) if band > 1 else 1
+        band_end = 128 ** band - 1
+        
+        print(f"File Size Analysis:")
+        print(f"  L = {L:,} bytes")
+        print(f"  LEB band: {band} (range: {band_start:,} - {band_end:,})")
+        print(f"  CLF cost: {cost} bits")
+        print(f"  Raw cost: {raw:,} bits")
+        print(f"  Decision: {'EMIT' if emit else 'NO_EMIT'}")
+        
+        if emit:
+            print(f"  Efficiency: {efficiency:.1f}× (saves {savings:,} bits)")
+        
+        return {
+            'L': L, 'band': band, 'cost': cost, 'raw': raw, 
+            'emit': emit, 'efficiency': efficiency, 'savings': savings
+        }
+    
+    # Analyze various file sizes
+    test_sizes = [127, 128, 16383, 16384, 2097151, 2097152, 9840497]
+    for size in test_sizes:
+        efficiency_analysis(size)
+        print()
+
+**LEB Band Analysis**
+
+.. code-block:: python
+
+    from clf_calculator import leb128_byte_length, clf_single_seed_cost
+    
+    def analyze_leb_bands(max_band=5):
+        """Analyze characteristics of each LEB128 band."""
+        print("LEB128 Band Analysis")
+        print("=" * 50)
+        
+        for band in range(1, max_band + 1):
+            # Calculate band boundaries
+            start = 128 ** (band - 1) if band > 1 else 1
+            end = 128 ** band - 1
+            
+            # Calculate cost for this band
+            cost = clf_single_seed_cost(start)
+            
+            # Calculate critical threshold (where EMIT would become False)
+            critical = cost / 10.0
+            
+            print(f"Band {band}:")
+            print(f"  Range: {start:,} - {end:,} bytes")
+            print(f"  Size: {end - start + 1:,} possible values")
+            print(f"  Cost: {cost} bits (constant for entire band)")
+            print(f"  Critical threshold: {critical:.1f} bytes")
+            print(f"  EMIT status: {'Always True' if start > critical else 'Depends on L'}")
+            
+            # Show efficiency at band boundaries
+            start_eff = (10 * start) / cost if cost > 0 else 0
+            end_eff = (10 * end) / cost if cost > 0 else 0
+            print(f"  Efficiency range: {start_eff:.1f}× - {end_eff:.1f}×")
+            print()
+    
+    analyze_leb_bands()
+
+**Real-World File Analysis**
+
+.. code-block:: python
+
+    import os
+    from clf_calculator import process_file, bit_length_info
+    
+    def analyze_real_files(directory):
+        """Analyze real files from a directory with detailed reporting."""
+        files = []
+        for root, dirs, filenames in os.walk(directory):
+            for filename in filenames:
+                filepath = os.path.join(root, filename)
+                if os.path.isfile(filepath):
+                    files.append(filepath)
+        
+        if not files:
+            print(f"No files found in {directory}")
+            return
+        
+        print(f"Real-World File Analysis: {directory}")
+        print("=" * 60)
+        
+        size_categories = {
+            'tiny': (0, 1024),           # < 1KB
+            'small': (1024, 65536),      # 1KB - 64KB  
+            'medium': (65536, 1048576),  # 64KB - 1MB
+            'large': (1048576, float('inf'))  # > 1MB
+        }
+        
+        results_by_category = {cat: [] for cat in size_categories}
+        
+        for filepath in files[:20]:  # Limit to first 20 files
+            try:
+                result = process_file(filepath, "REAL_WORLD")
+                if result:
+                    L = result['L']
+                    
+                    # Categorize by size
+                    category = 'large'
+                    for cat, (min_size, max_size) in size_categories.items():
+                        if min_size <= L < max_size:
+                            category = cat
+                            break
+                    
+                    results_by_category[category].append({
+                        'file': os.path.basename(filepath),
+                        'result': result
+                    })
+                    
+                    # Show detailed info
+                    bit_info = bit_length_info(L)
+                    efficiency = (10 * L) / result['cost_bits']
+                    
+                    print(f"{os.path.basename(filepath)[:30]:<30} "
+                          f"L={L:>8,} {bit_info} "
+                          f"C={result['cost_bits']:>3} "
+                          f"eff={efficiency:>6.1f}×")
+                    
+            except Exception as e:
+                print(f"Error processing {filepath}: {e}")
+        
+        # Summary by category
+        print(f"\nSummary by File Size Category:")
+        print("-" * 40)
+        for category, items in results_by_category.items():
+            if items:
+                avg_size = sum(item['result']['L'] for item in items) / len(items)
+                avg_cost = sum(item['result']['cost_bits'] for item in items) / len(items)
+                avg_eff = sum((10 * item['result']['L']) / item['result']['cost_bits'] 
+                            for item in items) / len(items)
+                
+                print(f"{category.title():<10}: {len(items):>3} files, "
+                      f"avg size={avg_size:>8,.0f}, "
+                      f"avg cost={avg_cost:>5.1f}, "
+                      f"avg eff={avg_eff:>6.1f}×")
+    
+    # Usage (adjust path as needed)
+    # analyze_real_files("test_data")
+
+Testing and Validation Examples
+-------------------------------
+
+**Custom Validation**
+
+.. code-block:: python
+
+    from clf_calculator import clf_single_seed_cost, leb128_byte_length, should_emit
+    import hashlib
+    
+    def validate_mathematical_properties():
+        """Validate key mathematical properties of the CLF Calculator."""
+        print("Mathematical Property Validation")
+        print("=" * 40)
+        
+        # Test monotonicity
+        print("Testing monotonicity...")
+        prev_cost = 0
+        for L in [1, 127, 128, 16383, 16384, 2097151, 2097152]:
+            cost = clf_single_seed_cost(L)
+            assert cost >= prev_cost, f"Non-monotonic: {prev_cost} -> {cost} at L={L}"
+            prev_cost = cost
+        print("✓ Cost function is monotonic")
+        
+        # Test band consistency  
+        print("Testing LEB band consistency...")
+        for band in range(1, 6):
+            start = 128 ** (band - 1) if band > 1 else 1
+            end = min(128 ** band - 1, 10**9)  # Limit for practical testing
+            
+            # Test a few values in each band
+            test_values = [start, start + 1, (start + end) // 2, end - 1, end]
+            costs = [clf_single_seed_cost(L) for L in test_values if L <= end]
+            
+            assert all(c == costs[0] for c in costs), f"Inconsistent costs in band {band}"
+            expected_cost = 88 + 8 * band
+            assert costs[0] == expected_cost, f"Wrong cost for band {band}: {costs[0]} != {expected_cost}"
+        
+        print("✓ LEB band consistency verified")
+        
+        # Test decision boundary
+        print("Testing decision boundaries...")
+        for L in [1, 100, 1000, 10000, 100000]:
+            cost = clf_single_seed_cost(L)
+            raw = 10 * L
+            emit_calculated = should_emit(L)
+            emit_expected = cost < raw
+            assert emit_calculated == emit_expected, f"Decision error at L={L}"
+        print("✓ Decision boundaries correct")
+        
+        print("All mathematical properties validated!")
+    
+    validate_mathematical_properties()
+
+**Performance Benchmarking**
+
+.. code-block:: python
+
+    import time
+    from clf_calculator import clf_single_seed_cost
+    
+    def benchmark_performance():
+        """Benchmark CLF Calculator performance."""
+        print("Performance Benchmark")
+        print("=" * 30)
+        
+        # Test different input sizes
+        test_cases = [
+            ("Small files", list(range(1, 1001))),
+            ("Medium files", list(range(1000, 100001, 100))),
+            ("Large files", [10**i for i in range(6, 10)]),
+            ("Extreme files", [2**i for i in range(20, 31)])
+        ]
+        
+        for name, test_values in test_cases:
+            start_time = time.time()
+            
+            for L in test_values:
+                cost = clf_single_seed_cost(L)
+            
+            elapsed = time.time() - start_time
+            rate = len(test_values) / elapsed if elapsed > 0 else float('inf')
+            
+            print(f"{name:<15}: {len(test_values):>6} calculations "
+                  f"in {elapsed:>6.3f}s ({rate:>8,.0f} calc/sec)")
+    
+    benchmark_performance()
+
+Export Format Examples
+----------------------
+
+**Custom Export Generation**
+
+.. code-block:: python
+
+    import json
+    import csv
+    from clf_calculator import receipt
+    
+    def custom_export_example():
+        """Generate custom export formats."""
+        
+        # Sample data
+        test_files = [
+            ("small.txt", 42),
+            ("medium.jpg", 11751), 
+            ("large.mp4", 9840497)
+        ]
+        
+        results = []
+        for filename, size in test_files:
+            r = receipt(size, "CUSTOM_EXPORT")
+            r['filename'] = filename  # Add filename to receipt
+            results.append(r)
+        
+        # Custom JSON export with formatting
+        with open('custom_analysis.json', 'w') as f:
+            json.dump({
+                'metadata': {
+                    'export_type': 'custom_clf_analysis',
+                    'version': '1.0',
+                    'total_files': len(results)
+                },
+                'results': results
+            }, f, indent=2)
+        
+        # Custom detailed CSV export
+        with open('detailed_analysis.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                'filename', 'size_bytes', 'leb_band', 'cost_bits', 
+                'raw_bits', 'emit', 'efficiency', 'receipt_hash'
+            ])
+            
+            for r in results:
+                efficiency = r['raw_bits'] / r['cost_bits'] if r['emit'] else 0
+                writer.writerow([
+                    r['filename'], r['L'], r['leb_bytes'], r['cost_bits'],
+                    r['raw_bits'], r['emit'], f"{efficiency:.1f}x",
+                    r['receipt_hash'][:16]  # Shortened hash
+                ])
+        
+        print("Custom exports generated:")
+        print("  - custom_analysis.json")
+        print("  - detailed_analysis.csv")
+    
+    # custom_export_example()
+
+Integration Examples
+-------------------
+
+**Flask Web API**
+
+.. code-block:: python
+
+    from flask import Flask, request, jsonify
+    from clf_calculator import clf_single_seed_cost, should_emit, receipt
+    
+    app = Flask(__name__)
+    
+    @app.route('/analyze', methods=['POST'])
+    def analyze_endpoint():
+        """API endpoint for CLF analysis."""
+        try:
+            data = request.get_json()
+            L = data.get('file_size')
+            
+            if not isinstance(L, int) or L <= 0:
+                return jsonify({'error': 'Invalid file_size parameter'}), 400
+            
+            # Generate full analysis
+            r = receipt(L, f"API_{int(time.time())}")
+            
+            return jsonify({
+                'status': 'success',
+                'analysis': r,
+                'summary': {
+                    'file_size': L,
+                    'clf_cost': r['cost_bits'],
+                    'should_emit': r['emit'],
+                    'efficiency': f"{(10 * L) / r['cost_bits']:.1f}x" if r['emit'] else "N/A"
+                }
+            })
+            
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    @app.route('/batch', methods=['POST'])  
+    def batch_analyze():
+        """Batch analysis endpoint."""
+        try:
+            data = request.get_json()
+            file_sizes = data.get('file_sizes', [])
+            
+            if not isinstance(file_sizes, list):
+                return jsonify({'error': 'file_sizes must be a list'}), 400
+            
+            results = []
+            for i, L in enumerate(file_sizes):
+                if not isinstance(L, int) or L <= 0:
+                    results.append({'index': i, 'error': 'Invalid file size'})
+                    continue
+                
+                r = receipt(L, f"BATCH_{int(time.time())}_{i}")
+                results.append({
+                    'index': i,
+                    'file_size': L,
+                    'cost': r['cost_bits'],
+                    'emit': r['emit'],
+                    'efficiency': f"{(10 * L) / r['cost_bits']:.1f}x" if r['emit'] else "N/A"
+                })
+            
+            return jsonify({
+                'status': 'success',
+                'total_files': len(file_sizes),
+                'results': results
+            })
+            
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    # if __name__ == '__main__':
+    #     app.run(debug=True)
+
+These examples demonstrate the versatility and robustness of the CLF Calculator across different use cases, from simple calculations to complex batch processing and web service integration.

@@ -1,0 +1,582 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docstring Guide Reference &mdash; Teleport CLF Calculator 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=639a1cbb"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="clf_maximal_validator_final module" href="clf_maximal_validator.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Teleport CLF Calculator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#export-formats">Export Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#understanding-output">Understanding Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mathematical_foundation.html">Mathematical Foundation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#core-formula">Core Formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#leb128-encoding">LEB128 Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#decision-gate">Decision Gate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#mathematical-invariants">Mathematical Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#examples-and-edge-cases">Examples and Edge Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mathematical_foundation.html#theoretical-foundation">Theoretical Foundation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#validation-and-verification">Validation and Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#error-analysis">Error Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html">Causal Minimality Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#mathematical-contract">Mathematical Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#core-function-specifications">Core Function Specifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#invariant-constraints">Invariant Constraints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="causal_minimality_contract.html#anti-drift-checklist">Anti-Drift Checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#verification-protocol">Verification Protocol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#implementation-notes">Implementation Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#constants">Constants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#type-definitions">Type Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt"><code class="docutils literal notranslate"><span class="pre">Receipt</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.L"><code class="docutils literal notranslate"><span class="pre">Receipt.L</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.leb_bytes"><code class="docutils literal notranslate"><span class="pre">Receipt.leb_bytes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.cost_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.cost_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.raw_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.raw_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.emit"><code class="docutils literal notranslate"><span class="pre">Receipt.emit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.build_id"><code class="docutils literal notranslate"><span class="pre">Receipt.build_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.receipt_hash"><code class="docutils literal notranslate"><span class="pre">Receipt.receipt_hash</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.ValueError"><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.FileNotFoundError"><code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.PermissionError"><code class="docutils literal notranslate"><span class="pre">PermissionError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#usage-patterns">Usage Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#cli-reference">CLI Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#export-formats">Export Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#implementation-notes">Implementation Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#basic-examples">Basic Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-examples">Advanced Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#testing-and-validation-examples">Testing and Validation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#export-format-examples">Export Format Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#built-in-testing">Built-in Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#unit-test-suite">Unit Test Suite</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#validation-procedures">Validation Procedures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#performance-testing">Performance Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#error-handling-tests">Error Handling Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#continuous-integration-testing">Continuous Integration Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#test-documentation">Test Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clf_calculator.html">clf_calculator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#edge-case-l-0">Edge Case: L=0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.analyze_path"><code class="docutils literal notranslate"><span class="pre">analyze_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_all"><code class="docutils literal notranslate"><span class="pre">export_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_audit"><code class="docutils literal notranslate"><span class="pre">export_audit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_console"><code class="docutils literal notranslate"><span class="pre">export_console()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_csv"><code class="docutils literal notranslate"><span class="pre">export_csv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_receipts"><code class="docutils literal notranslate"><span class="pre">export_receipts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.run_unit_tests"><code class="docutils literal notranslate"><span class="pre">run_unit_tests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#core-functions">Core Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id0"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id17"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id24"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id30"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#utility-functions">Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id36"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clf_calculator.html#mathematical-constants">Mathematical Constants</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.BASE_BITS"><code class="docutils literal notranslate"><span class="pre">BASE_BITS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clf_maximal_validator.html">clf_maximal_validator_final module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#edge-case-l-0">Edge Case: L=0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#cli-interface">CLI Interface</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Docstring Guide Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-principles">Key Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-docstring-format">Function Docstring Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#class-documentation">Class Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cli-documentation">CLI Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-standards">Documentation Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-examples">Implementation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quality-assurance">Quality Assurance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-0-0-professional-release">Version 1.0.0 - Professional Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#development-history">Development History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html#mathematical-validation-results">Mathematical Validation Results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#breaking-changes">Breaking Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#upcoming-features">Upcoming Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#security-updates">Security Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#migration-guide">Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#known-issues">Known Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-started">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#development-guidelines">Development Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#development-workflow">Development Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-review-process">Code Review Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#common-contribution-scenarios">Common Contribution Scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#recognition">Recognition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Teleport CLF Calculator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Docstring Guide Reference</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="docstring-guide-reference">
+<h1>Docstring Guide Reference<a class="headerlink" href="#docstring-guide-reference" title="Link to this heading"></a></h1>
+<p>This document provides the complete docstring guide that was applied throughout the Teleport CLF Calculator codebase.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The docstring system implements a comprehensive contract-based documentation approach designed to prevent mathematical drift and ensure long-term code integrity.</p>
+</section>
+<section id="key-principles">
+<h2>Key Principles<a class="headerlink" href="#key-principles" title="Link to this heading"></a></h2>
+<p><strong>DO NOT EDIT Comment Blocks</strong></p>
+<p>All files contain critical <code class="docutils literal notranslate"><span class="pre">DO</span> <span class="pre">NOT</span> <span class="pre">EDIT</span></code> comment blocks that preserve the mathematical contract:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">DO NOT EDIT: This module implements the single-seed CLF causal minimality calculator.</span>
+
+<span class="sd">Contract: C_min^(1)(L) = 88 + 8*leb(L) with H=56, CAUS=27, END=5 (locked)</span>
+<span class="sd">Decision: EMIT iff C_min^(1)(L) &lt; 10*L (strict). leb = unsigned LEB128 byte-length.</span>
+<span class="sd">Invariants: Integer-only. No compression logic. No floating point. O(log L) complexity.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p><strong>Module Docstring Structure</strong></p>
+<p>Every module follows the Contract/Invariants/Receipts pattern:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Single-seed CLF causal minimality calculator for integer-only file size analysis.</span>
+
+<span class="sd">Contract:</span>
+<span class="sd">    Formula: C_min^(1)(L) = 88 + 8*leb(L) bits</span>
+<span class="sd">    Constants: H=56, CAUS=27, END=5 (locked, DO NOT MODIFY)</span>
+<span class="sd">    Decision: EMIT iff C_min^(1)(L) &lt; 10*L (strict inequality)</span>
+
+<span class="sd">Invariants:</span>
+<span class="sd">    - Integer-only arithmetic (no floating-point operations)</span>
+<span class="sd">    - O(log L) computational complexity</span>
+<span class="sd">    - No file content analysis (length-only)</span>
+<span class="sd">    - Deterministic results for identical inputs</span>
+
+<span class="sd">Receipts:</span>
+<span class="sd">    All calculations generate SHA-256 receipts for verification.</span>
+<span class="sd">    Drift detection through comprehensive runtime assertions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="function-docstring-format">
+<h2>Function Docstring Format<a class="headerlink" href="#function-docstring-format" title="Link to this heading"></a></h2>
+<p><strong>Core Mathematical Functions</strong></p>
+<p>Functions implementing core mathematics use detailed specifications:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate single-seed CLF causal minimality cost: C_min^(1)(L) = 88 + 8*leb(L).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        L (int): File size in bytes, must be positive integer</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Causal minimality cost in bits</span>
+
+<span class="sd">    Mathematical Specification:</span>
+<span class="sd">        C_min^(1)(L) = 88 + 8 * leb128_byte_length(L)</span>
+<span class="sd">        where 88 = H(56) + CAUS(27) + END(5) are locked constants</span>
+
+<span class="sd">    Complexity: O(log L)</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; clf_single_seed_cost(127)    # Band 1: leb=1</span>
+<span class="sd">        96</span>
+<span class="sd">        &gt;&gt;&gt; clf_single_seed_cost(128)    # Band 2: leb=2</span>
+<span class="sd">        104</span>
+<span class="sd">        &gt;&gt;&gt; clf_single_seed_cost(16384)  # Band 3: leb=3</span>
+<span class="sd">        112</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If L &lt;= 0 or L not integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p><strong>Utility Functions</strong></p>
+<p>Utility functions include purpose and relationship to core functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">bit_length_info</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate bit-length bounds information for display purposes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        L (int): File size in bytes</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Formatted bounds string like &quot;bounds=2^13 ≤ L &lt; 2^14&quot;</span>
+
+<span class="sd">    Purpose:</span>
+<span class="sd">        Provides human-readable context for file sizes in output formatting.</span>
+<span class="sd">        Complements core CLF calculations with magnitude information.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This is a display utility only. Core CLF calculations do not depend</span>
+<span class="sd">        on bit_length operations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p><strong>Guard Assertions</strong></p>
+<p>All mathematical functions include runtime guards:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;...&quot;&quot;&quot;</span>
+    <span class="c1"># Math guards (DO NOT REMOVE - prevent drift)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">L</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;L must be positive integer&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Core calculation with locked constants</span>
+    <span class="n">leb_bytes</span> <span class="o">=</span> <span class="n">leb128_byte_length</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="mi">88</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">leb_bytes</span>  <span class="c1"># H(56) + CAUS(27) + END(5) + 8*leb</span>
+
+    <span class="c1"># Post-calculation verification</span>
+    <span class="k">assert</span> <span class="n">cost</span> <span class="o">&gt;=</span> <span class="mi">88</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Cost </span><span class="si">{</span><span class="n">cost</span><span class="si">}</span><span class="s2"> below minimum&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Non-integer cost: </span><span class="si">{</span><span class="n">cost</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="n">cost</span>
+</pre></div>
+</div>
+</section>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Link to this heading"></a></h2>
+<p><strong>Test Classes</strong></p>
+<p>Test classes document their coverage scope:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TestCLFCalculator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Comprehensive unit tests for CLF causal minimality calculator.</span>
+
+<span class="sd">    Test Coverage:</span>
+<span class="sd">        - Mathematical correctness (formula accuracy, boundary conditions)</span>
+<span class="sd">        - LEB128 encoding (band transitions, byte-length calculation)</span>
+<span class="sd">        - Decision gate logic (emit conditions, efficiency calculations)</span>
+<span class="sd">        - Error handling (invalid inputs, type validation)</span>
+<span class="sd">        - Receipt generation (hashing, verification data)</span>
+
+<span class="sd">    Test Philosophy:</span>
+<span class="sd">        Pure integer testing only. No file I/O operations in unit tests.</span>
+<span class="sd">        Focus on mathematical properties and edge cases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="cli-documentation">
+<h2>CLI Documentation<a class="headerlink" href="#cli-documentation" title="Link to this heading"></a></h2>
+<p><strong>Main Function Documentation</strong></p>
+<p>Command-line interfaces include comprehensive usage information:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Command-line interface for CLF causal minimality analysis.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">        python clf_calculator.py [files...] [options]</span>
+
+<span class="sd">    Options:</span>
+<span class="sd">        --stdin-length LENGTH    Analyze specific length directly</span>
+<span class="sd">        --export-prefix PREFIX   Generate JSONL, CSV, and audit exports</span>
+<span class="sd">        --self-test             Run embedded validation tests</span>
+
+<span class="sd">    Output Format:</span>
+<span class="sd">        filename: L=bytes, bit_length=N, bounds=2^M ≤ L &lt; 2^N,</span>
+<span class="sd">        leb=K, C=bits, RAW=10*L_bits, EMIT=decision, receipt=hash...</span>
+
+<span class="sd">    Export Files:</span>
+<span class="sd">        {prefix}_clf_analysis.jsonl - JSON Lines format</span>
+<span class="sd">        {prefix}_clf_analysis.csv   - CSV format</span>
+<span class="sd">        {prefix}_clf_audit.txt      - Human-readable audit</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        python clf_calculator.py test.jpg</span>
+<span class="sd">        python clf_calculator.py *.mp4 --export-prefix BATCH</span>
+<span class="sd">        python clf_calculator.py --stdin-length 11751 --self-test</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="documentation-standards">
+<h2>Documentation Standards<a class="headerlink" href="#documentation-standards" title="Link to this heading"></a></h2>
+<p><strong>Consistency Requirements</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Mathematical Notation</strong>: Always use C_min^(1)(L) notation</p></li>
+<li><p><strong>Constant References</strong>: Always reference H=56, CAUS=27, END=5</p></li>
+<li><p><strong>Decision Rule</strong>: Always state “EMIT iff C_min^(1)(L) &lt; 10*L (strict)”</p></li>
+<li><p><strong>Complexity</strong>: Always specify O(log L) where applicable</p></li>
+<li><p><strong>Type Specifications</strong>: Always specify integer-only arithmetic</p></li>
+</ol>
+<p><strong>Prohibited Modifications</strong></p>
+<p>The following elements are locked and must not be modified:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DO</span> <span class="pre">NOT</span> <span class="pre">EDIT</span></code> comment blocks</p></li>
+<li><p>Mathematical constants (H=56, CAUS=27, END=5)</p></li>
+<li><p>Core formula specification</p></li>
+<li><p>Decision rule specification</p></li>
+<li><p>Math guard assertions</p></li>
+<li><p>Receipt generation logic</p></li>
+</ul>
+<p><strong>Update Procedures</strong></p>
+<p>When adding new functionality:</p>
+<ol class="arabic simple">
+<li><p><strong>Preserve Contracts</strong>: Never modify existing mathematical contracts</p></li>
+<li><p><strong>Add Guards</strong>: Include appropriate math guards for new functions</p></li>
+<li><p><strong>Document Relationships</strong>: Explain how new functions relate to core CLF logic</p></li>
+<li><p><strong>Maintain Formatting</strong>: Follow established docstring structure</p></li>
+<li><p><strong>Validate Integration</strong>: Ensure new code doesn’t affect core calculations</p></li>
+</ol>
+</section>
+<section id="implementation-examples">
+<h2>Implementation Examples<a class="headerlink" href="#implementation-examples" title="Link to this heading"></a></h2>
+<p><strong>Correct Docstring Addition</strong></p>
+<p>When adding a new utility function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">efficiency_ratio</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate CLF efficiency ratio: 10*L / C_min^(1)(L).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        L (int): File size in bytes, must be positive integer</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Efficiency ratio (&gt;1.0 indicates EMIT=True)</span>
+
+<span class="sd">    Relationship to Core CLF:</span>
+<span class="sd">        Uses clf_single_seed_cost(L) for C_min^(1)(L) calculation.</span>
+<span class="sd">        Provides efficiency context for emission decisions.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Result interpretation: ratio &gt; 1.0 means CLF cost is lower than</span>
+<span class="sd">        raw cost, corresponding to EMIT=True decision.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; efficiency_ratio(11751)  # pic2.jpg</span>
+<span class="sd">        1130.3846...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Math guards (DO NOT REMOVE)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">L</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;L must be positive integer&quot;</span><span class="p">)</span>
+
+    <span class="n">cost</span> <span class="o">=</span> <span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>  <span class="c1"># Core CLF calculation</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">raw</span> <span class="o">/</span> <span class="n">cost</span>
+
+    <span class="c1"># Verification</span>
+    <span class="k">assert</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Invalid ratio: </span><span class="si">{</span><span class="n">ratio</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="n">ratio</span>
+</pre></div>
+</div>
+<p><strong>Incorrect Modifications (PROHIBITED)</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># PROHIBITED: Modifying constants</span>
+<span class="n">H</span> <span class="o">=</span> <span class="mi">60</span>  <span class="c1"># Changed from 56 - BREAKS CONTRACT</span>
+
+<span class="c1"># PROHIBITED: Changing formula</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">90</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">leb128_byte_length</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>  <span class="c1"># Modified formula - BREAKS CONTRACT</span>
+
+<span class="c1"># PROHIBITED: Removing guards</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="c1"># Removed input validation - BREAKS SAFETY</span>
+    <span class="k">return</span> <span class="mi">88</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">leb128_byte_length</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+
+<span class="c1"># PROHIBITED: Adding floating-point</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">88.0</span> <span class="o">+</span> <span class="mf">8.0</span> <span class="o">*</span> <span class="n">leb128_byte_length</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>  <span class="c1"># Float arithmetic - BREAKS INVARIANTS</span>
+</pre></div>
+</div>
+</section>
+<section id="quality-assurance">
+<h2>Quality Assurance<a class="headerlink" href="#quality-assurance" title="Link to this heading"></a></h2>
+<p><strong>Documentation Validation</strong></p>
+<p>Before committing documentation changes:</p>
+<ol class="arabic simple">
+<li><p><strong>Contract Verification</strong>: Confirm all mathematical contracts remain intact</p></li>
+<li><p><strong>Guard Preservation</strong>: Verify all math guards are present and unchanged</p></li>
+<li><p><strong>Constant Validation</strong>: Check that H=56, CAUS=27, END=5 remain locked</p></li>
+<li><p><strong>Formula Consistency</strong>: Ensure C_min^(1)(L) = 88 + 8*leb(L) is preserved</p></li>
+<li><p><strong>Test Execution</strong>: Run full test suite to verify no regressions</p></li>
+</ol>
+<p><strong>Maintenance Procedures</strong></p>
+<p>For ongoing maintenance:</p>
+<ol class="arabic simple">
+<li><p><strong>Periodic Audits</strong>: Regular review of all docstrings for consistency</p></li>
+<li><p><strong>Drift Detection</strong>: Use pic2_gate.sh for mathematical drift detection</p></li>
+<li><p><strong>Documentation Updates</strong>: Keep examples and usage patterns current</p></li>
+<li><p><strong>Integration Checks</strong>: Verify documentation matches actual behavior</p></li>
+</ol>
+<p>This docstring guide ensures the Teleport CLF Calculator codebase remains mathematically consistent, well-documented, and resistant to accidental modifications that could compromise its theoretical foundations.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="clf_maximal_validator.html" class="btn btn-neutral float-left" title="clf_maximal_validator_final module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Teleport Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

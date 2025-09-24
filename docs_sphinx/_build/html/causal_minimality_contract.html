@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Causal Minimality Contract &mdash; Teleport CLF Calculator 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=639a1cbb"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api_reference.html" />
+    <link rel="prev" title="Mathematical Foundation" href="mathematical_foundation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Teleport CLF Calculator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#export-formats">Export Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#understanding-output">Understanding Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mathematical_foundation.html">Mathematical Foundation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#core-formula">Core Formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#leb128-encoding">LEB128 Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#decision-gate">Decision Gate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#mathematical-invariants">Mathematical Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#examples-and-edge-cases">Examples and Edge Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mathematical_foundation.html#theoretical-foundation">Theoretical Foundation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#validation-and-verification">Validation and Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#error-analysis">Error Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Causal Minimality Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#mathematical-contract">Mathematical Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#core-function-specifications">Core Function Specifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#invariant-constraints">Invariant Constraints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#anti-drift-checklist">Anti-Drift Checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#verification-protocol">Verification Protocol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#implementation-notes">Implementation Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#constants">Constants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#type-definitions">Type Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt"><code class="docutils literal notranslate"><span class="pre">Receipt</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.L"><code class="docutils literal notranslate"><span class="pre">Receipt.L</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.leb_bytes"><code class="docutils literal notranslate"><span class="pre">Receipt.leb_bytes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.cost_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.cost_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.raw_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.raw_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.emit"><code class="docutils literal notranslate"><span class="pre">Receipt.emit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.build_id"><code class="docutils literal notranslate"><span class="pre">Receipt.build_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.receipt_hash"><code class="docutils literal notranslate"><span class="pre">Receipt.receipt_hash</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.ValueError"><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.FileNotFoundError"><code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.PermissionError"><code class="docutils literal notranslate"><span class="pre">PermissionError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#usage-patterns">Usage Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#cli-reference">CLI Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#export-formats">Export Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#implementation-notes">Implementation Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#basic-examples">Basic Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-examples">Advanced Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#testing-and-validation-examples">Testing and Validation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#export-format-examples">Export Format Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#built-in-testing">Built-in Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#unit-test-suite">Unit Test Suite</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#validation-procedures">Validation Procedures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#performance-testing">Performance Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#error-handling-tests">Error Handling Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#continuous-integration-testing">Continuous Integration Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#test-documentation">Test Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clf_calculator.html">clf_calculator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#edge-case-l-0">Edge Case: L=0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.analyze_path"><code class="docutils literal notranslate"><span class="pre">analyze_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_all"><code class="docutils literal notranslate"><span class="pre">export_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_audit"><code class="docutils literal notranslate"><span class="pre">export_audit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_console"><code class="docutils literal notranslate"><span class="pre">export_console()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_csv"><code class="docutils literal notranslate"><span class="pre">export_csv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.export_receipts"><code class="docutils literal notranslate"><span class="pre">export_receipts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.run_unit_tests"><code class="docutils literal notranslate"><span class="pre">run_unit_tests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#core-functions">Core Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id0"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id17"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id24"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id30"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#utility-functions">Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clf_calculator.html#id36"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clf_calculator.html#mathematical-constants">Mathematical Constants</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_calculator.html#clf_calculator.BASE_BITS"><code class="docutils literal notranslate"><span class="pre">BASE_BITS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clf_maximal_validator.html">clf_maximal_validator_final module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#edge-case-l-0">Edge Case: L=0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#cli-interface">CLI Interface</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="docstring_guide.html">Docstring Guide Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#key-principles">Key Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#function-docstring-format">Function Docstring Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#class-documentation">Class Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#cli-documentation">CLI Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#documentation-standards">Documentation Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#implementation-examples">Implementation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#quality-assurance">Quality Assurance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-0-0-professional-release">Version 1.0.0 - Professional Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#development-history">Development History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html#mathematical-validation-results">Mathematical Validation Results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#breaking-changes">Breaking Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#upcoming-features">Upcoming Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#security-updates">Security Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#migration-guide">Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#known-issues">Known Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-started">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#development-guidelines">Development Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#development-workflow">Development Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-review-process">Code Review Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#common-contribution-scenarios">Common Contribution Scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#recognition">Recognition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Teleport CLF Calculator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Causal Minimality Contract</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="causal-minimality-contract">
+<h1>Causal Minimality Contract<a class="headerlink" href="#causal-minimality-contract" title="Link to this heading"></a></h1>
+<p>This document formalizes the mathematical invariants that MUST be preserved in all implementations of the Teleport CLF Calculator.</p>
+</section>
+<section id="mathematical-contract">
+<h1>Mathematical Contract<a class="headerlink" href="#mathematical-contract" title="Link to this heading"></a></h1>
+<p><strong>Canonical Formula</strong></p>
+<div class="math notranslate nohighlight">
+\[C_{\min}^{(1)}(L) = 88 + 8 \cdot \mathrm{leb}(L)\]</div>
+<p><strong>Locked Constants</strong></p>
+<ul class="simple">
+<li><p><strong>H = 56</strong>: Header information bits</p></li>
+<li><p><strong>CAUS = 27</strong>: Causal relationship encoding bits</p></li>
+<li><p><strong>END = 5</strong>: Termination marker bits</p></li>
+<li><p><strong>Total overhead = 88</strong>: H + CAUS + END (immutable)</p></li>
+</ul>
+<p><strong>Decision Rule</strong></p>
+<div class="math notranslate nohighlight">
+\[\text{EMIT} \Leftrightarrow C_{\min}^{(1)}(L) &lt; 10 \cdot L \text{ (strict inequality)}\]</div>
+<p><strong>LEB128 Definition</strong></p>
+<p>The function leb(L) returns the number of bytes required to encode L in unsigned LEB128 format using 7-bit data groups:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathrm{leb}(L) = \begin{cases}
+1 &amp; \text{if } 0 \leq L \leq 127 \\
+2 &amp; \text{if } 128 \leq L \leq 16383 \\
+3 &amp; \text{if } 16384 \leq L \leq 2097151 \\
+k &amp; \text{if } 128^{k-1} \leq L &lt; 128^k
+\end{cases}\end{split}\]</div>
+<p><strong>Edge Case: Empty Files (L=0)</strong></p>
+<p>For zero-length files, the canonical mathematical behavior is:</p>
+<ul class="simple">
+<li><p>leb(0) = 1 (special case for zero-length encoding)</p></li>
+<li><p>C_min^(1)(0) = 88 + 8*1 = 96 bits</p></li>
+<li><p>RAW(0) = 10*0 = 0 bits</p></li>
+<li><p>EMIT = (96 &lt; 0) = False (causal overhead exceeds literal cost)</p></li>
+</ul>
+<p>This demonstrates that causal overhead dominates for tiny inputs, maintaining strict mathematical consistency.</p>
+</section>
+<section id="core-function-specifications">
+<h1>Core Function Specifications<a class="headerlink" href="#core-function-specifications" title="Link to this heading"></a></h1>
+<p><strong>The Four Golden Functions</strong></p>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">leb_len_u(n:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p>
+<p>Returns the unsigned LEB128 byte-length of n.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>leb_len_u(0) = 1</p></li>
+<li><p>leb_len_u(127) = 1</p></li>
+<li><p>leb_len_u(128) = 2</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost(L:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p>
+<p>Returns C_min^(1)(L) = 88 + 8*leb(L).</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>clf_single_seed_cost(127) = 96</p></li>
+<li><p>clf_single_seed_cost(128) = 104</p></li>
+<li><p>clf_single_seed_cost(16384) = 112</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">should_emit(L:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p>
+<p>Returns True iff C_min^(1)(L) &lt; 10*L (strict).</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>should_emit(16) = True (96 &lt; 160)</p></li>
+<li><p>should_emit(456) = True (104 &lt; 4560)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">receipt(L:</span> <span class="pre">int,</span> <span class="pre">build_id:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">dict</span></code></p>
+<p>Returns complete calculation with verification hash.</p>
+</li>
+</ol>
+</section>
+<section id="invariant-constraints">
+<h1>Invariant Constraints<a class="headerlink" href="#invariant-constraints" title="Link to this heading"></a></h1>
+<p><strong>Type Invariants</strong></p>
+<ul class="simple">
+<li><p>All calculations use integer arithmetic only</p></li>
+<li><p>No floating-point operations permitted anywhere</p></li>
+<li><p>All results must be exact integers</p></li>
+</ul>
+<p><strong>Computational Invariants</strong></p>
+<ul class="simple">
+<li><p>O(log L) complexity for all core functions</p></li>
+<li><p>No file content analysis (length-only)</p></li>
+<li><p>Deterministic results for identical inputs</p></li>
+<li><p>No compression logic or content scanning</p></li>
+</ul>
+<p><strong>Mathematical Invariants</strong></p>
+<ul class="simple">
+<li><p>Constants H=56, CAUS=27, END=5 are locked forever</p></li>
+<li><p>Formula C_min^(1)(L) = 88 + 8*leb(L) is immutable</p></li>
+<li><p>Decision rule EMIT iff C &lt; 10*L (strict) is immutable</p></li>
+<li><p>LEB128 definition using 7-bit groups is canonical</p></li>
+</ul>
+<section id="anti-drift-checklist">
+<h2>Anti-Drift Checklist<a class="headerlink" href="#anti-drift-checklist" title="Link to this heading"></a></h2>
+<p><strong>PROHIBITED Operations (Will Break Mathematical Contract)</strong></p>
+<dl class="simple">
+<dt>No compression logic:</dt><dd><ul class="simple">
+<li><p>No tiling algorithms</p></li>
+<li><p>No dynamic programming or backtracking</p></li>
+<li><p>No content scanning beyond length</p></li>
+<li><p>Calculator must remain O(log L) arithmetic only</p></li>
+</ul>
+</dd>
+<dt>No floating point anywhere:</dt><dd><ul class="simple">
+<li><p>All calculations must use integer-only arithmetic</p></li>
+<li><p>No rounding, approximation, or tolerance checks</p></li>
+<li><p>Results must be mathematically exact</p></li>
+</ul>
+</dd>
+<dt>No per-tile END costs:</dt><dd><ul class="simple">
+<li><p>Single END=5 cost only</p></li>
+<li><p>No END cost multiplication or distribution</p></li>
+</ul>
+</dd>
+<dt>No length term modifications:</dt><dd><ul class="simple">
+<li><p>Length term is strictly 8 * leb(L)</p></li>
+<li><p>No leb(8*L) or other transformations</p></li>
+<li><p>No alignment padding or bit manipulation</p></li>
+</ul>
+</dd>
+<dt>No header/END cost drift:</dt><dd><ul class="simple">
+<li><p>H=56, CAUS=27, END=5 are mathematically locked</p></li>
+<li><p>No parameter tuning or optimization of constants</p></li>
+<li><p>No A/B testing of different constant values</p></li>
+</ul>
+</dd>
+<dt>No content dependence:</dt><dd><ul class="simple">
+<li><p>Decisions depend only on L (file length in bytes)</p></li>
+<li><p>No analysis of actual file contents or headers</p></li>
+<li><p>No format-specific optimizations</p></li>
+</ul>
+</dd>
+<dt>No tolerance margins:</dt><dd><ul class="simple">
+<li><p>All equations yield exact integers</p></li>
+<li><p>No “within epsilon” or approximate comparisons</p></li>
+<li><p>Strict inequality C &lt; 10*L must be preserved</p></li>
+</ul>
+</dd>
+<dt>No role-based modifications:</dt><dd><ul class="simple">
+<li><p>No A/B roles, sender/receiver distinctions</p></li>
+<li><p>No feasibility guards or bijection proofs in core calculator</p></li>
+<li><p>Receipt generation is deterministic from (L, build_id)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="verification-protocol">
+<h1>Verification Protocol<a class="headerlink" href="#verification-protocol" title="Link to this heading"></a></h1>
+<p><strong>Mathematical Validation</strong></p>
+<p>All implementations must pass these exact test cases:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>L=127    -&gt; leb=1 -&gt; C=96   -&gt; EMIT=True  (96 &lt; 1270)
+L=128    -&gt; leb=2 -&gt; C=104  -&gt; EMIT=True  (104 &lt; 1280)
+L=16383  -&gt; leb=2 -&gt; C=104  -&gt; EMIT=True  (104 &lt; 163830)
+L=16384  -&gt; leb=3 -&gt; C=112  -&gt; EMIT=True  (112 &lt; 163840)
+</pre></div>
+</div>
+<p><strong>Known Regression Cases</strong></p>
+<p>These historical cases must continue to pass:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pic1.jpg:    L=63,379    -&gt; C=112 -&gt; EMIT=True
+pic2.jpg:    L=11,751    -&gt; C=104 -&gt; EMIT=True
+video3.mp4:  L=9,840,497 -&gt; C=120 -&gt; EMIT=True
+</pre></div>
+</div>
+<p><strong>CI Quality Gates</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Link Check</strong>: <code class="docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">-b</span> <span class="pre">linkcheck</span> <span class="pre">docs/</span> <span class="pre">docs/_build/linkcheck</span> <span class="pre">-W</span></code></p></li>
+<li><p><strong>Warnings as Errors</strong>: <code class="docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">-b</span> <span class="pre">html</span> <span class="pre">docs/</span> <span class="pre">docs/_build/html</span> <span class="pre">-W</span></code></p></li>
+<li><p><strong>Doctest Validation</strong>: <code class="docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">-b</span> <span class="pre">doctest</span> <span class="pre">docs/</span> <span class="pre">docs/_build/doctest</span> <span class="pre">-W</span></code></p></li>
+</ol>
+</section>
+<section id="implementation-notes">
+<h1>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading"></a></h1>
+<p><strong>For Developers</strong></p>
+<ul class="simple">
+<li><p>Cross-reference this contract in all function docstrings</p></li>
+<li><p>Include anti-drift warnings in code comments</p></li>
+<li><p>Use runtime assertions to prevent constant modification</p></li>
+<li><p>Generate receipts with SHA-256 hashing for verification</p></li>
+</ul>
+<p><strong>For Code Reviews</strong></p>
+<ul class="simple">
+<li><p>Verify no prohibited operations from the anti-drift checklist</p></li>
+<li><p>Confirm all mathematical invariants are preserved</p></li>
+<li><p>Test against known regression cases</p></li>
+<li><p>Validate O(log L) complexity is maintained</p></li>
+</ul>
+<p><strong>For Documentation</strong></p>
+<ul class="simple">
+<li><p>Link to this contract from all API documentation</p></li>
+<li><p>Include examples demonstrating correct mathematical behavior</p></li>
+<li><p>Document any new functions in terms of their relationship to core CLF logic</p></li>
+</ul>
+<p>This contract ensures the mathematical integrity of the CLF Calculator across all implementations and modifications.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mathematical_foundation.html" class="btn btn-neutral float-left" title="Mathematical Foundation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Teleport Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

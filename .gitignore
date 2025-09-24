@@ -181,18 +181,10 @@ Desktop.ini
 *.tmp
 *.bak
 
+# Test artifacts (large files, binary data)
+test_artifacts/
+
 # Build artifacts
 *.whl
 *.tar.gz
 teleport.egg-info/
-
-# Test artifacts that are too large or temporary
-test_artifacts/*.jpg
-test_artifacts/*.bin
-test_artifacts/expanded_*
-test_artifacts/seed_*
-test_artifacts/payload_*
-
-# Keep important evidence files
-!test_artifacts/evidence*.txt
-!test_artifacts/anchor_const_test.bin

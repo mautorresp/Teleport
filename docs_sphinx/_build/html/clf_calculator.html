@@ -1,0 +1,942 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clf_calculator module &mdash; Teleport CLF Calculator 5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=639a1cbb"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="clf_maximal_validator_final module" href="clf_maximal_validator.html" />
+    <link rel="prev" title="Testing Guide" href="testing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Teleport CLF Calculator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#export-formats">Export Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#understanding-output">Understanding Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#validation">Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mathematical_foundation.html">Mathematical Foundation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#core-formula">Core Formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#leb128-encoding">LEB128 Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#decision-gate">Decision Gate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#mathematical-invariants">Mathematical Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#examples-and-edge-cases">Examples and Edge Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mathematical_foundation.html#theoretical-foundation">Theoretical Foundation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#validation-and-verification">Validation and Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mathematical_foundation.html#error-analysis">Error Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html">Causal Minimality Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#mathematical-contract">Mathematical Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#core-function-specifications">Core Function Specifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#invariant-constraints">Invariant Constraints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="causal_minimality_contract.html#anti-drift-checklist">Anti-Drift Checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#verification-protocol">Verification Protocol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="causal_minimality_contract.html#implementation-notes">Implementation Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#core-functions">Core Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#constants">Constants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#type-definitions">Type Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt"><code class="docutils literal notranslate"><span class="pre">Receipt</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.L"><code class="docutils literal notranslate"><span class="pre">Receipt.L</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.leb_bytes"><code class="docutils literal notranslate"><span class="pre">Receipt.leb_bytes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.cost_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.cost_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.raw_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.raw_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.emit"><code class="docutils literal notranslate"><span class="pre">Receipt.emit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.build_id"><code class="docutils literal notranslate"><span class="pre">Receipt.build_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_reference.html#clf_calculator.Receipt.receipt_hash"><code class="docutils literal notranslate"><span class="pre">Receipt.receipt_hash</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.ValueError"><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.FileNotFoundError"><code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html#clf_calculator.PermissionError"><code class="docutils literal notranslate"><span class="pre">PermissionError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#usage-patterns">Usage Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#cli-reference">CLI Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#export-formats">Export Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#implementation-notes">Implementation Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#basic-examples">Basic Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-examples">Advanced Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#testing-and-validation-examples">Testing and Validation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#export-format-examples">Export Format Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#built-in-testing">Built-in Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#unit-test-suite">Unit Test Suite</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#validation-procedures">Validation Procedures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#performance-testing">Performance Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#error-handling-tests">Error Handling Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#continuous-integration-testing">Continuous Integration Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html#test-documentation">Test Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">clf_calculator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#edge-case-l-0">Edge Case: L=0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.analyze_path"><code class="docutils literal notranslate"><span class="pre">analyze_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.export_all"><code class="docutils literal notranslate"><span class="pre">export_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.export_audit"><code class="docutils literal notranslate"><span class="pre">export_audit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.export_console"><code class="docutils literal notranslate"><span class="pre">export_console()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.export_csv"><code class="docutils literal notranslate"><span class="pre">export_csv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.export_receipts"><code class="docutils literal notranslate"><span class="pre">export_receipts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.run_unit_tests"><code class="docutils literal notranslate"><span class="pre">run_unit_tests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-functions">Core Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id36"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#mathematical-constants">Mathematical Constants</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clf_calculator.BASE_BITS"><code class="docutils literal notranslate"><span class="pre">BASE_BITS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clf_maximal_validator.html">clf_maximal_validator_final module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#edge-case-l-0">Edge Case: L=0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#clf_maximal_validator_final.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clf_maximal_validator.html#cli-interface">CLI Interface</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="docstring_guide.html">Docstring Guide Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#key-principles">Key Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#function-docstring-format">Function Docstring Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#class-documentation">Class Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#cli-documentation">CLI Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#documentation-standards">Documentation Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#implementation-examples">Implementation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_guide.html#quality-assurance">Quality Assurance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-1-0-0-professional-release">Version 1.0.0 - Professional Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#development-history">Development History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html#mathematical-validation-results">Mathematical Validation Results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#breaking-changes">Breaking Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#upcoming-features">Upcoming Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#security-updates">Security Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#migration-guide">Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#known-issues">Known Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-started">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#development-guidelines">Development Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#development-workflow">Development Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-review-process">Code Review Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#common-contribution-scenarios">Common Contribution Scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#recognition">Recognition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Teleport CLF Calculator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">clf_calculator module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-clf_calculator">
+<span id="clf-calculator-module"></span><h1>clf_calculator module<a class="headerlink" href="#module-clf_calculator" title="Link to this heading"></a></h1>
+<p>CLF Single-Seed Calculator — Pure Causal Minimality (No Compression)</p>
+<section id="contract">
+<h2>Contract<a class="headerlink" href="#contract" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>C_min^(1)(L) = 88 + 8*leb(L) bits, where:</dt><dd><ul class="simple">
+<li><p>leb(L): unsigned LEB128 byte-length of integer L using 7-bit groups.</p></li>
+<li><p>Locked constants: H=56, CAUS=27, END=5 (non-negotiable).</p></li>
+</ul>
+</dd>
+</dl>
+<p>Literal fallback: C_LIT = 10*L bits.
+Decision gate (strict): EMIT ⇔ C_min^(1)(L) &lt; 10*L.</p>
+</section>
+<section id="invariants">
+<h2>Invariants<a class="headerlink" href="#invariants" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Integer-only arithmetic. No floating point.</p></li>
+<li><p>O(log L) complexity: depends only on leb_len_u(L).</p></li>
+<li><p>Content-independent: uses file length only (L = os.path.getsize(path)).</p></li>
+<li><p>No compression/tiling/A/B roles/DP/greedy scans/coverage/bijection.</p></li>
+<li><p>No variation of H/CAUS/END. No leb(8*L). No align/padding drift.</p></li>
+</ul>
+</section>
+<section id="receipts">
+<h2>Receipts<a class="headerlink" href="#receipts" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>For each L, compute a deterministic receipt from the tuple:</dt><dd><p>(L, leb, C_min, RAW, EMIT, BUILD_ID)</p>
+</dd>
+</dl>
+<p>Using SHA-256. This enables independent verification.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>As CLI: pass file paths; calculator prints one line per file.</p></li>
+<li><p>As library: use <cite>clf_single_seed_cost(L)</cite>, <cite>should_emit(L)</cite>, <cite>receipt(L)</cite>.</p></li>
+</ul>
+</section>
+<section id="boundaries-to-test-leb-bands">
+<h2>Boundaries to test (leb bands)<a class="headerlink" href="#boundaries-to-test-leb-bands" title="Link to this heading"></a></h2>
+<p>L ∈ {0,1,127,128,16383,16384,…} to verify leb band transitions:</p>
+<p>leb = ceil(bit_length(L)/7) if L&gt;0 else 1.</p>
+</section>
+<section id="edge-case-l-0">
+<h2>Edge Case: L=0<a class="headerlink" href="#edge-case-l-0" title="Link to this heading"></a></h2>
+<p>For empty files (L=0):
+- leb(0) = 1 (special case)
+- C_min^(1)(0) = 88 + 8*1 = 96 bits
+- RAW = 10*0 = 0 bits
+- EMIT = (96 &lt; 0) = False (strict inequality)
+This is the canonical tiny-input behavior where causal overhead exceeds literal cost.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.analyze_path">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">analyze_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#clf_calculator.analyze_path" title="Link to this definition"></a></dt>
+<dd><p>Analyze single file path with mathematical evidence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – File path to analyze</p></li>
+<li><p><strong>build_id</strong> – Unique build identifier</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Complete analysis with bit_length proofs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.clf_single_seed_cost">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">clf_single_seed_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#clf_calculator.clf_single_seed_cost" title="Link to this definition"></a></dt>
+<dd><p>Compute single-seed CLF bound: C_min^(1)(L) = 88 + 8*leb(L).</p>
+<section id="id1">
+<h2>Contract<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Uses locked constants: H=56, CAUS=27, END=5.</p></li>
+<li><p>leb(L) = leb_len_u(L) (unsigned LEB128 byte-length of L).</p></li>
+<li><p>Integer-only. O(log L). No content scanning.</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>L<span class="classifier">int</span></dt><dd><p>Byte-length of the binary string (e.g., file size in bytes).</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>int</dt><dd><p>C_min^(1)(L) in bits.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<p>Forbidden drifts:
+- Do not vary H/CAUS/END.
+- Do not use leb(8*L) or any alignment/padding adjustments.</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">96</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">127</span><span class="p">)</span>
+<span class="go">96</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+<span class="go">104</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">16383</span><span class="p">)</span>
+<span class="go">104</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">16384</span><span class="p">)</span>
+<span class="go">112</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.export_all">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">export_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clf_calculator.export_all" title="Link to this definition"></a></dt>
+<dd><p>Generate all 4 export formats.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.export_audit">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">export_audit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clf_calculator.export_audit" title="Link to this definition"></a></dt>
+<dd><p>Export mathematical audit with step-by-step proofs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.export_console">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">export_console</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clf_calculator.export_console" title="Link to this definition"></a></dt>
+<dd><p>Export console-style output to text file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.export_csv">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">export_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clf_calculator.export_csv" title="Link to this definition"></a></dt>
+<dd><p>Export CSV results table.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.export_receipts">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">export_receipts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clf_calculator.export_receipts" title="Link to this definition"></a></dt>
+<dd><p>Export JSONL receipts (one JSON object per line).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.leb_len_u">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">leb_len_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#clf_calculator.leb_len_u" title="Link to this definition"></a></dt>
+<dd><p>Unsigned LEB128 byte-length of integer n using 7-bit groups.</p>
+<section id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Link to this heading"></a></h2>
+<p>Returns 1 if n == 0, else ceil(bit_length(n) / 7).</p>
+</section>
+<section id="pure-integer-contract">
+<h2>Pure Integer Contract<a class="headerlink" href="#pure-integer-contract" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Integer-only arithmetic; no float or rounding modes.</p></li>
+<li><p>O(1) with respect to n’s value (since bit_length is O(1) on integers).</p></li>
+<li><p>Independent of file content; depends only on n’s binary magnitude.</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>n<span class="classifier">int</span></dt><dd><p>Non-negative integer whose LEB128 encoded byte-length is desired.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h2>Returns<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>int</dt><dd><p>The number of bytes required to encode n in unsigned LEB128 (7-bit groups).</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h2>Raises<a class="headerlink" href="#raises" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>AssertionError</dt><dd><p>If n &lt; 0.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Examples<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">127</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16383</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16384</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.main">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#clf_calculator.main" title="Link to this definition"></a></dt>
+<dd><p>Main CLI entry point.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.receipt">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">receipt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#clf_calculator.receipt" title="Link to this definition"></a></dt>
+<dd><p>Build deterministic receipt for independent verification.</p>
+<section id="tuple">
+<h2>Tuple<a class="headerlink" href="#tuple" title="Link to this heading"></a></h2>
+<p>(L, leb, C, RAW, EMIT, BUILD_ID)  → SHA256 hex digest.</p>
+</section>
+<section id="guarantees">
+<h2>Guarantees<a class="headerlink" href="#guarantees" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Deterministic across runs and machines.</p></li>
+<li><p>Integer-only fields.</p></li>
+<li><p>Suitable for JSONL/CSV export for audits.</p></li>
+<li><p>Mathematical receipt preserves content-independence.</p></li>
+<li><p>Optional file provenance for path/content differentiation.</p></li>
+</ul>
+</section>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>L<span class="classifier">int</span></dt><dd><p>Byte-length of the binary string.</p>
+</dd>
+<dt>build_id<span class="classifier">str</span></dt><dd><p>Build identifier for the calculation session.</p>
+</dd>
+<dt>file_path<span class="classifier">str, optional</span></dt><dd><p>File path for provenance hash (does not affect math receipt).</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<dl>
+<dt>dict</dt><dd><dl class="simple">
+<dt>{</dt><dd><p>“L”: int,
+“leb”: int,
+“C_min_bits”: int,       # C_min^(1)(L)
+“RAW_bits”: int,         # 10*L
+“EMIT”: bool,            # strict gate
+“sha256”: str,           # mathematical receipt
+“provenance_sha256”: str # optional file provenance</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h2>Examples<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">receipt</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;TEST&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">]</span>
+<span class="go">128</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">]</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">]</span>
+<span class="go">104</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">]</span>
+<span class="go">1280</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.run">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#clf_calculator.run" title="Link to this definition"></a></dt>
+<dd><p>Batch analyze multiple file paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>paths</strong> – List of file paths</p></li>
+<li><p><strong>build_id</strong> – Optional build identifier (auto-generated if None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of analysis results</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.run_unit_tests">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">run_unit_tests</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#clf_calculator.run_unit_tests" title="Link to this definition"></a></dt>
+<dd><p>Run embedded unit tests for mathematical functions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clf_calculator.should_emit">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">should_emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#clf_calculator.should_emit" title="Link to this definition"></a></dt>
+<dd><p>Decide EMIT under strict gate: C_min^(1)(L) &lt; 10*L.</p>
+<section id="id8">
+<h2>Contract<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Strict inequality (&lt;), never &lt;=.</p></li>
+<li><p>RAW (literal) cost: 10*L bits.</p></li>
+<li><p>Integer-only decision; O(log L).</p></li>
+</ul>
+</section>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>L<span class="classifier">int</span></dt><dd><p>Byte-length of the binary string.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h2>Returns<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>bool</dt><dd><p>True iff C_min^(1)(L) &lt; 10*L.</p>
+</dd>
+</dl>
+</section>
+<section id="anti-patterns">
+<h2>Anti-Patterns<a class="headerlink" href="#anti-patterns" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>No probabilistic thresholds or tolerances.</p></li>
+<li><p>No content-dependent logic.</p></li>
+</ul>
+</section>
+<section id="id11">
+<h2>Examples<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<section id="core-functions">
+<h2>Core Functions<a class="headerlink" href="#core-functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">clf_single_seed_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Compute single-seed CLF bound: C_min^(1)(L) = 88 + 8*leb(L).</p>
+<section id="id12">
+<h3>Contract<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Uses locked constants: H=56, CAUS=27, END=5.</p></li>
+<li><p>leb(L) = leb_len_u(L) (unsigned LEB128 byte-length of L).</p></li>
+<li><p>Integer-only. O(log L). No content scanning.</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>Parameters<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>L<span class="classifier">int</span></dt><dd><p>Byte-length of the binary string (e.g., file size in bytes).</p>
+</dd>
+</dl>
+</section>
+<section id="id14">
+<h3>Returns<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>C_min^(1)(L) in bits.</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h3>Notes<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<p>Forbidden drifts:
+- Do not vary H/CAUS/END.
+- Do not use leb(8*L) or any alignment/padding adjustments.</p>
+</section>
+<section id="id16">
+<h3>Examples<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">96</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">127</span><span class="p">)</span>
+<span class="go">96</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+<span class="go">104</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">16383</span><span class="p">)</span>
+<span class="go">104</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">16384</span><span class="p">)</span>
+<span class="go">112</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">leb_len_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#id17" title="Link to this definition"></a></dt>
+<dd><p>Unsigned LEB128 byte-length of integer n using 7-bit groups.</p>
+<section id="id18">
+<h3>Definition<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<p>Returns 1 if n == 0, else ceil(bit_length(n) / 7).</p>
+</section>
+<section id="id19">
+<h3>Pure Integer Contract<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Integer-only arithmetic; no float or rounding modes.</p></li>
+<li><p>O(1) with respect to n’s value (since bit_length is O(1) on integers).</p></li>
+<li><p>Independent of file content; depends only on n’s binary magnitude.</p></li>
+</ul>
+</section>
+<section id="id20">
+<h3>Parameters<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n<span class="classifier">int</span></dt><dd><p>Non-negative integer whose LEB128 encoded byte-length is desired.</p>
+</dd>
+</dl>
+</section>
+<section id="id21">
+<h3>Returns<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>int</dt><dd><p>The number of bytes required to encode n in unsigned LEB128 (7-bit groups).</p>
+</dd>
+</dl>
+</section>
+<section id="id22">
+<h3>Raises<a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>AssertionError</dt><dd><p>If n &lt; 0.</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h3>Examples<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">127</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16383</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16384</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id24">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">should_emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#id24" title="Link to this definition"></a></dt>
+<dd><p>Decide EMIT under strict gate: C_min^(1)(L) &lt; 10*L.</p>
+<section id="id25">
+<h3>Contract<a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Strict inequality (&lt;), never &lt;=.</p></li>
+<li><p>RAW (literal) cost: 10*L bits.</p></li>
+<li><p>Integer-only decision; O(log L).</p></li>
+</ul>
+</section>
+<section id="id26">
+<h3>Parameters<a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>L<span class="classifier">int</span></dt><dd><p>Byte-length of the binary string.</p>
+</dd>
+</dl>
+</section>
+<section id="id27">
+<h3>Returns<a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>True iff C_min^(1)(L) &lt; 10*L.</p>
+</dd>
+</dl>
+</section>
+<section id="id28">
+<h3>Anti-Patterns<a class="headerlink" href="#id28" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>No probabilistic thresholds or tolerances.</p></li>
+<li><p>No content-dependent logic.</p></li>
+</ul>
+</section>
+<section id="id29">
+<h3>Examples<a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">should_emit</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id30">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">receipt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#id30" title="Link to this definition"></a></dt>
+<dd><p>Build deterministic receipt for independent verification.</p>
+<section id="id31">
+<h3>Tuple<a class="headerlink" href="#id31" title="Link to this heading"></a></h3>
+<p>(L, leb, C, RAW, EMIT, BUILD_ID)  → SHA256 hex digest.</p>
+</section>
+<section id="id32">
+<h3>Guarantees<a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Deterministic across runs and machines.</p></li>
+<li><p>Integer-only fields.</p></li>
+<li><p>Suitable for JSONL/CSV export for audits.</p></li>
+<li><p>Mathematical receipt preserves content-independence.</p></li>
+<li><p>Optional file provenance for path/content differentiation.</p></li>
+</ul>
+</section>
+<section id="id33">
+<h3>Parameters<a class="headerlink" href="#id33" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>L<span class="classifier">int</span></dt><dd><p>Byte-length of the binary string.</p>
+</dd>
+<dt>build_id<span class="classifier">str</span></dt><dd><p>Build identifier for the calculation session.</p>
+</dd>
+<dt>file_path<span class="classifier">str, optional</span></dt><dd><p>File path for provenance hash (does not affect math receipt).</p>
+</dd>
+</dl>
+</section>
+<section id="id34">
+<h3>Returns<a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
+<dl>
+<dt>dict</dt><dd><dl class="simple">
+<dt>{</dt><dd><p>“L”: int,
+“leb”: int,
+“C_min_bits”: int,       # C_min^(1)(L)
+“RAW_bits”: int,         # 10*L
+“EMIT”: bool,            # strict gate
+“sha256”: str,           # mathematical receipt
+“provenance_sha256”: str # optional file provenance</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+</section>
+<section id="id35">
+<h3>Examples<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">receipt</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;TEST&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">]</span>
+<span class="go">128</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">]</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">]</span>
+<span class="go">104</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">]</span>
+<span class="go">1280</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+</section>
+<section id="utility-functions">
+<h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="id36">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id36" title="Link to this definition"></a></dt>
+<dd><p>Main CLI entry point.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="mathematical-constants">
+<h1>Mathematical Constants<a class="headerlink" href="#mathematical-constants" title="Link to this heading"></a></h1>
+<dl class="py data">
+<dt class="sig sig-object py" id="clf_calculator.H">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">H</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">56</span></em><a class="headerlink" href="#clf_calculator.H" title="Link to this definition"></a></dt>
+<dd><p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating-point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+&gt;&gt;&gt; int(‘0b100’, base=0)
+4</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="clf_calculator.CAUS">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">CAUS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">27</span></em><a class="headerlink" href="#clf_calculator.CAUS" title="Link to this definition"></a></dt>
+<dd><p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating-point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+&gt;&gt;&gt; int(‘0b100’, base=0)
+4</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="clf_calculator.END">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">END</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#clf_calculator.END" title="Link to this definition"></a></dt>
+<dd><p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating-point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+&gt;&gt;&gt; int(‘0b100’, base=0)
+4</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="clf_calculator.BASE_BITS">
+<span class="sig-prename descclassname"><span class="pre">clf_calculator.</span></span><span class="sig-name descname"><span class="pre">BASE_BITS</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">88</span></em><a class="headerlink" href="#clf_calculator.BASE_BITS" title="Link to this definition"></a></dt>
+<dd><p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.__int__().  For floating-point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by ‘+’ or ‘-’ and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.
+&gt;&gt;&gt; int(‘0b100’, base=0)
+4</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="testing.html" class="btn btn-neutral float-left" title="Testing Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="clf_maximal_validator.html" class="btn btn-neutral float-right" title="clf_maximal_validator_final module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Teleport Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

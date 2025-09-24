@@ -1,0 +1,152 @@
+Quick Start Guide
+================
+
+This guide gets you up and running with the Teleport CLF Calculator in minutes.
+
+Installation
+------------
+
+The CLF Calculator requires Python 3.7+ with no external dependencies for core functionality.
+
+**From Source**::
+
+    git clone <repository-url>
+    cd Teleport
+    python -m pip install -r requirements.txt  # Optional for development tools
+
+**Verify Installation**::
+
+    python clf_calculator.py --help
+    python CLF_MAXIMAL_VALIDATOR_FINAL.py --help
+
+Basic Usage
+-----------
+
+**Command Line Interface**
+
+Analyze a single file::
+
+    python clf_calculator.py test_data/pic2.jpg
+
+Expected output::
+
+    test_data/pic2.jpg: L=11,751 bytes, bit_length=14, bounds=2^13 ≤ L < 2^14,
+    leb=2, C=104 bits, RAW=117,510 bits, EMIT=True, receipt=a99a8a358d2caac0...
+
+Analyze multiple files::
+
+    python clf_calculator.py file1.jpg file2.mp4 file3.txt
+
+Direct length input::
+
+    python clf_calculator.py --stdin-length 11751
+
+**Python Library Interface**
+
+.. code-block:: python
+
+    from clf_calculator import clf_single_seed_cost, should_emit, receipt
+    
+    # Basic calculation
+    L = 11751
+    cost = clf_single_seed_cost(L)      # Returns 104
+    decision = should_emit(L)           # Returns True
+    
+    # Full receipt
+    r = receipt(L, "ANALYSIS_001")
+    print(f"File size: {r['L']}")
+    print(f"Cost: {r['cost_bits']}")
+    print(f"Decision: {r['emit']}")
+
+Export Formats
+--------------
+
+The calculator supports multiple export formats for automation:
+
+**JSONL Export**::
+
+    python clf_calculator.py data/*.jpg --export-prefix BATCH
+    # Creates BATCH_clf_analysis.jsonl
+
+**CSV Export**::
+
+    python clf_calculator.py data/*.jpg --export-prefix BATCH  
+    # Creates BATCH_clf_analysis.csv
+
+**Audit Export**::
+
+    python clf_calculator.py data/*.jpg --export-prefix BATCH
+    # Creates BATCH_clf_audit.txt
+
+Understanding Output
+-------------------
+
+**Key Fields Explained**:
+
+- **L**: File size in bytes (the only input parameter)
+- **bit_length**: Floor(log₂(L)) + 1, used for bounds display
+- **bounds**: Power-of-2 bounds showing L's magnitude
+- **leb**: LEB128 byte-length of L using 7-bit groups
+- **C**: C_min^(1)(L) = 88 + 8*leb(L) causal minimality cost in bits
+- **RAW**: 10*L, the raw bit cost for comparison
+- **EMIT**: True if C < RAW (strict inequality)
+- **receipt**: SHA-256 hash for calculation verification
+
+**Mathematical Examples**:
+
+.. code-block:: text
+
+    L=127    → leb=1 → C=96   → EMIT=True  (96 < 1270)
+    L=128    → leb=2 → C=104  → EMIT=True  (104 < 1280)  
+    L=16383  → leb=2 → C=104  → EMIT=True  (104 < 163830)
+    L=16384  → leb=3 → C=112  → EMIT=True  (112 < 163840)
+
+Validation
+----------
+
+The system includes built-in validation for mathematical consistency:
+
+**Self-Test Mode**::
+
+    python clf_calculator.py --self-test
+    # Runs embedded unit tests
+
+**Validation Script**::
+
+    ./tools/pic2_gate.sh  
+    # Comprehensive mathematical validation
+
+**Unit Tests**::
+
+    python -m pytest tests/test_clf_calculator.py -v
+    # Formal test suite
+
+Troubleshooting
+--------------
+
+**Common Issues**:
+
+1. **File not found**: Ensure file paths are correct and files exist
+2. **Permission denied**: Check file read permissions  
+3. **Large files**: Calculator handles files up to system limits (64-bit integers)
+4. **Invalid input**: Only positive integers accepted for L
+
+**Validation Failures**: If mathematical inconsistencies are detected, check:
+
+- No modifications to core constants (H=56, CAUS=27, END=5)
+- Integer-only operations maintained
+- No floating-point operations introduced
+
+**Getting Help**: 
+
+- Check the :doc:`mathematical_foundation` for formula details
+- Review :doc:`api_reference` for function specifications  
+- Run validation scripts to verify mathematical integrity
+
+Next Steps
+----------
+
+- Read the :doc:`mathematical_foundation` to understand the theory
+- Explore the :doc:`api_reference` for detailed function documentation
+- Check :doc:`examples` for advanced usage patterns
+- Review :doc:`testing` for comprehensive validation approaches

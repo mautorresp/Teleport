@@ -1,0 +1,777 @@
+Results of doctest builder run on 2025-09-24 00:22:06
+=====================================================
+
+Document: api_reference
+-----------------------
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        clf_single_seed_cost(0)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(127)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        clf_single_seed_cost(127)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(128)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        clf_single_seed_cost(128)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(16383)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        clf_single_seed_cost(16383)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(16384)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[4]>", line 1, in <module>
+        clf_single_seed_cost(16384)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        should_emit(0)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(16)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        should_emit(16)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(1000)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        should_emit(1000)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(10000)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        should_emit(10000)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result = receipt(128, "TEST")
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        result = receipt(128, "TEST")
+                 ^^^^^^^
+    NameError: name 'receipt' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['L']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        result['L']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['leb']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        result['leb']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['C_min_bits']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        result['C_min_bits']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['RAW_bits']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[4]>", line 1, in <module>
+        result['RAW_bits']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['EMIT']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[5]>", line 1, in <module>
+        result['EMIT']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+1 item had failures:
+  15 of  15 in default
+15 tests in 1 item.
+0 passed and 15 failed.
+***Test Failed*** 15 failures.
+
+Document: clf_calculator
+------------------------
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        clf_single_seed_cost(0)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(127)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        clf_single_seed_cost(127)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(128)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        clf_single_seed_cost(128)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(16383)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        clf_single_seed_cost(16383)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(16384)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[4]>", line 1, in <module>
+        clf_single_seed_cost(16384)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    leb_len_u(0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        leb_len_u(0)
+        ^^^^^^^^^
+    NameError: name 'leb_len_u' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    leb_len_u(127)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        leb_len_u(127)
+        ^^^^^^^^^
+    NameError: name 'leb_len_u' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    leb_len_u(128)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        leb_len_u(128)
+        ^^^^^^^^^
+    NameError: name 'leb_len_u' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    leb_len_u(16383)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        leb_len_u(16383)
+        ^^^^^^^^^
+    NameError: name 'leb_len_u' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    leb_len_u(16384)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[4]>", line 1, in <module>
+        leb_len_u(16384)
+        ^^^^^^^^^
+    NameError: name 'leb_len_u' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result = receipt(128, "TEST")
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        result = receipt(128, "TEST")
+                 ^^^^^^^
+    NameError: name 'receipt' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['L']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        result['L']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['leb']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        result['leb']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['C_min_bits']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        result['C_min_bits']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['RAW_bits']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[4]>", line 1, in <module>
+        result['RAW_bits']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['EMIT']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[5]>", line 1, in <module>
+        result['EMIT']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        should_emit(0)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(16)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        should_emit(16)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(1000)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        should_emit(1000)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(10000)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        should_emit(10000)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        clf_single_seed_cost(0)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(127)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        clf_single_seed_cost(127)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(128)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        clf_single_seed_cost(128)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(16383)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        clf_single_seed_cost(16383)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    clf_single_seed_cost(16384)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[4]>", line 1, in <module>
+        clf_single_seed_cost(16384)
+        ^^^^^^^^^^^^^^^^^^^^
+    NameError: name 'clf_single_seed_cost' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(0)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        should_emit(0)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(16)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        should_emit(16)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(1000)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        should_emit(1000)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    should_emit(10000)
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        should_emit(10000)
+        ^^^^^^^^^^^
+    NameError: name 'should_emit' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result = receipt(128, "TEST")
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[0]>", line 1, in <module>
+        result = receipt(128, "TEST")
+                 ^^^^^^^
+    NameError: name 'receipt' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['L']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[1]>", line 1, in <module>
+        result['L']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['leb']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[2]>", line 1, in <module>
+        result['leb']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['C_min_bits']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[3]>", line 1, in <module>
+        result['C_min_bits']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['RAW_bits']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[4]>", line 1, in <module>
+        result['RAW_bits']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+File "../clf_calculator.py", line ?, in default
+Failed example:
+    result['EMIT']
+Exception raised:
+    Traceback (most recent call last):
+      File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/doctest.py", line 1395, in __run
+        exec(compile(example.source, filename, "single",
+        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     compileflags, True), test.globs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default[5]>", line 1, in <module>
+        result['EMIT']
+        ^^^^^^
+    NameError: name 'result' is not defined
+**********************************************************************
+1 item had failures:
+  35 of  35 in default
+35 tests in 1 item.
+0 passed and 35 failed.
+***Test Failed*** 35 failures.
+
+Doctest summary
+===============
+   50 tests
+   50 failures in tests
+    0 failures in setup code
+    0 failures in cleanup code

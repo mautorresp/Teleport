@@ -1,0 +1,2 @@
+file,L,bit_length,leb,C_min_bits,RAW_bits,emit,receipt_prefix
+test_data/pic2.jpg,11751,14,2,104,117510,True,19ec3bcc2b07f46e

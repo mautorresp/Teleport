@@ -1,0 +1,390 @@
+CLF SINGLE-SEED MATHEMATICAL CALCULATOR - AUDIT EVIDENCE
+============================================================
+
+BUILD_ID: 20250924_003146
+Generation Time: 2025-09-24T00:31:46.401699
+
+IMMUTABLE MATHEMATICAL CONSTANTS:
+- H (Header bits): 56
+- CAUS (Causality bits): 27
+- END (Termination bits): 5
+- BASE_BITS = H + CAUS + END = 88
+
+FORMULA (Single-Seed Causal Bound):
+C_min^(1)(L) = 88 + 8*leb(L)
+
+LEB128 LENGTH RULE:
+leb(L) = 1 if L == 0 else (bit_length(L) + 6) // 7
+
+DECISION RULE:
+EMIT ⇔ C_min^(1)(L) < 10*L (strict inequality)
+
+PROHIBITED LOGIC:
+❌ deduct_B, STEP, CONST, tiling, DP, feasibility, A/B roles
+❌ bijection, byte iteration, entropy, compression heuristics
+❌ floating point arithmetic, math.* float functions
+✅ Only int, bit_length, shifts, adds, multiplies, LEB rule
+
+FILE-BY-FILE MATHEMATICAL EVIDENCE:
+----------------------------------------
+
+File 1: test_artifacts/100MB.bin
+Step 1 - File Length: L = 104857600 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 27
+  k = bit_length - 1 = 26
+  Verify: 2^26 ≤ 104857600 < 2^27
+  Check: 67108864 ≤ 104857600 < 134217728 ✓
+Step 3 - LEB128 Length:
+  leb(104857600) = (27 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(104857600) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*104857600 = 1048576000 bits
+Step 6 - Decision:
+  Check: 120 < 1048576000 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (104857600, 4, 120, 1048576000, True, '20250924_003146')
+  SHA256: 47fbd1e65d22e77be774a82d743d90f33fef33c6a05262d4fc97232142803cd1
+
+File 2: test_artifacts/high_entropy.bin
+Step 1 - File Length: L = 1048576 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 21
+  k = bit_length - 1 = 20
+  Verify: 2^20 ≤ 1048576 < 2^21
+  Check: 1048576 ≤ 1048576 < 2097152 ✓
+Step 3 - LEB128 Length:
+  leb(1048576) = (21 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(1048576) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*1048576 = 10485760 bits
+Step 6 - Decision:
+  Check: 112 < 10485760 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (1048576, 3, 112, 10485760, True, '20250924_003146')
+  SHA256: 5200f59303f0ecd268d5458587e301760bd8e4b0f7787e6cc0f06bf284c4e3a6
+
+File 3: test_artifacts/pic1.jpg
+Step 1 - File Length: L = 63379 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 16
+  k = bit_length - 1 = 15
+  Verify: 2^15 ≤ 63379 < 2^16
+  Check: 32768 ≤ 63379 < 65536 ✓
+Step 3 - LEB128 Length:
+  leb(63379) = (16 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(63379) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*63379 = 633790 bits
+Step 6 - Decision:
+  Check: 112 < 633790 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (63379, 3, 112, 633790, True, '20250924_003146')
+  SHA256: 7cbb1bc7abd062ba6c64e3ee319c055fd9f41a0871055fb242c0c9a3759e1879
+
+File 4: test_artifacts/pic2.jpg
+Step 1 - File Length: L = 11751 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 14
+  k = bit_length - 1 = 13
+  Verify: 2^13 ≤ 11751 < 2^14
+  Check: 8192 ≤ 11751 < 16384 ✓
+Step 3 - LEB128 Length:
+  leb(11751) = (14 + 6) // 7 = 2
+Step 4 - Causal Bound:
+  C_min^(1)(11751) = 88 + 8*2 = 104 bits
+Step 5 - Raw Literal:
+  RAW = 10*11751 = 117510 bits
+Step 6 - Decision:
+  Check: 104 < 117510 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (11751, 2, 104, 117510, True, '20250924_003146')
+  SHA256: 212bbf394489850fe06cb97ed7331bbfff4aa16886378915d70493001fe5b19c
+
+File 5: test_artifacts/pic3.jpg
+Step 1 - File Length: L = 51085 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 16
+  k = bit_length - 1 = 15
+  Verify: 2^15 ≤ 51085 < 2^16
+  Check: 32768 ≤ 51085 < 65536 ✓
+Step 3 - LEB128 Length:
+  leb(51085) = (16 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(51085) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*51085 = 510850 bits
+Step 6 - Decision:
+  Check: 112 < 510850 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (51085, 3, 112, 510850, True, '20250924_003146')
+  SHA256: c3e255a8e184a7946ce5ea4b149f2ef7a0c5d07602668c35ab1941610ca4d34c
+
+File 6: test_artifacts/pic4.jpg
+Step 1 - File Length: L = 102117 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 17
+  k = bit_length - 1 = 16
+  Verify: 2^16 ≤ 102117 < 2^17
+  Check: 65536 ≤ 102117 < 131072 ✓
+Step 3 - LEB128 Length:
+  leb(102117) = (17 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(102117) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*102117 = 1021170 bits
+Step 6 - Decision:
+  Check: 112 < 1021170 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (102117, 3, 112, 1021170, True, '20250924_003146')
+  SHA256: 50cd57ea29a7c594df5fa8dba71990be063b0fee734dc53b40fab014b57c4aea
+
+File 7: test_artifacts/pic5.jpg
+Step 1 - File Length: L = 555181 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 20
+  k = bit_length - 1 = 19
+  Verify: 2^19 ≤ 555181 < 2^20
+  Check: 524288 ≤ 555181 < 1048576 ✓
+Step 3 - LEB128 Length:
+  leb(555181) = (20 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(555181) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*555181 = 5551810 bits
+Step 6 - Decision:
+  Check: 112 < 5551810 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (555181, 3, 112, 5551810, True, '20250924_003146')
+  SHA256: 65f02e988d06cb8f955721e42b05c969e5f83ddbd6d101b2e6a8279131d623d5
+
+File 8: test_artifacts/pic6.jpg
+Step 1 - File Length: L = 1042592 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 20
+  k = bit_length - 1 = 19
+  Verify: 2^19 ≤ 1042592 < 2^20
+  Check: 524288 ≤ 1042592 < 1048576 ✓
+Step 3 - LEB128 Length:
+  leb(1042592) = (20 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(1042592) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*1042592 = 10425920 bits
+Step 6 - Decision:
+  Check: 112 < 10425920 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (1042592, 3, 112, 10425920, True, '20250924_003146')
+  SHA256: f6d5d9f158b57b3515fa70f5b0b3ecc02d7e031a825ea102e35b3d776fb7f6b3
+
+File 9: test_artifacts/pic7.jpg
+Step 1 - File Length: L = 2504642 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 22
+  k = bit_length - 1 = 21
+  Verify: 2^21 ≤ 2504642 < 2^22
+  Check: 2097152 ≤ 2504642 < 4194304 ✓
+Step 3 - LEB128 Length:
+  leb(2504642) = (22 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(2504642) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*2504642 = 25046420 bits
+Step 6 - Decision:
+  Check: 120 < 25046420 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (2504642, 4, 120, 25046420, True, '20250924_003146')
+  SHA256: c40ef58a788df1709e5e8e5cc66e0007f35bc88bc04617ab8ec34adb8427a057
+
+File 10: test_artifacts/random_text1.txt
+Step 1 - File Length: L = 5242910 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 23
+  k = bit_length - 1 = 22
+  Verify: 2^22 ≤ 5242910 < 2^23
+  Check: 4194304 ≤ 5242910 < 8388608 ✓
+Step 3 - LEB128 Length:
+  leb(5242910) = (23 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(5242910) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*5242910 = 52429100 bits
+Step 6 - Decision:
+  Check: 120 < 52429100 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (5242910, 4, 120, 52429100, True, '20250924_003146')
+  SHA256: afa2ce734dd9d5a4c69926361ff7847fa86101b6762a264156759eaad3e3887a
+
+File 11: test_artifacts/random_text2.txt
+Step 1 - File Length: L = 5242910 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 23
+  k = bit_length - 1 = 22
+  Verify: 2^22 ≤ 5242910 < 2^23
+  Check: 4194304 ≤ 5242910 < 8388608 ✓
+Step 3 - LEB128 Length:
+  leb(5242910) = (23 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(5242910) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*5242910 = 52429100 bits
+Step 6 - Decision:
+  Check: 120 < 52429100 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (5242910, 4, 120, 52429100, True, '20250924_003146')
+  SHA256: afa2ce734dd9d5a4c69926361ff7847fa86101b6762a264156759eaad3e3887a
+
+File 12: test_artifacts/random_text3.txt
+Step 1 - File Length: L = 5242910 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 23
+  k = bit_length - 1 = 22
+  Verify: 2^22 ≤ 5242910 < 2^23
+  Check: 4194304 ≤ 5242910 < 8388608 ✓
+Step 3 - LEB128 Length:
+  leb(5242910) = (23 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(5242910) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*5242910 = 52429100 bits
+Step 6 - Decision:
+  Check: 120 < 52429100 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (5242910, 4, 120, 52429100, True, '20250924_003146')
+  SHA256: afa2ce734dd9d5a4c69926361ff7847fa86101b6762a264156759eaad3e3887a
+
+File 13: test_artifacts/random1M.bin
+Step 1 - File Length: L = 1048576 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 21
+  k = bit_length - 1 = 20
+  Verify: 2^20 ≤ 1048576 < 2^21
+  Check: 1048576 ≤ 1048576 < 2097152 ✓
+Step 3 - LEB128 Length:
+  leb(1048576) = (21 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(1048576) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*1048576 = 10485760 bits
+Step 6 - Decision:
+  Check: 112 < 10485760 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (1048576, 3, 112, 10485760, True, '20250924_003146')
+  SHA256: 5200f59303f0ecd268d5458587e301760bd8e4b0f7787e6cc0f06bf284c4e3a6
+
+File 14: test_artifacts/video1.mp4
+Step 1 - File Length: L = 1570024 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 21
+  k = bit_length - 1 = 20
+  Verify: 2^20 ≤ 1570024 < 2^21
+  Check: 1048576 ≤ 1570024 < 2097152 ✓
+Step 3 - LEB128 Length:
+  leb(1570024) = (21 + 6) // 7 = 3
+Step 4 - Causal Bound:
+  C_min^(1)(1570024) = 88 + 8*3 = 112 bits
+Step 5 - Raw Literal:
+  RAW = 10*1570024 = 15700240 bits
+Step 6 - Decision:
+  Check: 112 < 15700240 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (1570024, 3, 112, 15700240, True, '20250924_003146')
+  SHA256: 9f2f4adae641ae5ee09fbe86857652f9bbad0748d4b4abb38b791d7848832f6e
+
+File 15: test_artifacts/video2.mp4
+Step 1 - File Length: L = 3114374 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 22
+  k = bit_length - 1 = 21
+  Verify: 2^21 ≤ 3114374 < 2^22
+  Check: 2097152 ≤ 3114374 < 4194304 ✓
+Step 3 - LEB128 Length:
+  leb(3114374) = (22 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(3114374) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*3114374 = 31143740 bits
+Step 6 - Decision:
+  Check: 120 < 31143740 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (3114374, 4, 120, 31143740, True, '20250924_003146')
+  SHA256: 4fd0e495fe92748a2499631db6c09dbc696b95c51c8bd5c5dbbabcd7f5245236
+
+File 16: test_artifacts/video3.mp4
+Step 1 - File Length: L = 9840497 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 24
+  k = bit_length - 1 = 23
+  Verify: 2^23 ≤ 9840497 < 2^24
+  Check: 8388608 ≤ 9840497 < 16777216 ✓
+Step 3 - LEB128 Length:
+  leb(9840497) = (24 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(9840497) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*9840497 = 98404970 bits
+Step 6 - Decision:
+  Check: 120 < 98404970 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (9840497, 4, 120, 98404970, True, '20250924_003146')
+  SHA256: 1a780634a6e1688e8a3904f2766a167bf76886618561b68ea6dd9ff4b433477a
+
+File 17: test_artifacts/video4.mp4
+Step 1 - File Length: L = 15791488 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 24
+  k = bit_length - 1 = 23
+  Verify: 2^23 ≤ 15791488 < 2^24
+  Check: 8388608 ≤ 15791488 < 16777216 ✓
+Step 3 - LEB128 Length:
+  leb(15791488) = (24 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(15791488) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*15791488 = 157914880 bits
+Step 6 - Decision:
+  Check: 120 < 157914880 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (15791488, 4, 120, 157914880, True, '20250924_003146')
+  SHA256: 6e7fd11d989fc6dd9723b56799c281c96453ce9d450ac2093a23fa4b58a527ff
+
+File 18: test_artifacts/video5.mp4
+Step 1 - File Length: L = 91256484 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 27
+  k = bit_length - 1 = 26
+  Verify: 2^26 ≤ 91256484 < 2^27
+  Check: 67108864 ≤ 91256484 < 134217728 ✓
+Step 3 - LEB128 Length:
+  leb(91256484) = (27 + 6) // 7 = 4
+Step 4 - Causal Bound:
+  C_min^(1)(91256484) = 88 + 8*4 = 120 bits
+Step 5 - Raw Literal:
+  RAW = 10*91256484 = 912564840 bits
+Step 6 - Decision:
+  Check: 120 < 912564840 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (91256484, 4, 120, 912564840, True, '20250924_003146')
+  SHA256: 5b3f6adbd6bdbd83f234d2999e4d68eacfd51e122c117bbe48c1483bc8aac726
+

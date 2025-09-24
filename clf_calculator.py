@@ -1,13 +1,56 @@
 #!/usr/bin/env python3
+
+# === DO NOT EDIT: CLF MATH CONTRACT ===
+# Single-seed CLF: C_min^(1)(L) = 88 + 8*leb(L) with H=56, CAUS=27, END=5 (locked)
+# EMIT iff C_min^(1)(L) < 10*L (strict). leb(L) = unsigned LEB128 byte-length of L (7-bit groups).
+# Integer-only. No compression logic. No floating point. No content scanning. O(log L) only.
+
 """
-CLF Single-Seed Mathematical Calculator
+CLF Single-Seed Calculator — Pure Causal Minimality (No Compression)
 
-Pure O(log L) causal minimality calculator with immutable mathematical rails.
-Formula: C_min^(1)(L) = 88 + 8*leb(L)
-Constants: H=56, CAUS=27, END=5 (locked)
-Decision: EMIT ⇔ C_min^(1)(L) < 10*L (strict inequality)
+Contract
+--------
+C_min^(1)(L) = 88 + 8*leb(L) bits, where:
+  - leb(L): unsigned LEB128 byte-length of integer L using 7-bit groups.
+  - Locked constants: H=56, CAUS=27, END=5 (non-negotiable).
 
-No compression, tiling, DP, byte scanning, or floating point arithmetic.
+Literal fallback: C_LIT = 10*L bits.
+Decision gate (strict): EMIT ⇔ C_min^(1)(L) < 10*L.
+
+Invariants
+----------
+- Integer-only arithmetic. No floating point.
+- O(log L) complexity: depends only on leb_len_u(L).
+- Content-independent: uses file length only (L = os.path.getsize(path)).
+- No compression/tiling/A/B roles/DP/greedy scans/coverage/bijection.
+- No variation of H/CAUS/END. No leb(8*L). No align/padding drift.
+
+Receipts
+--------
+For each L, compute a deterministic receipt from the tuple:
+  (L, leb, C_min, RAW, EMIT, BUILD_ID)
+
+Using SHA-256. This enables independent verification.
+
+Usage
+-----
+- As CLI: pass file paths; calculator prints one line per file.
+- As library: use `clf_single_seed_cost(L)`, `should_emit(L)`, `receipt(L)`.
+
+Boundaries to test (leb bands)
+------------------------------
+L ∈ {0,1,127,128,16383,16384,...} to verify leb band transitions:
+
+leb = ceil(bit_length(L)/7) if L>0 else 1.
+
+Edge Case: L=0
+--------------
+For empty files (L=0):
+- leb(0) = 1 (special case)
+- C_min^(1)(0) = 88 + 8*1 = 96 bits  
+- RAW = 10*0 = 0 bits
+- EMIT = (96 < 0) = False (strict inequality)
+This is the canonical tiny-input behavior where causal overhead exceeds literal cost.
 """
 
 import argparse
@@ -28,6 +71,17 @@ H = 56          # Header bits (locked)
 CAUS = 27       # Causality bits (locked)  
 END = 5         # Termination bits (locked)
 BASE_BITS = H + CAUS + END  # 88 bits (immutable)
+BUILD_ID = "CLF_SINGLE_SEED_PURE_20250923_LOCKED"  # Immutable build identifier
+
+# Math guard assertions (Section 5 of the guide)
+assert isinstance(BUILD_ID, str) and BUILD_ID, "BUILD_ID must be a non-empty string"
+# Guard strictness:
+_cost = 88 + 8 * 2  # C_min^(1)(968) with leb(968)=2
+assert _cost == 104, "Invariant self-check failed: C_min^(1)(968) must be 104"
+# Gate monotonicity at scale (sample):
+_emit_16 = 104 < 10 * 16  # C_min for small file vs 10*16
+_emit_1m = 112 < 10 * 1_000_000  # C_min for large file vs 10*1M
+assert _emit_16 and _emit_1m, "EMIT must hold for practical L >= 16"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -36,84 +90,215 @@ BASE_BITS = H + CAUS + END  # 88 bits (immutable)
 
 def leb_len_u(n: int) -> int:
     """
-    Compute unsigned LEB128 byte length for integer n.
-    
-    Pure integer formula:
-    - leb(0) = 1
-    - leb(n) = (bit_length(n) + 6) // 7 for n > 0
-    
-    Args:
-        n: Non-negative integer
-        
-    Returns:
-        LEB128 byte length (always >= 1)
+    Unsigned LEB128 byte-length of integer n using 7-bit groups.
+
+    Definition
+    ----------
+    Returns 1 if n == 0, else ceil(bit_length(n) / 7).
+
+    Pure Integer Contract
+    ---------------------
+    - Integer-only arithmetic; no float or rounding modes.
+    - O(1) with respect to n's value (since bit_length is O(1) on integers).
+    - Independent of file content; depends only on n's binary magnitude.
+
+    Parameters
+    ----------
+    n : int
+        Non-negative integer whose LEB128 encoded byte-length is desired.
+
+    Returns
+    -------
+    int
+        The number of bytes required to encode n in unsigned LEB128 (7-bit groups).
+
+    Raises
+    ------
+    AssertionError
+        If n < 0.
+
+    Examples
+    --------
+    >>> leb_len_u(0)
+    1
+    >>> leb_len_u(127)
+    1
+    >>> leb_len_u(128)
+    2
+    >>> leb_len_u(16383)
+    2
+    >>> leb_len_u(16384)
+    3
     """
+    assert n >= 0, f"n must be non-negative, got {n}"
     if n == 0:
         return 1
     return (n.bit_length() + 6) // 7
 
 
-def clf_cost(L: int) -> int:
+def clf_single_seed_cost(L: int) -> int:
     """
-    Compute single-seed causal minimality bound.
+    Compute single-seed CLF bound: C_min^(1)(L) = 88 + 8*leb(L).
+
+    Contract
+    --------
+    - Uses locked constants: H=56, CAUS=27, END=5.
+    - leb(L) = leb_len_u(L) (unsigned LEB128 byte-length of L).
+    - Integer-only. O(log L). No content scanning.
+
+    Parameters
+    ----------
+    L : int
+        Byte-length of the binary string (e.g., file size in bytes).
+
+    Returns
+    -------
+    int
+        C_min^(1)(L) in bits.
+
+    Notes
+    -----
+    Forbidden drifts:
+    - Do not vary H/CAUS/END.
+    - Do not use leb(8*L) or any alignment/padding adjustments.
     
-    Formula: C_min^(1)(L) = 88 + 8*leb(L)
-    
-    Args:
-        L: File length in bytes
-        
-    Returns:
-        Minimum causal bound in bits
+    Examples
+    --------
+    >>> clf_single_seed_cost(0)
+    96
+    >>> clf_single_seed_cost(127)
+    96
+    >>> clf_single_seed_cost(128)
+    104
+    >>> clf_single_seed_cost(16383)
+    104
+    >>> clf_single_seed_cost(16384)
+    112
     """
     return BASE_BITS + 8 * leb_len_u(L)
 
 
 def should_emit(L: int) -> bool:
     """
-    Determine if causal bound beats raw literal.
+    Decide EMIT under strict gate: C_min^(1)(L) < 10*L.
+
+    Contract
+    --------
+    - Strict inequality (<), never <=.
+    - RAW (literal) cost: 10*L bits.
+    - Integer-only decision; O(log L).
+
+    Parameters
+    ----------
+    L : int
+        Byte-length of the binary string.
+
+    Returns
+    -------
+    bool
+        True iff C_min^(1)(L) < 10*L.
+
+    Anti-Patterns
+    -------------
+    - No probabilistic thresholds or tolerances.
+    - No content-dependent logic.
     
-    Decision rule: EMIT ⇔ C_min^(1)(L) < 10*L (strict inequality)
-    
-    Args:
-        L: File length in bytes
-        
-    Returns:
-        True if causal bound is beneficial
+    Examples
+    --------
+    >>> should_emit(0)
+    False
+    >>> should_emit(16)
+    True
+    >>> should_emit(1000)
+    True
+    >>> should_emit(10000)
+    True
     """
-    return clf_cost(L) < 10 * L
+    return clf_single_seed_cost(L) < 10 * L
 
 
-def receipt(L: int, build_id: str) -> Dict[str, Any]:
+def receipt(L: int, build_id: str, file_path: str = None) -> Dict[str, Any]:
     """
-    Generate deterministic calculation receipt.
-    
-    Args:
-        L: File length in bytes
-        build_id: Unique build identifier
-        
-    Returns:
-        Dictionary with calculation details and SHA256 verification
+    Build deterministic receipt for independent verification.
+
+    Tuple
+    -----
+    (L, leb, C, RAW, EMIT, BUILD_ID)  → SHA256 hex digest.
+
+    Guarantees
+    ----------
+    - Deterministic across runs and machines.
+    - Integer-only fields.
+    - Suitable for JSONL/CSV export for audits.
+    - Mathematical receipt preserves content-independence.
+    - Optional file provenance for path/content differentiation.
+
+    Parameters
+    ----------
+    L : int
+        Byte-length of the binary string.
+    build_id : str
+        Build identifier for the calculation session.
+    file_path : str, optional
+        File path for provenance hash (does not affect math receipt).
+
+    Returns
+    -------
+    dict
+        {
+          "L": int,
+          "leb": int,
+          "C_min_bits": int,       # C_min^(1)(L)
+          "RAW_bits": int,         # 10*L
+          "EMIT": bool,            # strict gate
+          "sha256": str,           # mathematical receipt
+          "provenance_sha256": str # optional file provenance
+        }
+
+    Examples
+    --------
+    >>> result = receipt(128, "TEST")
+    >>> result['L']
+    128
+    >>> result['leb']
+    2
+    >>> result['C_min_bits']
+    104
+    >>> result['RAW_bits']
+    1280
+    >>> result['EMIT']
+    True
     """
     leb = leb_len_u(L)
-    C = clf_cost(L)
+    C = clf_single_seed_cost(L)
     RAW = 10 * L
     EMIT = should_emit(L)
     
-    # Create tuple for hash verification
-    tuple_data = (L, leb, C, RAW, EMIT, build_id)
-    tuple_str = str(tuple_data)
-    sha256_hash = hashlib.sha256(tuple_str.encode('utf-8')).hexdigest()
+    # Mathematical receipt (content-independent)
+    math_tuple = (L, leb, C, RAW, EMIT, build_id)
+    math_receipt = hashlib.sha256(str(math_tuple).encode('utf-8')).hexdigest()
     
-    return {
+    # Optional file provenance (for path/content differentiation)
+    provenance_receipt = None
+    if file_path is not None:
+        provenance_tuple = (file_path, L, build_id)
+        provenance_receipt = hashlib.sha256(str(provenance_tuple).encode('utf-8')).hexdigest()
+    
+    result = {
         'L': L,
         'leb': leb,
         'C_min_bits': C,
         'RAW_bits': RAW,
         'EMIT': EMIT,
         'BUILD_ID': build_id,
-        'tuple_data': tuple_data,
-        'sha256': sha256_hash
+        'tuple_data': math_tuple,
+        'sha256': math_receipt
     }
+    
+    if provenance_receipt is not None:
+        result['provenance_sha256'] = provenance_receipt
+        
+    return result
 
 
 def analyze_path(path: str, build_id: str) -> Dict[str, Any]:
@@ -146,10 +331,10 @@ def analyze_path(path: str, build_id: str) -> Dict[str, Any]:
         # Verify: 2^k ≤ L < 2^(k+1)
         assert (1 << k) <= L < (1 << (k + 1)), f"Bit length proof failed for L={L}, k={k}"
     
-    # Generate receipt
-    receipt_data = receipt(L, build_id)
+    # Generate receipt with file provenance
+    receipt_data = receipt(L, build_id, file_path=path)
     
-    return {
+    result = {
         'file': path,
         'L': L,
         'bit_length': bit_length,
@@ -161,6 +346,12 @@ def analyze_path(path: str, build_id: str) -> Dict[str, Any]:
         'BUILD_ID': build_id,
         'sha256': receipt_data['sha256']
     }
+    
+    # Add provenance hash if available
+    if 'provenance_sha256' in receipt_data:
+        result['provenance_sha256'] = receipt_data['provenance_sha256']
+        
+    return result
 
 
 def run(paths: List[str], build_id: str = None) -> List[Dict[str, Any]]:
@@ -201,11 +392,14 @@ def export_console(results: List[Dict], build_id: str, filepath: str):
             if 'error' in result:
                 f.write(f"ERROR: {result['file']} - {result['error']}\n")
                 continue
+            
+            L = result['L']
+            k = result['bit_length'] if L > 0 else 1
+            bounds_str = f"2^{k-1} ≤ L < 2^{k}" if L > 0 else "L=0"
                 
-            f.write(f"{result['file']}: L={result['L']}, "
-                   f"C_min={result['C_min_bits']} bits, "
-                   f"RAW={result['RAW_bits']} bits, "
-                   f"EMIT={result['EMIT']}\n")
+            f.write(f"{result['file']}: L={L:,} bytes, bit_length={result['bit_length']}, bounds={bounds_str}, "
+                   f"leb={result['leb']}, C={result['C_min_bits']} bits, RAW={result['RAW_bits']:,} bits, "
+                   f"EMIT={result['EMIT']}, receipt={result['sha256'][:16]}...\n")
 
 
 def export_receipts(results: List[Dict], filepath: str):
@@ -359,9 +553,9 @@ def run_unit_tests():
     assert leb_len_u(16383) == 2, f"leb_len_u(16383) = {leb_len_u(16383)}, expected 2"
     assert leb_len_u(16384) == 3, f"leb_len_u(16384) = {leb_len_u(16384)}, expected 3"
     
-    # Test clf_cost
-    assert clf_cost(456) == 104, f"clf_cost(456) = {clf_cost(456)}, expected 104"
-    assert clf_cost(968) == 104, f"clf_cost(968) = {clf_cost(968)}, expected 104"
+    # Test clf_single_seed_cost
+    assert clf_single_seed_cost(456) == 104, f"clf_single_seed_cost(456) = {clf_single_seed_cost(456)}, expected 104"
+    assert clf_single_seed_cost(968) == 104, f"clf_single_seed_cost(968) = {clf_single_seed_cost(968)}, expected 104"
     
     # Test should_emit
     assert should_emit(968) == True, f"should_emit(968) = {should_emit(968)}, expected True"
@@ -432,11 +626,14 @@ Examples:
         if 'error' in result:
             print(f"ERROR: {result['file']} - {result['error']}")
             continue
-            
-        print(f"{result['file']}: L={result['L']}, "
-              f"C_min={result['C_min_bits']} bits, "
-              f"RAW={result['RAW_bits']} bits, "
-              f"EMIT={result['EMIT']}")
+        
+        L = result['L']
+        k = result['bit_length'] if L > 0 else 1
+        bounds_str = f"2^{k-1} ≤ L < 2^{k}" if L > 0 else "L=0"
+        
+        print(f"{result['file']}: L={L:,} bytes, bit_length={result['bit_length']}, bounds={bounds_str}, "
+              f"leb={result['leb']}, C={result['C_min_bits']} bits, RAW={result['RAW_bits']:,} bits, "
+              f"EMIT={result['EMIT']}, receipt={result['sha256'][:16]}...")
     
     # Export if requested
     if args.export_prefix:

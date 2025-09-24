@@ -25,10 +25,10 @@ echo "CALCULATOR -> $OUT" | sed 's/^[[:space:]]*//'
 python3 -c "
 import re
 txt='''$OUT'''
-m=re.search(r'L=([\d,]+), leb=(\d+), C=(\d+) bits, RAW=([\d,]+) bits, EMIT=(True|False)', txt)
+m=re.search(r'L=([\d,]+) bytes, bit_length=(\d+), bounds=([^,]+), leb=(\d+), C=(\d+) bits, RAW=([\d,]+) bits, EMIT=(True|False)', txt)
 if not m: 
     print('ERROR: Could not parse calculator output'); exit(3)
-L=int(m.group(1).replace(',','')); leb=int(m.group(2)); C=int(m.group(3)); RAW=int(m.group(4).replace(',','')); EMIT=(m.group(5)=='True')
+L=int(m.group(1).replace(',','')); bit_length=int(m.group(2)); bounds=m.group(3); leb=int(m.group(4)); C=int(m.group(5)); RAW=int(m.group(6).replace(',','')); EMIT=(m.group(7)=='True')
 bl=1 if L==0 else L.bit_length()
 leb_exp=1 if L==0 else (bl+6)//7
 C_exp=88+8*leb_exp

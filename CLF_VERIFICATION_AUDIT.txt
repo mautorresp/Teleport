@@ -1,0 +1,50 @@
+CLF SINGLE-SEED MATHEMATICAL CALCULATOR - AUDIT EVIDENCE
+============================================================
+
+BUILD_ID: 20250923_232012
+Generation Time: 2025-09-23T23:20:12.836775
+
+IMMUTABLE MATHEMATICAL CONSTANTS:
+- H (Header bits): 56
+- CAUS (Causality bits): 27
+- END (Termination bits): 5
+- BASE_BITS = H + CAUS + END = 88
+
+FORMULA (Single-Seed Causal Bound):
+C_min^(1)(L) = 88 + 8*leb(L)
+
+LEB128 LENGTH RULE:
+leb(L) = 1 if L == 0 else (bit_length(L) + 6) // 7
+
+DECISION RULE:
+EMIT ⇔ C_min^(1)(L) < 10*L (strict inequality)
+
+PROHIBITED LOGIC:
+❌ deduct_B, STEP, CONST, tiling, DP, feasibility, A/B roles
+❌ bijection, byte iteration, entropy, compression heuristics
+❌ floating point arithmetic, math.* float functions
+✅ Only int, bit_length, shifts, adds, multiplies, LEB rule
+
+FILE-BY-FILE MATHEMATICAL EVIDENCE:
+----------------------------------------
+
+File 1: test_data/pic2.jpg
+Step 1 - File Length: L = 11751 bytes
+Step 2 - Bit Length Proof:
+  bit_length(L) = 14
+  k = bit_length - 1 = 13
+  Verify: 2^13 ≤ 11751 < 2^14
+  Check: 8192 ≤ 11751 < 16384 ✓
+Step 3 - LEB128 Length:
+  leb(11751) = (14 + 6) // 7 = 2
+Step 4 - Causal Bound:
+  C_min^(1)(11751) = 88 + 8*2 = 104 bits
+Step 5 - Raw Literal:
+  RAW = 10*11751 = 117510 bits
+Step 6 - Decision:
+  Check: 104 < 117510 ? True
+  EMIT = True
+Step 7 - Receipt Verification:
+  Tuple: (11751, 2, 104, 117510, True, '20250923_232012')
+  SHA256: 19ec3bcc2b07f46eceb09d416d43c2b4ad21dfc932f8d479def5882b6ca198d8
+

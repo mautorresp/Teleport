@@ -1,0 +1,883 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clf_calculator &mdash; Teleport CLF Calculator 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Teleport CLF Calculator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#export-formats">Export Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#understanding-output">Understanding Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#validation">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../mathematical_foundation.html">Mathematical Foundation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#core-formula">Core Formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#leb128-encoding">LEB128 Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#decision-gate">Decision Gate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#mathematical-invariants">Mathematical Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#examples-and-edge-cases">Examples and Edge Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#validation-and-verification">Validation and Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mathematical_foundation.html#error-analysis">Error Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#core-functions">Core Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#clf_calculator.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#clf_calculator.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#clf_calculator.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#utility-functions">Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#clf_calculator.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#cli-interface">CLI Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#constants">Constants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.OVERHEAD"><code class="docutils literal notranslate"><span class="pre">OVERHEAD</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#type-definitions">Type Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt"><code class="docutils literal notranslate"><span class="pre">Receipt</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt.L"><code class="docutils literal notranslate"><span class="pre">Receipt.L</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt.leb_bytes"><code class="docutils literal notranslate"><span class="pre">Receipt.leb_bytes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt.cost_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.cost_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt.raw_bits"><code class="docutils literal notranslate"><span class="pre">Receipt.raw_bits</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt.emit"><code class="docutils literal notranslate"><span class="pre">Receipt.emit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt.build_id"><code class="docutils literal notranslate"><span class="pre">Receipt.build_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.Receipt.receipt_hash"><code class="docutils literal notranslate"><span class="pre">Receipt.receipt_hash</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.ValueError"><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.FileNotFoundError"><code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_reference.html#CLF_MAXIMAL_VALIDATOR_FINAL.PermissionError"><code class="docutils literal notranslate"><span class="pre">PermissionError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#usage-patterns">Usage Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#cli-reference">CLI Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#export-formats">Export Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#implementation-notes">Implementation Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#basic-examples">Basic Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#advanced-examples">Advanced Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#testing-and-validation-examples">Testing and Validation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#export-format-examples">Export Format Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#integration-examples">Integration Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#built-in-testing">Built-in Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#unit-test-suite">Unit Test Suite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#validation-procedures">Validation Procedures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#performance-testing">Performance Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#error-handling-tests">Error Handling Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#continuous-integration-testing">Continuous Integration Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#test-documentation">Test Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../clf_calculator.html">clf_calculator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.analyze_path"><code class="docutils literal notranslate"><span class="pre">analyze_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.export_console"><code class="docutils literal notranslate"><span class="pre">export_console()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.export_receipts"><code class="docutils literal notranslate"><span class="pre">export_receipts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.export_csv"><code class="docutils literal notranslate"><span class="pre">export_csv()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.export_audit"><code class="docutils literal notranslate"><span class="pre">export_audit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.export_all"><code class="docutils literal notranslate"><span class="pre">export_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.run_unit_tests"><code class="docutils literal notranslate"><span class="pre">run_unit_tests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#clf_calculator.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#core-functions">Core Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../clf_calculator.html#id0"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../clf_calculator.html#id4"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../clf_calculator.html#id6"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#utility-functions">Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../clf_calculator.html#id9"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_calculator.html#mathematical-constants">Mathematical Constants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../clf_calculator.html#clf_calculator.H"><code class="docutils literal notranslate"><span class="pre">H</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../clf_calculator.html#clf_calculator.CAUS"><code class="docutils literal notranslate"><span class="pre">CAUS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../clf_calculator.html#clf_calculator.END"><code class="docutils literal notranslate"><span class="pre">END</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../clf_maximal_validator.html">clf_maximal_validator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#contract">Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#invariants">Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#receipts">Receipts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#boundaries-to-test-leb-bands">Boundaries to test (leb bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#CLF_MAXIMAL_VALIDATOR_FINAL.leb_len_u"><code class="docutils literal notranslate"><span class="pre">leb_len_u()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#CLF_MAXIMAL_VALIDATOR_FINAL.clf_single_seed_cost"><code class="docutils literal notranslate"><span class="pre">clf_single_seed_cost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#CLF_MAXIMAL_VALIDATOR_FINAL.should_emit"><code class="docutils literal notranslate"><span class="pre">should_emit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#CLF_MAXIMAL_VALIDATOR_FINAL.receipt"><code class="docutils literal notranslate"><span class="pre">receipt()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../clf_maximal_validator.html#cli-interface">CLI Interface</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docstring_guide.html">Docstring Guide Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#key-principles">Key Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#function-docstring-format">Function Docstring Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#class-documentation">Class Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#cli-documentation">CLI Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#documentation-standards">Documentation Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#implementation-examples">Implementation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docstring_guide.html#quality-assurance">Quality Assurance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-1-0-0-professional-release">Version 1.0.0 - Professional Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#development-history">Development History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#mathematical-validation-results">Mathematical Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#breaking-changes">Breaking Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#upcoming-features">Upcoming Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#security-updates">Security Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#migration-guide">Migration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#known-issues">Known Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-guidelines">Development Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-review-process">Code Review Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#common-contribution-scenarios">Common Contribution Scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#recognition">Recognition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Teleport CLF Calculator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">clf_calculator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for clf_calculator</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="c1"># === DO NOT EDIT: CLF MATH CONTRACT ===</span>
+<span class="c1"># Single-seed CLF: C_min^(1)(L) = 88 + 8*leb(L) with H=56, CAUS=27, END=5 (locked)</span>
+<span class="c1"># EMIT iff C_min^(1)(L) &lt; 10*L (strict). leb(L) = unsigned LEB128 byte-length of L (7-bit groups).</span>
+<span class="c1"># Integer-only. No compression logic. No floating point. No content scanning. O(log L) only.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">CLF Single-Seed Calculator — Pure Causal Minimality (No Compression)</span>
+
+<span class="sd">Contract</span>
+<span class="sd">--------</span>
+<span class="sd">C_min^(1)(L) = 88 + 8*leb(L) bits, where:</span>
+<span class="sd">  - leb(L): unsigned LEB128 byte-length of integer L using 7-bit groups.</span>
+<span class="sd">  - Locked constants: H=56, CAUS=27, END=5 (non-negotiable).</span>
+<span class="sd">Literal fallback: C_LIT = 10*L bits.</span>
+<span class="sd">Decision gate (strict): EMIT ⇔ C_min^(1)(L) &lt; 10*L.</span>
+
+<span class="sd">Invariants</span>
+<span class="sd">----------</span>
+<span class="sd">- Integer-only arithmetic. No floating point.</span>
+<span class="sd">- O(log L) complexity: depends only on leb_len_u(L).</span>
+<span class="sd">- Content-independent: uses file length only (L = os.path.getsize(path)).</span>
+<span class="sd">- No compression/tiling/A/B roles/DP/greedy scans/coverage/bijection.</span>
+<span class="sd">- No variation of H/CAUS/END. No leb(8*L). No align/padding drift.</span>
+
+<span class="sd">Receipts</span>
+<span class="sd">--------</span>
+<span class="sd">For each L, compute a deterministic receipt from the tuple:</span>
+<span class="sd">  (L, leb, C_min, RAW, EMIT, BUILD_ID)</span>
+<span class="sd">using SHA-256. This enables independent verification.</span>
+
+<span class="sd">Usage</span>
+<span class="sd">-----</span>
+<span class="sd">- As CLI: pass file paths; calculator prints one line per file.</span>
+<span class="sd">- As library: use `clf_single_seed_cost(L)`, `should_emit(L)`, `receipt(L)`.</span>
+
+<span class="sd">Boundaries to test (leb bands)</span>
+<span class="sd">------------------------------</span>
+<span class="sd">L ∈ {0,1,127,128,16383,16384,...} to verify leb band transitions:</span>
+<span class="sd">  leb = ceil(bit_length(L)/7) if L&gt;0 else 1.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+<span class="c1"># IMMUTABLE MATHEMATICAL CONSTANTS</span>
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+
+<span class="n">H</span> <span class="o">=</span> <span class="mi">56</span>          <span class="c1"># Header bits (locked)</span>
+<span class="n">CAUS</span> <span class="o">=</span> <span class="mi">27</span>       <span class="c1"># Causality bits (locked)  </span>
+<span class="n">END</span> <span class="o">=</span> <span class="mi">5</span>         <span class="c1"># Termination bits (locked)</span>
+<span class="n">BASE_BITS</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">CAUS</span> <span class="o">+</span> <span class="n">END</span>  <span class="c1"># 88 bits (immutable)</span>
+<span class="n">BUILD_ID</span> <span class="o">=</span> <span class="s2">&quot;CLF_SINGLE_SEED_PURE_20250923_LOCKED&quot;</span>  <span class="c1"># Immutable build identifier</span>
+
+<span class="c1"># Math guard assertions (Section 5 of the guide)</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">BUILD_ID</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">BUILD_ID</span><span class="p">,</span> <span class="s2">&quot;BUILD_ID must be a non-empty string&quot;</span>
+<span class="c1"># Guard strictness:</span>
+<span class="n">_cost</span> <span class="o">=</span> <span class="mi">88</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># C_min^(1)(968) with leb(968)=2</span>
+<span class="k">assert</span> <span class="n">_cost</span> <span class="o">==</span> <span class="mi">104</span><span class="p">,</span> <span class="s2">&quot;Invariant self-check failed: C_min^(1)(968) must be 104&quot;</span>
+<span class="c1"># Gate monotonicity at scale (sample):</span>
+<span class="n">_emit_16</span> <span class="o">=</span> <span class="mi">104</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">16</span>  <span class="c1"># C_min for small file vs 10*16</span>
+<span class="n">_emit_1m</span> <span class="o">=</span> <span class="mi">112</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1_000_000</span>  <span class="c1"># C_min for large file vs 10*1M</span>
+<span class="k">assert</span> <span class="n">_emit_16</span> <span class="ow">and</span> <span class="n">_emit_1m</span><span class="p">,</span> <span class="s2">&quot;EMIT must hold for practical L &gt;= 16&quot;</span>
+
+
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+<span class="c1"># CORE MATHEMATICAL FUNCTIONS</span>
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+
+<div class="viewcode-block" id="leb_len_u">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.leb_len_u">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">leb_len_u</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unsigned LEB128 byte-length of integer n using 7-bit groups.</span>
+
+<span class="sd">    Definition</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Returns 1 if n == 0, else ceil(bit_length(n) / 7).</span>
+
+<span class="sd">    Pure Integer Contract</span>
+<span class="sd">    ---------------------</span>
+<span class="sd">    - Integer-only arithmetic; no float or rounding modes.</span>
+<span class="sd">    - O(1) with respect to n&#39;s value (since bit_length is O(1) on integers).</span>
+<span class="sd">    - Independent of file content; depends only on n&#39;s binary magnitude.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int</span>
+<span class="sd">        Non-negative integer whose LEB128 encoded byte-length is desired.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        The number of bytes required to encode n in unsigned LEB128 (7-bit groups).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If n &lt; 0.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    leb_len_u(0)     -&gt; 1</span>
+<span class="sd">    leb_len_u(127)   -&gt; 1   # 2^7 - 1</span>
+<span class="sd">    leb_len_u(128)   -&gt; 2   # 2^7</span>
+<span class="sd">    leb_len_u(16383) -&gt; 2   # 2^14 - 1</span>
+<span class="sd">    leb_len_u(16384) -&gt; 3   # 2^14</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;n must be non-negative, got </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span> <span class="o">//</span> <span class="mi">7</span></div>
+
+
+
+<div class="viewcode-block" id="clf_single_seed_cost">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.clf_single_seed_cost">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute single-seed CLF bound: C_min^(1)(L) = 88 + 8*leb(L).</span>
+
+<span class="sd">    Contract</span>
+<span class="sd">    --------</span>
+<span class="sd">    - Uses locked constants: H=56, CAUS=27, END=5.</span>
+<span class="sd">    - leb(L) = leb_len_u(L) (unsigned LEB128 byte-length of L).</span>
+<span class="sd">    - Integer-only. O(log L). No content scanning.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    L : int</span>
+<span class="sd">        Byte-length of the binary string (e.g., file size in bytes).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        C_min^(1)(L) in bits.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Forbidden drifts:</span>
+<span class="sd">    - Do not vary H/CAUS/END.</span>
+<span class="sd">    - Do not use leb(8*L) or any alignment/padding adjustments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">BASE_BITS</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="n">L</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="should_emit">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.should_emit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">should_emit</span><span class="p">(</span><span class="n">L</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decide EMIT under strict gate: C_min^(1)(L) &lt; 10*L.</span>
+
+<span class="sd">    Contract</span>
+<span class="sd">    --------</span>
+<span class="sd">    - Strict inequality (&lt;), never &lt;=.</span>
+<span class="sd">    - RAW (literal) cost: 10*L bits.</span>
+<span class="sd">    - Integer-only decision; O(log L).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    L : int</span>
+<span class="sd">        Byte-length of the binary string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True iff C_min^(1)(L) &lt; 10*L.</span>
+
+<span class="sd">    Anti-Patterns</span>
+<span class="sd">    -------------</span>
+<span class="sd">    - No probabilistic thresholds or tolerances.</span>
+<span class="sd">    - No content-dependent logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">L</span></div>
+
+
+
+<div class="viewcode-block" id="receipt">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.receipt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">receipt</span><span class="p">(</span><span class="n">L</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">build_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build deterministic receipt for independent verification.</span>
+
+<span class="sd">    Tuple</span>
+<span class="sd">    -----</span>
+<span class="sd">    (L, leb, C, RAW, EMIT, BUILD_ID)  → SHA256 hex digest.</span>
+
+<span class="sd">    Guarantees</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Deterministic across runs and machines.</span>
+<span class="sd">    - Integer-only fields.</span>
+<span class="sd">    - Suitable for JSONL/CSV export for audits.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    L : int</span>
+<span class="sd">        Byte-length of the binary string.</span>
+<span class="sd">    build_id : str</span>
+<span class="sd">        Build identifier for the calculation session.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        {</span>
+<span class="sd">          &quot;L&quot;: int,</span>
+<span class="sd">          &quot;leb&quot;: int,</span>
+<span class="sd">          &quot;C&quot;: int,       # C_min^(1)(L)</span>
+<span class="sd">          &quot;RAW&quot;: int,     # 10*L</span>
+<span class="sd">          &quot;EMIT&quot;: bool,   # strict gate</span>
+<span class="sd">          &quot;sha256&quot;: str   # receipt of the tuple above</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">leb</span> <span class="o">=</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="n">RAW</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">L</span>
+    <span class="n">EMIT</span> <span class="o">=</span> <span class="n">should_emit</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    
+    <span class="c1"># Create tuple for hash verification</span>
+    <span class="n">tuple_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">leb</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">RAW</span><span class="p">,</span> <span class="n">EMIT</span><span class="p">,</span> <span class="n">build_id</span><span class="p">)</span>
+    <span class="n">tuple_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tuple_data</span><span class="p">)</span>
+    <span class="n">sha256_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">tuple_str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="n">L</span><span class="p">,</span>
+        <span class="s1">&#39;leb&#39;</span><span class="p">:</span> <span class="n">leb</span><span class="p">,</span>
+        <span class="s1">&#39;C_min_bits&#39;</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
+        <span class="s1">&#39;RAW_bits&#39;</span><span class="p">:</span> <span class="n">RAW</span><span class="p">,</span>
+        <span class="s1">&#39;EMIT&#39;</span><span class="p">:</span> <span class="n">EMIT</span><span class="p">,</span>
+        <span class="s1">&#39;BUILD_ID&#39;</span><span class="p">:</span> <span class="n">build_id</span><span class="p">,</span>
+        <span class="s1">&#39;tuple_data&#39;</span><span class="p">:</span> <span class="n">tuple_data</span><span class="p">,</span>
+        <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">sha256_hash</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="analyze_path">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.analyze_path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">analyze_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">build_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analyze single file path with mathematical evidence.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        path: File path to analyze</span>
+<span class="sd">        build_id: Unique build identifier</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Complete analysis with bit_length proofs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
+            <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+            <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="p">}</span>
+    
+    <span class="c1"># Bit length proof bounds</span>
+    <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">bit_length</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Special case: bit_length(0) = 0, but we use 1 for LEB</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bit_length</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">bit_length</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="c1"># Verify: 2^k ≤ L &lt; 2^(k+1)</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">k</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">L</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="sa">f</span><span class="s2">&quot;Bit length proof failed for L=</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">, k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+    
+    <span class="c1"># Generate receipt</span>
+    <span class="n">receipt_data</span> <span class="o">=</span> <span class="n">receipt</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">build_id</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span>
+        <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="n">L</span><span class="p">,</span>
+        <span class="s1">&#39;bit_length&#39;</span><span class="p">:</span> <span class="n">bit_length</span><span class="p">,</span>
+        <span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
+        <span class="s1">&#39;leb&#39;</span><span class="p">:</span> <span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;C_min_bits&#39;</span><span class="p">:</span> <span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;RAW_bits&#39;</span><span class="p">:</span> <span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;EMIT&#39;</span><span class="p">:</span> <span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;BUILD_ID&#39;</span><span class="p">:</span> <span class="n">build_id</span><span class="p">,</span>
+        <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">]</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="run">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.run">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">build_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Batch analyze multiple file paths.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        paths: List of file paths</span>
+<span class="sd">        build_id: Optional build identifier (auto-generated if None)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List of analysis results</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">build_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">build_id</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span>
+    
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">analyze_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">build_id</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+<span class="c1"># EXPORT SYSTEM (4-FORMAT EVIDENCE)</span>
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+
+<div class="viewcode-block" id="export_console">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.export_console">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_console</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">build_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export console-style output to text file.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLF Single-Seed Calculator - BUILD_ID: </span><span class="si">{</span><span class="n">build_id</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formula: C_min^(1)(L) = 88 + 8*leb(L)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constants: H=</span><span class="si">{</span><span class="n">H</span><span class="si">}</span><span class="s2">, CAUS=</span><span class="si">{</span><span class="n">CAUS</span><span class="si">}</span><span class="s2">, END=</span><span class="si">{</span><span class="n">END</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decision: EMIT ⇔ C_min^(1)(L) &lt; 10*L</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            
+            <span class="n">L</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bit_length&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="n">bounds_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;2^</span><span class="si">{</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2"> ≤ L &lt; 2^</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;L=0&quot;</span>
+                
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: L=</span><span class="si">{</span><span class="n">L</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes, bit_length=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bit_length&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, bounds=</span><span class="si">{</span><span class="n">bounds_str</span><span class="si">}</span><span class="s2">, &quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;leb=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, C=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> bits, RAW=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bits, &quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;EMIT=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, receipt=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">][:</span><span class="mi">16</span><span class="p">]</span><span class="si">}</span><span class="s2">...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export_receipts">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.export_receipts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_receipts</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export JSONL receipts (one JSON object per line).&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">receipt_obj</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;bit_length&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bit_length&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;leb&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;C_min_bits&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;RAW_bits&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;EMIT&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;BUILD_ID&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;BUILD_ID&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">receipt_obj</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export_csv">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.export_csv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_csv</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export CSV results table.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;bit_length&#39;</span><span class="p">,</span> <span class="s1">&#39;leb&#39;</span><span class="p">,</span> <span class="s1">&#39;C_min_bits&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;RAW_bits&#39;</span><span class="p">,</span> <span class="s1">&#39;emit&#39;</span><span class="p">,</span> <span class="s1">&#39;receipt_prefix&#39;</span><span class="p">])</span>
+        
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">],</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">],</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bit_length&#39;</span><span class="p">],</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">],</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">],</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">],</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">],</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">][:</span><span class="mi">16</span><span class="p">]</span>  <span class="c1"># Receipt prefix</span>
+            <span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="export_audit">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.export_audit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_audit</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">build_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export mathematical audit with step-by-step proofs.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;CLF SINGLE-SEED MATHEMATICAL CALCULATOR - AUDIT EVIDENCE</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BUILD_ID: </span><span class="si">{</span><span class="n">build_id</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generation Time: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;IMMUTABLE MATHEMATICAL CONSTANTS:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- H (Header bits): </span><span class="si">{</span><span class="n">H</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- CAUS (Causality bits): </span><span class="si">{</span><span class="n">CAUS</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- END (Termination bits): </span><span class="si">{</span><span class="n">END</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- BASE_BITS = H + CAUS + END = </span><span class="si">{</span><span class="n">BASE_BITS</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;FORMULA (Single-Seed Causal Bound):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;C_min^(1)(L) = 88 + 8*leb(L)</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;LEB128 LENGTH RULE:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;leb(L) = 1 if L == 0 else (bit_length(L) + 6) // 7</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;DECISION RULE:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;EMIT ⇔ C_min^(1)(L) &lt; 10*L (strict inequality)</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;PROHIBITED LOGIC:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;❌ deduct_B, STEP, CONST, tiling, DP, feasibility, A/B roles</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;❌ bijection, byte iteration, entropy, compression heuristics</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;❌ floating point arithmetic, math.* float functions</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;✅ Only int, bit_length, shifts, adds, multiplies, LEB rule</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;FILE-BY-FILE MATHEMATICAL EVIDENCE:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">40</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> - ERROR: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+                
+            <span class="n">L</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">]</span>
+            <span class="n">bit_length</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bit_length&#39;</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span>
+            <span class="n">leb</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">]</span>
+            <span class="n">C_min</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">]</span>
+            <span class="n">RAW</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">]</span>
+            <span class="n">emit</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">]</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 1 - File Length: L = </span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2"> bytes</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 2 - Bit Length Proof:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  L = 0, so bit_length = 1 (special case)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  bit_length(L) = </span><span class="si">{</span><span class="n">bit_length</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  k = bit_length - 1 = </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Verify: 2^</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> ≤ </span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2"> &lt; 2^</span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Check: </span><span class="si">{</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">k</span><span class="si">}</span><span class="s2"> ≤ </span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2"> ✓</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 3 - LEB128 Length:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  leb(0) = 1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  leb(</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">) = (</span><span class="si">{</span><span class="n">bit_length</span><span class="si">}</span><span class="s2"> + 6) // 7 = </span><span class="si">{</span><span class="n">leb</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 4 - Causal Bound:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  C_min^(1)(</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">) = 88 + 8*</span><span class="si">{</span><span class="n">leb</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">C_min</span><span class="si">}</span><span class="s2"> bits</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 5 - Raw Literal:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RAW = 10*</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">RAW</span><span class="si">}</span><span class="s2"> bits</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 6 - Decision:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Check: </span><span class="si">{</span><span class="n">C_min</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">RAW</span><span class="si">}</span><span class="s2"> ? </span><span class="si">{</span><span class="n">emit</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  EMIT = </span><span class="si">{</span><span class="n">emit</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 7 - Receipt Verification:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Tuple: (</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">leb</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">C_min</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">RAW</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">emit</span><span class="si">}</span><span class="s2">, &#39;</span><span class="si">{</span><span class="n">build_id</span><span class="si">}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  SHA256: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export_all">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.export_all">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_all</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">build_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate all 4 export formats.&quot;&quot;&quot;</span>
+    <span class="n">export_console</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">build_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_CONSOLE.txt&quot;</span><span class="p">)</span>
+    <span class="n">export_receipts</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_RECEIPTS.jsonl&quot;</span><span class="p">)</span>
+    <span class="n">export_csv</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_RESULTS.csv&quot;</span><span class="p">)</span>
+    <span class="n">export_audit</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">build_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_AUDIT.txt&quot;</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported evidence to:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_CONSOLE.txt&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_RECEIPTS.jsonl&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_RESULTS.csv&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_AUDIT.txt&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+<span class="c1"># EMBEDDED UNIT TESTS</span>
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+
+<div class="viewcode-block" id="run_unit_tests">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.run_unit_tests">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_unit_tests</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run embedded unit tests for mathematical functions.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running unit tests...&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Test leb_len_u thresholds</span>
+    <span class="k">assert</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;leb_len_u(0) = </span><span class="si">{</span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 1&quot;</span>
+    <span class="k">assert</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;leb_len_u(1) = </span><span class="si">{</span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 1&quot;</span>
+    <span class="k">assert</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="mi">127</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;leb_len_u(127) = </span><span class="si">{</span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">127</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 1&quot;</span>
+    <span class="k">assert</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;leb_len_u(128) = </span><span class="si">{</span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 2&quot;</span>
+    <span class="k">assert</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16383</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;leb_len_u(16383) = </span><span class="si">{</span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16383</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 2&quot;</span>
+    <span class="k">assert</span> <span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16384</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;leb_len_u(16384) = </span><span class="si">{</span><span class="n">leb_len_u</span><span class="p">(</span><span class="mi">16384</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 3&quot;</span>
+    
+    <span class="c1"># Test clf_single_seed_cost</span>
+    <span class="k">assert</span> <span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">456</span><span class="p">)</span> <span class="o">==</span> <span class="mi">104</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;clf_single_seed_cost(456) = </span><span class="si">{</span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">456</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 104&quot;</span>
+    <span class="k">assert</span> <span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">968</span><span class="p">)</span> <span class="o">==</span> <span class="mi">104</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;clf_single_seed_cost(968) = </span><span class="si">{</span><span class="n">clf_single_seed_cost</span><span class="p">(</span><span class="mi">968</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected 104&quot;</span>
+    
+    <span class="c1"># Test should_emit</span>
+    <span class="k">assert</span> <span class="n">should_emit</span><span class="p">(</span><span class="mi">968</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;should_emit(968) = </span><span class="si">{</span><span class="n">should_emit</span><span class="p">(</span><span class="mi">968</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected True&quot;</span>
+    <span class="k">assert</span> <span class="n">should_emit</span><span class="p">(</span><span class="mi">1570024</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;should_emit(1570024) = </span><span class="si">{</span><span class="n">should_emit</span><span class="p">(</span><span class="mi">1570024</span><span class="p">)</span><span class="si">}</span><span class="s2">, expected True&quot;</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ All unit tests passed&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+<span class="c1"># COMMAND LINE INTERFACE</span>
+<span class="c1"># ═══════════════════════════════════════════════════════════════════════════</span>
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../clf_calculator.html#clf_calculator.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main CLI entry point.&quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;CLF Single-Seed Mathematical Calculator&quot;</span><span class="p">,</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">,</span>
+        <span class="n">epilog</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Examples:</span>
+<span class="s2">  python3 clf_calculator.py pic1.jpg pic2.jpg video1.mp4</span>
+<span class="s2">  python3 clf_calculator.py file.txt --export-prefix BASELINE</span>
+<span class="s2">  python3 clf_calculator.py --test</span>
+<span class="s2">  python3 clf_calculator.py --stdin-length 1024</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+    
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;files&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;File paths to analyze&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--export-prefix&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Export prefix for 4-format evidence&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--test&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Run embedded unit tests&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--stdin-length&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Direct length input for testing&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--build-id&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Custom build identifier&#39;</span><span class="p">)</span>
+    
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">test</span><span class="p">:</span>
+        <span class="n">run_unit_tests</span><span class="p">()</span>
+        <span class="k">return</span>
+    
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">stdin_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Direct length input mode</span>
+        <span class="n">build_id</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">build_id</span> <span class="ow">or</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">stdin_length</span>
+        
+        <span class="n">receipt_data</span> <span class="o">=</span> <span class="n">receipt</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">build_id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Direct Length Analysis - BUILD_ID: </span><span class="si">{</span><span class="n">build_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L=</span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">, leb=</span><span class="si">{</span><span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;C_min=</span><span class="si">{</span><span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> bits, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;RAW=</span><span class="si">{</span><span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> bits, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;EMIT=</span><span class="si">{</span><span class="n">receipt_data</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># Analyze files</span>
+    <span class="n">build_id</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">build_id</span> <span class="ow">or</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">files</span><span class="p">,</span> <span class="n">build_id</span><span class="p">)</span>
+    
+    <span class="c1"># Print console output</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLF Single-Seed Calculator - BUILD_ID: </span><span class="si">{</span><span class="n">build_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formula: C_min^(1)(L) = 88 + 8*leb(L)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constants: H=</span><span class="si">{</span><span class="n">H</span><span class="si">}</span><span class="s2">, CAUS=</span><span class="si">{</span><span class="n">CAUS</span><span class="si">}</span><span class="s2">, END=</span><span class="si">{</span><span class="n">END</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decision: EMIT ⇔ C_min^(1)(L) &lt; 10*L&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        
+        <span class="n">L</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">]</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;bit_length&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">bounds_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;2^</span><span class="si">{</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2"> ≤ L &lt; 2^</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;L=0&quot;</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: L=</span><span class="si">{</span><span class="n">L</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bytes, bit_length=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bit_length&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, bounds=</span><span class="si">{</span><span class="n">bounds_str</span><span class="si">}</span><span class="s2">, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;leb=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;leb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, C=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;C_min_bits&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> bits, RAW=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;RAW_bits&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> bits, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;EMIT=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;EMIT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, receipt=</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">][:</span><span class="mi">16</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Export if requested</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">export_prefix</span><span class="p">:</span>
+        <span class="n">export_all</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">build_id</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">export_prefix</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Teleport Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

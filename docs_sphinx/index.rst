@@ -1,0 +1,109 @@
+Teleport CLF Calculator Documentation
+======================================
+
+Welcome to the Teleport CLF (Causal Logic Framework) Calculator documentation. This system implements a pure mathematical causal minimality calculator for integer-only file size analysis.
+
+.. note::
+   **Mathematical Contract**: Single-seed CLF: C_min^(1)(L) = 88 + 8*leb(L) with H=56, CAUS=27, END=5 (locked)
+   
+   **Decision Rule**: EMIT iff C_min^(1)(L) < 10*L (strict). leb(L) = unsigned LEB128 byte-length of L (7-bit groups).
+   
+   **Invariants**: Integer-only. No compression logic. No floating point. No content scanning. O(log L) only.
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Core Documentation:
+
+   quickstart
+   mathematical_foundation  
+   causal_minimality_contract
+   api_reference
+   examples
+   testing
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference:
+
+   clf_calculator
+   clf_maximal_validator
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: Development:
+   
+   docstring_guide
+   changelog
+   contributing
+
+Overview
+--------
+
+The Teleport CLF Calculator is a pure mathematical system that computes causal minimality bounds for file processing decisions. It operates solely on file lengths using integer arithmetic with strict mathematical guarantees.
+
+Key Features
+~~~~~~~~~~~~
+
+* **Pure Mathematics**: Integer-only operations, O(log L) complexity
+* **Drift-Proof Design**: Comprehensive docstrings and runtime guards prevent mathematical drift  
+* **Professional Documentation**: Self-documenting codebase with complete API reference
+* **Comprehensive Testing**: Full unit test coverage of mathematical boundaries
+* **Multiple Interfaces**: Command-line tool and Python library
+* **Export Capabilities**: Console, JSONL, CSV, and audit formats
+
+Mathematical Foundation
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The core formula is:
+
+.. math::
+   C_{min}^{(1)}(L) = 88 + 8 \cdot \text{leb}(L)
+
+Where:
+- L is the file size in bytes  
+- leb(L) is the unsigned LEB128 byte-length of L using 7-bit groups
+- 88 = H(56) + CAUS(27) + END(5) are locked constants
+
+The decision gate is:
+
+.. math::
+   \text{EMIT} \Leftrightarrow C_{min}^{(1)}(L) < 10 \cdot L
+
+Quick Start
+~~~~~~~~~~~
+
+Command Line Usage::
+
+    # Single file analysis
+    python clf_calculator.py test_data/pic2.jpg
+    
+    # Multiple files with export
+    python clf_calculator.py file1.jpg file2.mp4 --export-prefix ANALYSIS
+    
+    # Direct length input
+    python clf_calculator.py --stdin-length 11751
+
+Library Usage::
+
+    from clf_calculator import clf_single_seed_cost, should_emit, receipt
+    
+    L = 11751  # File size in bytes
+    cost = clf_single_seed_cost(L)      # Returns 104 bits
+    emit = should_emit(L)               # Returns True  
+    r = receipt(L, "BUILD_ID")          # Returns full calculation receipt
+
+Expected Output::
+
+    test_data/pic2.jpg: L=11,751 bytes, bit_length=14, bounds=2^13 ≤ L < 2^14, 
+    leb=2, C=104 bits, RAW=117,510 bits, EMIT=True, receipt=a99a8a358d2caac0...
+
+Indices and Tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

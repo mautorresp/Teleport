@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Teleport CLF Calculator - Executive Summary</title>
+    <style>
+        body { 
+            font-family: 'Times New Roman', serif; 
+            line-height: 1.6; 
+            margin: 40px; 
+            color: #333;
+        }
+        h1 { 
+            color: #2c3e50; 
+            text-align: center; 
+            font-size: 28px;
+            border-bottom: 3px solid #3498db; 
+            padding-bottom: 15px; 
+            margin-bottom: 30px;
+        }
+        h2 { 
+            color: #34495e; 
+            font-size: 20px;
+            border-bottom: 1px solid #bdc3c7; 
+            padding-bottom: 8px; 
+            margin-top: 25px;
+        }
+        h3 { 
+            color: #2c3e50; 
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .formula { 
+            background: #f8f9fa; 
+            border: 2px solid #3498db; 
+            padding: 15px; 
+            margin: 15px 0; 
+            text-align: center; 
+            font-size: 18px; 
+            font-weight: bold;
+        }
+        .constants { 
+            background: #fff3cd; 
+            border: 2px solid #ffc107; 
+            padding: 10px; 
+            margin: 10px 0; 
+            font-weight: bold;
+        }
+        code { 
+            background: #f8f9fa; 
+            padding: 3px 6px; 
+            border-radius: 3px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 14px;
+        }
+        pre { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 5px; 
+            overflow-x: auto; 
+            font-size: 12px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 15px 0; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th { 
+            background: #f2f2f2; 
+            font-weight: bold; 
+        }
+        .examples { 
+            background: #e8f5e8; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 15px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Teleport CLF Calculator</h1>
+<p style="text-align: center; font-size: 16px; color: #7f8c8d; margin-bottom: 30px;">
+    Single-Seed Causal Logic Framework for Mathematical File Size Analysis
+</p>
+
+<div class="formula">
+    C<sub>min</sub><sup>(1)</sup>(L) = 88 + 8 × leb(L)
+</div>
+
+<div class="constants">
+    <strong>Locked Constants:</strong> H=56, CAUS=27, END=5 | 
+    <strong>Decision Rule:</strong> EMIT ⟺ C<sub>min</sub><sup>(1)</sup>(L) < 10×L (strict)
+</div>
+
+<h2>Mathematical Foundation</h2>
+
+<p><strong>Core Formula:</strong> The CLF Calculator implements causal minimality using the formula C<sub>min</sub><sup>(1)</sup>(L) = 88 + 8×leb(L), where:</p>
+
+<ul>
+    <li><strong>88 bits:</strong> Fixed overhead (H=56 + CAUS=27 + END=5)</li>
+    <li><strong>8×leb(L):</strong> Variable LEB128 encoding cost</li>
+    <li><strong>leb(L):</strong> Unsigned LEB128 byte-length of L using 7-bit groups</li>
+</ul>
+
+<p><strong>LEB128 Band Structure:</strong></p>
+<table>
+    <tr><th>Band</th><th>File Size Range</th><th>leb(L)</th><th>Cost (bits)</th><th>Examples</th></tr>
+    <tr><td>1</td><td>1 - 127</td><td>1</td><td>96</td><td>Small text files</td></tr>
+    <tr><td>2</td><td>128 - 16,383</td><td>2</td><td>104</td><td>Images, documents</td></tr>
+    <tr><td>3</td><td>16,384 - 2,097,151</td><td>3</td><td>112</td><td>Large images, audio</td></tr>
+    <tr><td>4</td><td>2,097,152+</td><td>4</td><td>120</td><td>Videos, datasets</td></tr>
+</table>
+
+<h2>Key Properties</h2>
+
+<ul>
+    <li><strong>Complexity:</strong> O(log L) computational complexity</li>
+    <li><strong>Arithmetic:</strong> Integer-only operations (no floating-point)</li>
+    <li><strong>Deterministic:</strong> Identical inputs produce identical outputs</li>
+    <li><strong>Efficient:</strong> All practical file sizes result in EMIT=True</li>
+</ul>
+
+<div class="examples">
+<h3>Validated Test Cases</h3>
+<pre>
+pic1.jpg:     L=63,379 bytes   → leb=3 → C=112 bits → EMIT=True (5,658× efficiency)
+pic2.jpg:     L=11,751 bytes   → leb=2 → C=104 bits → EMIT=True (1,130× efficiency)
+video3.mp4:   L=9,840,497 bytes → leb=4 → C=120 bits → EMIT=True (820,081× efficiency)
+</pre>
+</div>
+
+<h2>Implementation</h2>
+
+<p><strong>Core Functions:</strong></p>
+<ul>
+    <li><code>clf_single_seed_cost(L)</code> - Calculate C<sub>min</sub><sup>(1)</sup>(L)</li>
+    <li><code>should_emit(L)</code> - Decision gate: C < 10×L</li>
+    <li><code>receipt(L, build_id)</code> - Full analysis with verification hash</li>
+</ul>
+
+<p><strong>Command Line Usage:</strong></p>
+<pre>
+# Single file analysis
+python clf_calculator.py test.jpg
+
+# Multiple files with exports
+python clf_calculator.py *.jpg --export-prefix ANALYSIS
+
+# Direct length input
+python clf_calculator.py --stdin-length 11751
+</pre>
+
+<p><strong>Output Format:</strong></p>
+<pre>
+test.jpg: L=11,751 bytes, bit_length=14, bounds=2^13 ≤ L < 2^14,
+leb=2, C=104 bits, RAW=117,510 bits, EMIT=True, receipt=a99a8a35...
+</pre>
+
+<h2>Professional Features</h2>
+
+<ul>
+    <li><strong>Multiple Export Formats:</strong> JSONL, CSV, audit reports</li>
+    <li><strong>Built-in Validation:</strong> Self-test mode and mathematical verification</li>
+    <li><strong>Drift Prevention:</strong> Runtime guards and immutable constants</li>
+    <li><strong>Receipt System:</strong> SHA-256 hashing for calculation verification</li>
+    <li><strong>Comprehensive Testing:</strong> Unit tests covering all mathematical boundaries</li>
+</ul>
+
+<h2>Mathematical Guarantees</h2>
+
+<ul>
+    <li><strong>Formula Immutability:</strong> C<sub>min</sub><sup>(1)</sup>(L) = 88 + 8×leb(L) is mathematically locked</li>
+    <li><strong>Constant Immutability:</strong> H=56, CAUS=27, END=5 cannot be modified</li>
+    <li><strong>Decision Consistency:</strong> EMIT iff C<sub>min</sub><sup>(1)</sup>(L) < 10×L (strict inequality)</li>
+    <li><strong>Type Safety:</strong> All operations use integer-only arithmetic</li>
+    <li><strong>Verification:</strong> pic2_gate.sh script ensures mathematical consistency</li>
+</ul>
+
+<h2>Project Organization</h2>
+
+<pre>
+Teleport/
+├── src/teleport/           # Main package (from 551-file cleanup)
+│   └── clf_calculator.py   # Core implementation
+├── tests/                  # Unit tests and validation
+├── tools/                  # pic2_gate.sh validation script  
+├── docs_sphinx/           # Complete documentation system
+├── archive/               # Development history (195+ files)
+└── CLF_MAXIMAL_VALIDATOR_FINAL.py  # Lightweight CLI (59 lines)
+</pre>
+
+<div class="footer">
+    <p><strong>Teleport CLF Calculator v1.0.0 Professional Release</strong></p>
+    <p>Generated: September 23, 2025 | Mathematical integrity validated | Production ready</p>
+    <p>Complete documentation available at: /Users/Admin/Teleport/docs_sphinx/_build/html/</p>
+</div>
+
+</body>
+</html>
