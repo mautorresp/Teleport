@@ -1,0 +1,5 @@
+file,L,bit_length,leb,C_min_bits,RAW_bits,emit,receipt_prefix
+pic5.jpg,555181,20,3,112,5551810,True,6aceb7581742cc09
+pic6.jpg,1042592,20,3,112,10425920,True,363a2fa73e09de52
+video2.mp4,3114374,22,4,120,31143740,True,f8e10c1266df4a92
+video3.mp4,9840497,24,4,120,98404970,True,fffe468785a1fe93

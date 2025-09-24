@@ -1,0 +1,4 @@
+{"file": "pic5.jpg", "L": 555181, "leb": 3, "C": 112, "RAW": 5551810, "EMIT": true, "BUILD_ID": "CLF_SINGLE_SEED_PURE_20250923_LOCKED", "sha256": "6aceb7581742cc0989e3daac34dde3841d29ca4a1505163ea3664536c12b1ec6"}
+{"file": "pic6.jpg", "L": 1042592, "leb": 3, "C": 112, "RAW": 10425920, "EMIT": true, "BUILD_ID": "CLF_SINGLE_SEED_PURE_20250923_LOCKED", "sha256": "363a2fa73e09de527e7eda3a106ebbc5fd968b9e1dece6fc3ab606ffa37f2798"}
+{"file": "video2.mp4", "L": 3114374, "leb": 4, "C": 120, "RAW": 31143740, "EMIT": true, "BUILD_ID": "CLF_SINGLE_SEED_PURE_20250923_LOCKED", "sha256": "f8e10c1266df4a928c44c1fc929dddaa92cd498b428b6fa82529e489cd72c259"}
+{"file": "video3.mp4", "L": 9840497, "leb": 4, "C": 120, "RAW": 98404970, "EMIT": true, "BUILD_ID": "CLF_SINGLE_SEED_PURE_20250923_LOCKED", "sha256": "fffe468785a1fe934f1b0fb0df35656286ad0d49d963fef4ff45918a1b4246e6"}
